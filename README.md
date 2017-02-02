@@ -12,9 +12,6 @@ _Coming soon!_
 ### Java version
 This library is developed using **Java 1.7**, but it should be compatible with no modification with _Java 1.6_, and with few modifications (just removing appropriate *@Override*) with _Java 1.5_.
 
-### License
-This library is under the terms of the [LGPL v3 license](https://www.gnu.org/licenses/lgpl.html). You can find the full description and all the conditions of use in the files src/COPYING and src/COPYING.LESSER.
-
 Collaboration
 -------------
 
