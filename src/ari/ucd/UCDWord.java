@@ -30,7 +30,7 @@ package ari.ucd;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (06/2016)
+ * @version 1.0 (02/2017)
  */
 public class UCDWord implements Comparable<UCDWord> {
 
@@ -38,13 +38,13 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
 	 *
 	 * <p>
-	 * 	Textually, this regular expression says that a UCD MUST start with one of the following atoms:
+	 * 	Textually, this regular expression says that a UCD MUST start (case INsensitively) with one of the following atoms:
 	 * 	arith, em, instr, meta, obs, phot, phys, pos, spect, src, stat or time. Then it MAY be followed by other atoms
 	 * 	that MUST be separated by '.'. None of the atoms can contain a space character (e.g. ' ', a tabulation, a carriage return)
 	 * 	or a semi-colon (i.e. ';').
 	 * </p>
 	 */
-	public final static String REGEXP_UCD_WORD = "(arith|em|instr|meta|obs|phot|phys|pos|spect|src|stat|time)(\\.[^\\s;]+)?";
+	public final static String REGEXP_UCD_WORD = "(?i)(arith|em|instr|meta|obs|phot|phys|pos|spect|src|stat|time)(\\.[^\\s;]+)?";
 
 	/** Rule about the syntax of the usage of this UCD1+ word.
 	 * <i>(see {@link UCDSyntax} for more details)</i>
@@ -73,6 +73,8 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * 	All these rules are expressed by a regular expression: {@link #REGEXP_UCD_WORD}.
 	 * 	So, this attribute will be <code>true</code> if it matches this regular expression.
 	 * </p>
+	 *
+	 * <p><i><b>Note:</b> This test is performed case INsensitively.</i></p>
 	 */
 	public final boolean valid;
 
@@ -87,7 +89,9 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to the document:
 	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
 	 *
-	 * <p><b>Important:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>.</p>
+	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>.</p>
+	 *
+	 * <p><i><b>Important 2:</b> This test must have been performed case INsensitively.</i></p>
 	 */
 	public final boolean recommended;
 

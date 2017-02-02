@@ -48,9 +48,9 @@ public class TestUCD {
 		ucd.listAdvice();
 		assertEquals(1, ucd.advice.length);
 		assertEquals("At least two parts of the electromagnetic spectrum have been specified successively after the photometric quantity \"phot.flux\". Only one is expected, but maybe more parts of the electromagnetic spectrum are covered here.", ucd.advice[0]);
-		
+
 		/* CASE: Avoid duplicated advice */
-		
+
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PHOT_QUANTITY, "spect.dopplerveloc", null, true),new UCDWord(UCDSyntax.PHOT_QUANTITY, "spect.dopplerveloc", null, true)});
 		ucd.listAdvice();
 		assertEquals(2, ucd.advice.length);
@@ -93,7 +93,7 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.VECTOR, "phys.magField", null, true),new UCDWord("pos.earth")});
 		ucd.listAdvice();
 		assertEquals(0, ucd.advice.length);
-		
+
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.VECTOR, "pos.pm", null, true),new UCDWord("pos.eq")});
 		ucd.listAdvice();
 		assertEquals(0, ucd.advice.length);
@@ -342,6 +342,20 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord("meta.id")});
 		assertTrue(ucd.isAllValid());
 
+		/*  SUBCASE: Ensure the parsing is case INsensitive */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("META.id")});
+		assertTrue(ucd.isAllValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("meta.ID")});
+		assertTrue(ucd.isAllValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("META.ID")});
+		assertTrue(ucd.isAllValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("MetA.Id")});
+		assertTrue(ucd.isAllValid());
+
 		/* CASE: More words */
 		/* 	SUBCASE: All valid words */
 
@@ -349,6 +363,14 @@ public class TestUCD {
 		assertTrue(ucd.isAllValid());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("phot.flux"),new UCDWord("em.opt.U"),new UCDWord("meta.main")});
+		assertTrue(ucd.isAllValid());
+
+		/*  SUBCASE: Ensure the parsing is case INsensitive */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("POS.eq.ra"),new UCDWord("meta.MAIN")});
+		assertTrue(ucd.isAllValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("Phot.Flux"),new UCDWord("em.OPT.u"),new UCDWord("Meta.MAIN")});
 		assertTrue(ucd.isAllValid());
 
 		/* 	SUBCASE: At least one missing word */
