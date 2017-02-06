@@ -111,10 +111,10 @@ public class TestUCDWord {
 		/* CASE: Not valid UCD => Not valid, so not recognised and not recommended */
 
 		try{
-			UCDWord word = new UCDWord(UCDSyntax.COLOUR, "foo", "My own not valid UCD.", true);
+			UCDWord word = new UCDWord(UCDSyntax.COLOUR, "@foo", "My own not valid UCD.", true);
 			assertEquals(UCDSyntax.COLOUR, word.syntaxCode);
 			assertEquals("My own not valid UCD.", word.description);
-			assertEquals("foo", word.word);
+			assertEquals("@foo", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -194,6 +194,22 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+
+			word = new UCDWord("myOwnSingleAtom");
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertEquals("myOwnSingleAtom", word.word);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+
+			word = new UCDWord("mixed_12-3_blabla");
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertEquals("mixed_12-3_blabla", word.word);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -202,14 +218,16 @@ public class TestUCDWord {
 		/* CASE: Not VALID UCD */
 
 		try{
-			UCDWord word = new UCDWord("foo");
+			// not starting with a letter or digit
+			UCDWord word = new UCDWord("@foo");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("foo", word.word);
+			assertEquals("@foo", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 
+			// starting with a space
 			word = new UCDWord(" arith");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
@@ -218,34 +236,47 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 
-			word = new UCDWord("emradio");
+			// starting with an underscore
+			word = new UCDWord("_atom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("emradio", word.word);
+			assertEquals("_atom", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 
-			word = new UCDWord("em_radio");
+			// starting with an hyphen
+			word = new UCDWord("-atom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em_radio", word.word);
+			assertEquals("-atom", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 
-			word = new UCDWord("em.my atom");
+			// containing a forbidden character
+			word = new UCDWord("em@radio");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em.my atom", word.word);
+			assertEquals("em@radio", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 
+			// containing a different forbidden character
 			word = new UCDWord("em.IR;NIR");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
 			assertEquals("em.IR;NIR", word.word);
+			assertFalse(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+
+			// containing a space
+			word = new UCDWord("em.my atom");
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertEquals("em.my atom", word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);

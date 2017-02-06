@@ -183,9 +183,9 @@ public class TestUCDParser {
 		/* CASE: Not valid UCD */
 
 		try{
-			UCDWord ucd = UCDParser.parsePSVLine("E | foo | My own non valid UCD. ", true);
+			UCDWord ucd = UCDParser.parsePSVLine("E | _foo | My own non valid UCD. ", true);
 			assertEquals(UCDSyntax.PHOT_QUANTITY, ucd.syntaxCode);
-			assertEquals("foo", ucd.word);
+			assertEquals("_foo", ucd.word);
 			assertEquals("My own non valid UCD.", ucd.description);
 			assertFalse(ucd.valid);
 			assertFalse(ucd.recognised);

@@ -1,9 +1,9 @@
 package ari.ucd;
 
 /**
- * Definition of a UCD1+ word, according to the IVOA.
+ * Definition of a UCD word, according to the IVOA (v1.1 - 12 August 2005).
  *
- * <p><i>See http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html for more details.</i></p>
+ * <p><i>See http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html for more details.</i></p>
  *
  * <p>
  * 	{@link UCDWord}s are comparable each other.
@@ -15,40 +15,45 @@ package ari.ucd;
  */
 public class UCDWord implements Comparable<UCDWord> {
 
-	/** Regular Expression for a valid UCD, according to a personal interpretation of the IVOA document about UCD1+:
-	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
+	/**
+	 * Regular Expression for a valid UCD's atom, according to the BNF provided in the IVOA Recommendation 2005-08-12 for UCD v1.1:
+	 * http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html
 	 *
 	 * <p>
-	 * 	Textually, this regular expression says that a UCD MUST start (case INsensitively) with one of the following atoms:
-	 * 	arith, em, instr, meta, obs, phot, phys, pos, spect, src, stat or time. Then it MAY be followed by other atoms
-	 * 	that MUST be separated by '.'. None of the atoms can contain a space character (e.g. ' ', a tabulation, a carriage return)
-	 * 	or a semi-colon (i.e. ';').
+	 * 	Textually, this regular expression says that a UCD atom can contain ONLY (lower or upper case) letters, digits, hyphens and
+	 *  underscores, AND must NOT start with an hyphen or an underscore.
 	 * </p>
 	 */
-	public final static String REGEXP_UCD_WORD = "(?i)(arith|em|instr|meta|obs|phot|phys|pos|spect|src|stat|time)(\\.[^\\s;]+)?";
+	public final static String REGEXP_UCD_ATOM = "[a-zA-Z0-9][a-zA-Z0-9\\-_]*";
 
-	/** Rule about the syntax of the usage of this UCD1+ word.
+	/** Regular Expression for a valid UCD, according to the BNF provided in the IVOA Recommendation 2005-08-12 for UCD v1.1:
+	 * http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html
+	 *
+	 * <p>
+	 * 	Textually, this regular expression says that a UCD is a composition of at least one atom.
+	 * 	All atoms MUST be separated by a period (.).
+	 * </p> */
+	public final static String REGEXP_UCD_WORD = REGEXP_UCD_ATOM + "(\\." + REGEXP_UCD_ATOM + ")*";
+
+	/** Rule about the syntax of the usage of this UCD word.
 	 * <i>(see {@link UCDSyntax} for more details)</i>
-	 * <p><i>May be <code>null</code>. If so, this UCD1+ word can NOT be recommended.</i></p> */
+	 * <p><i>May be <code>null</code>. If so, this UCD word can NOT be recommended.</i></p> */
 	public final UCDSyntax syntaxCode;
 
-	/** The UCD1+ word.
+	/** The UCD word.
 	 * <p><i>Can NOT be <code>null</code>.</i></p> */
 	public final String word;
 
-	/** Human description of this UCD1+ word.
+	/** Human description of this UCD word.
 	 * <p><i>May be <code>null</code>.</i></p> */
 	public final String description;
 
-	/** A UCD1+ is <i>valid</i> if its syntax is correct.
+	/** A UCD is <i>valid</i> if its syntax is correct.
 	 *
 	 * <p>In other words:</p>
 	 * <ul>
-	 * 	<li>if it starts with one of the following atoms:
-	 * 		arith, em, instr, meta, obs, phot, phys, pos, spect, src, stat or time.</li>
-	 * 	<li>then it MAY be followed by other atoms that MUST be separated by '.'.</li>
-	 * 	<li>none of the atoms can contain a space character (e.g. ' ', a tabulation, a carriage return)
-	 * 		or a semi-colon (i.e. ';').</li>
+	 * 	<li>if all atoms are composed of letters, digits, hyphens and/or underscores, BUT does not start with an hyphen or an underscore</li>
+	 * 	<li>atoms MUST be separated by '.'</li></li>
 	 * </ul>
 	 * <p>
 	 * 	All these rules are expressed by a regular expression: {@link #REGEXP_UCD_WORD}.
@@ -62,12 +67,12 @@ public class UCDWord implements Comparable<UCDWord> {
 	/**
 	 * A UCD word is <i>recognised</i> if among a list of well-known UCD words (not necessarily the ones provided by the IVOA).
 	 *
-	 * <p><b>Important:</b> A <i>recognised</i> UCD1+ word MUST be <i>{@link #valid}</i> AND its {@link #syntaxCode} MUST be set.</p>
+	 * <p><b>Important:</b> A <i>recognised</i> UCD word MUST be <i>{@link #valid}</i> AND its {@link #syntaxCode} MUST be set.</p>
 	 */
 	public final boolean recognised;
 
 	/**
-	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to the document:
+	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to IVOA Recommendation 2007-04-02 for the UCD1+ controlled vocabulary v1.23:
 	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
 	 *
 	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>.</p>
@@ -77,22 +82,22 @@ public class UCDWord implements Comparable<UCDWord> {
 	public final boolean recommended;
 
 	/**
-	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD1+ word.
+	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD word.
 	 *
 	 * <p><b>Conditions:</b></p>
 	 * <ul>
-	 * 	<li><i>To be {@link #valid}:</i> the syntax of this UCD1+ word MUST be correct. See {@link #valid} for more details.</li>
+	 * 	<li><i>To be {@link #valid}:</i> the syntax of this UCD word MUST be correct. See {@link #valid} for more details.</li>
 	 * 	<li><i>To be {@link #recognised}:</i>  it MUST be {@link #valid}
 	 * 	                                       AND the syntax code MUST be correct. See {@link UCDSyntax} for more details.</li>
 	 * 	<li><i>To be {@link #recommended}:</i> it MUST be {@link #recognised}
 	 * 	                                       AND the parameter <code>{@link #recommended}</code> MUST be set to <code>true</code>.</li>
 	 * </ul>
 	 *
-	 * @param syntax		Rule about the syntax when using this UCD1+ word.
+	 * @param syntax		Rule about the syntax when using this UCD word.
 	 *              		<i>(see {@link UCDSyntax} for more details)</i>
-	 * @param word			The UCD1+ word, itself.
-	 * @param description	Human description of this UCD1+ word.
-	 * @param recommended	<code>true</code> to consider this UCD1+ word as <i>{@link #recommended}</i> by the IVOA,
+	 * @param word			The UCD word, itself.
+	 * @param description	Human description of this UCD word.
+	 * @param recommended	<code>true</code> to consider this UCD word as <i>{@link #recommended}</i> by the IVOA,
 	 *                   	<code>false</code> otherwise.
 	 *
 	 * @throws NullPointerException	If the given word is <code>null</code>.
@@ -110,11 +115,11 @@ public class UCDWord implements Comparable<UCDWord> {
 	}
 
 	/**
-	 * Create a NON <i>{@link #recommended}</i> and NON <i>{@link #recognised}</i> UCD1+ word.
+	 * Create a NON <i>{@link #recommended}</i> and NON <i>{@link #recognised}</i> UCD word.
 	 *
 	 * <p>However, it may be flagged as <i>{@link #valid}</i> if its structure is correct.</p>
 	 *
-	 * @param word	A UCD1+ word.
+	 * @param word	A UCD word.
 	 *
 	 * @throws NullPointerException	If the given word is <code>null</code> or an empty string.
 	 */

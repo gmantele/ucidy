@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Representation of a UCD.
  *
- * <p>This is basically a list of {@link UCDWord UCD1+ word}s.</p>
+ * <p>This is basically a list of {@link UCDWord UCD word}s.</p>
  *
  * <p>A lot of functions can provide information about different degrees of the validity of this UCD:</p>
  * <ul>
@@ -29,11 +29,11 @@ import java.util.Set;
  * </ul>
  *
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (06/2016)
+ * @version 1.0 (02/2017)
  */
 public class UCD implements Iterable<UCDWord> {
 
-	/** UCD1+ words composing this UCD.
+	/** UCD words composing this UCD.
 	 * <p><i>This array may contain <code>null</code> items.</i></p> */
 	protected final UCDWord[] words;
 
@@ -265,7 +265,7 @@ public class UCD implements Iterable<UCDWord> {
 
 		ArrayList<String> lstErrors = new ArrayList<String>();
 
-		// For each UCD1+ word, there is an error if...
+		// For each UCD word, there is an error if...
 		for(UCDWord w : words){
 
 			// ...the word is NULL or an empty string:
@@ -286,7 +286,7 @@ public class UCD implements Iterable<UCDWord> {
 
 					// ...a SECONDARY word starts the UCD:
 					if (first && w.syntaxCode == UCDSyntax.SECONDARY)
-						lstErrors.add("UCD starting with a SECONDARY UCD1+ word: \"" + w.word + "\"! Such words can NOT be in first position.");
+						lstErrors.add("UCD starting with a SECONDARY UCD word: \"" + w.word + "\"! Such words can NOT be in first position.");
 
 					// ...more than one PRIMARY word are detected:
 					// ...PRIMARY words are not in first position:
@@ -305,18 +305,18 @@ public class UCD implements Iterable<UCDWord> {
 
 		// Add the errors about the PRIMARY words:
 		if (nbLatePrimary > 0){
-			lstErrors.add(0, nbLatePrimary + " PRIMARY UCD1+ word" + (nbLatePrimary > 1 ? "s" : "") + " not in first position: " + latePrimary.toString() + "! Such words MUST be in first position.");
+			lstErrors.add(0, nbLatePrimary + " PRIMARY UCD word" + (nbLatePrimary > 1 ? "s" : "") + " not in first position: " + latePrimary.toString() + "! Such words MUST be in first position.");
 			if (firstPrimary != null || nbLatePrimary > 1)
-				lstErrors.add(0, "Too many (" + (nbLatePrimary + (firstPrimary != null ? 1 : 0)) + ") PRIMARY UCD1+ words: " + (firstPrimary != null ? "\"" + firstPrimary + "\", " : "") + latePrimary + "! Only one is allowed in a UCD.");
+				lstErrors.add(0, "Too many (" + (nbLatePrimary + (firstPrimary != null ? 1 : 0)) + ") PRIMARY UCD words: " + (firstPrimary != null ? "\"" + firstPrimary + "\", " : "") + latePrimary + "! Only one is allowed in a UCD.");
 		}
 
 		// Add the errors about the NOT RECOGNISED words:
 		if (nbNotRecognised > 0)
-			lstErrors.add(0, nbNotRecognised + " not recognised UCD1+ word" + (nbNotRecognised > 1 ? "s" : "") + ": " + notRecognised.toString() + "!");
+			lstErrors.add(0, nbNotRecognised + " not recognised UCD word" + (nbNotRecognised > 1 ? "s" : "") + ": " + notRecognised.toString() + "!");
 
 		// Add the errors about the NOT VALID words:
 		if (nbNotValid > 0)
-			lstErrors.add(0, "Wrong syntax for " + nbNotValid + " UCD1+ word" + (nbNotValid > 1 ? "s" : "") + ": " + notValid.toString() + "!");
+			lstErrors.add(0, "Wrong syntax for " + nbNotValid + " UCD word" + (nbNotValid > 1 ? "s" : "") + ": " + notValid.toString() + "!");
 
 		// Add the errors about the NULL words:
 		if (nbEmptyWords > 0)
@@ -327,7 +327,7 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Append the given UCD1+ word at the end of the given {@link StringBuffer}.
+	 * Append the given UCD word at the end of the given {@link StringBuffer}.
 	 * The word is added between double quotes and may be prefixed by a comma
 	 * if not the first word of the StringBuffer.
 	 *
@@ -392,10 +392,10 @@ public class UCD implements Iterable<UCDWord> {
 	/* ADVICE */
 	/* ****** */
 
-	/** Regular Expression for any UCD1+ word describing a part of the electromagnetic spectrum. */
+	/** Regular Expression for any UCD word describing a part of the electromagnetic spectrum. */
 	protected static String REGEXP_EM = "em\\..+";
 
-	/** Regular Expression for any UCD1+ word describing an axis or a reference frame. */
+	/** Regular Expression for any UCD word describing an axis or a reference frame. */
 	protected static String REGEXP_AXIS_FRAME = "(pos\\.az(\\.(alt|azi|zd))?|pos\\.bodyrc(\\.(alt|lat|long))?|pos\\.cartesian(\\.(x|y|z))?|pos\\.cmb|pos\\.earth(\\.(altitude|lat|lon))?|pos\\.ecliptic(\\.(alt|lon))?|pos\\.eq(\\.(dec|ha|ra|spd))?|pos\\.galactic(\\.(lat|lon))?|pos\\.lg|pos\\.lsr|pos\\.lunar|pos\\.supergalactic(\\.(lat|lon))?)";
 
 	/**
@@ -403,7 +403,7 @@ public class UCD implements Iterable<UCDWord> {
 	 *
 	 * <p>Advice is given in the following cases:</p>
 	 * <ul>
-	 * 	<li>one or more UCD1+ words are duplicated</li>
+	 * 	<li>one or more UCD words are duplicated</li>
 	 * 	<li>a photometric quantity is not followed directly by a part of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
 	 * 	<li>a color is not followed directly by 2 successive parts of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
 	 * 	<li>a vector is not followed directly by an axis or a reference frame</li>
@@ -412,7 +412,7 @@ public class UCD implements Iterable<UCDWord> {
 	protected void listAdvice(){
 		ArrayList<String> lstAdvice = new ArrayList<String>();
 
-		// Detect duplicated UCD1+ words:
+		// Detect duplicated UCD words:
 		LinkedHashSet<UCDWord> duplicated = new LinkedHashSet<UCDWord>();
 		for(int i = 0; i < words.length; i++){
 			if (!duplicated.contains(words[i])){
@@ -423,7 +423,7 @@ public class UCD implements Iterable<UCDWord> {
 			}
 		}
 		if (duplicated.size() > 0)
-			lstAdvice.add("For more readability, you should remove duplicated UCD1+ words: " + concat(duplicated) + ".");
+			lstAdvice.add("For more readability, you should remove duplicated UCD words: " + concat(duplicated) + ".");
 
 		UCDWord curr;
 		Set<UCDWord> candidatesEM = searchByPattern(REGEXP_EM);
@@ -522,11 +522,11 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search all UCD1+ words composing this UCD which match the given regular expression.
+	 * Search all UCD words composing this UCD which match the given regular expression.
 	 *
 	 * @param pattern	A regular expression.
 	 *
-	 * @return	A set containing (by order of apparition) all UCD1+ words matching the given regular expression.
+	 * @return	A set containing (by order of apparition) all UCD words matching the given regular expression.
 	 */
 	protected LinkedHashSet<UCDWord> searchByPattern(final String pattern){
 		LinkedHashSet<UCDWord> match = new LinkedHashSet<UCDWord>();
@@ -543,7 +543,7 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Get advice about UCD1+ words which is possible to add in order to be more precise.
+	 * Get advice about UCD words which is possible to add in order to be more precise.
 	 *
 	 * <p><i>Advice is generally about UCD words of type {@link UCDSyntax#PHOT_QUANTITY photometric quantity},
 	 * {@link UCDSyntax#COLOUR colour} and {@link UCDSyntax#VECTOR vector}.</i></p>
@@ -743,7 +743,7 @@ public class UCD implements Iterable<UCDWord> {
 	/* ***************** */
 
 	/**
-	 * Get the total number of UCD1+ words composing this UCD.
+	 * Get the total number of UCD words composing this UCD.
 	 *
 	 * @return	Number of words inside this UCD.
 	 */
@@ -752,11 +752,11 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Get the specified UCD1+ words of this UCD.
+	 * Get the specified UCD words of this UCD.
 	 *
-	 * @param indWord	Index of the UCD1+ word to get.
+	 * @param indWord	Index of the UCD word to get.
 	 *
-	 * @return	The corresponding UCD1+ word.
+	 * @return	The corresponding UCD word.
 	 *
 	 * @throws ArrayIndexOutOfBoundsException	If the given index if negative, or equal or greater than the size of this UCD.
 	 */
@@ -765,7 +765,7 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Let iterate over the list of all UCD1+ words composing this UCD.
+	 * Let iterate over the list of all UCD words composing this UCD.
 	 *
 	 * @see java.lang.Iterable#iterator()
 	 */
@@ -775,7 +775,7 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Iterator over the list of UCD1+ words of this UCD.
+	 * Iterator over the list of UCD words of this UCD.
 	 *
 	 * @author Gr&eacute;gory Mantelet (ARI)
 	 * @version 1.0 (06/2016)
@@ -792,7 +792,7 @@ public class UCD implements Iterable<UCDWord> {
 		@Override
 		public UCDWord next(){
 			if (!hasNext())
-				throw new NoSuchElementException("No more UCD1+ words!");
+				throw new NoSuchElementException("No more UCD words!");
 			return words[++index];
 		}
 

@@ -26,7 +26,7 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord("meta.id"),new UCDWord("pos.eq.ra"),new UCDWord("meta.id")});
 		ucd.listAdvice();
 		assertEquals(1, ucd.advice.length);
-		assertEquals("For more readability, you should remove duplicated UCD1+ words: \"meta.id\".", ucd.advice[0]);
+		assertEquals("For more readability, you should remove duplicated UCD words: \"meta.id\".", ucd.advice[0]);
 
 		/* CASE: Photometry quantity */
 
@@ -54,7 +54,7 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PHOT_QUANTITY, "spect.dopplerveloc", null, true),new UCDWord(UCDSyntax.PHOT_QUANTITY, "spect.dopplerveloc", null, true)});
 		ucd.listAdvice();
 		assertEquals(2, ucd.advice.length);
-		assertEquals("For more readability, you should remove duplicated UCD1+ words: \"spect.dopplerveloc\".", ucd.advice[0]);
+		assertEquals("For more readability, you should remove duplicated UCD words: \"spect.dopplerveloc\".", ucd.advice[0]);
 		assertEquals("No part of the electromagnetic spectrum is specified for the photometric quantity \"spect.dopplerveloc\". For more precision, one part of the EM spectrum can be added just after \"spect.dopplerveloc\".", ucd.advice[1]);
 
 		/* CASE: Colors */
@@ -143,78 +143,78 @@ public class TestUCD {
 
 		/* CASE: Wrong syntax */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "foo", null, false)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "_foo", null, false)});
 		ucd.listErrors();
 
 		assertEquals(1, ucd.errors.length);
-		assertEquals("Wrong syntax for 1 UCD1+ word: \"foo\"!", ucd.errors[0]);
+		assertEquals("Wrong syntax for 1 UCD word: \"_foo\"!", ucd.errors[0]);
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta id", null, false),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true),new UCDWord(UCDSyntax.SECONDARY, "foo", null, false)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta id", null, false),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true),new UCDWord(UCDSyntax.SECONDARY, "_foo", null, false)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("Wrong syntax for 2 UCD1+ words: \"meta id\", \"foo\"!", ucd.errors[0]);
+		assertEquals("Wrong syntax for 2 UCD words: \"meta id\", \"_foo\"!", ucd.errors[0]);
 
 		/* CASE: Not recognised */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("meta.id")});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("1 not recognised UCD1+ word: \"meta.id\"!", ucd.errors[0]);
+		assertEquals("1 not recognised UCD word: \"meta.id\"!", ucd.errors[0]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(null, "meta.id", null, true)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("1 not recognised UCD1+ word: \"meta.id\"!", ucd.errors[0]);
+		assertEquals("1 not recognised UCD word: \"meta.id\"!", ucd.errors[0]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("meta.id"),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true),new UCDWord(null, "meta.main", null, true)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("2 not recognised UCD1+ words: \"meta.id\", \"meta.main\"!", ucd.errors[0]);
+		assertEquals("2 not recognised UCD words: \"meta.id\", \"meta.main\"!", ucd.errors[0]);
 
 		/* CASE: Not valid AND not recognised */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord("my.ucd")});
+		ucd = new UCD(new UCDWord[]{new UCDWord("my@ucd")});
 		ucd.listErrors();
 		assertEquals(2, ucd.errors.length);
-		assertEquals("Wrong syntax for 1 UCD1+ word: \"my.ucd\"!", ucd.errors[0]);
-		assertEquals("1 not recognised UCD1+ word: \"my.ucd\"!", ucd.errors[1]);
+		assertEquals("Wrong syntax for 1 UCD word: \"my@ucd\"!", ucd.errors[0]);
+		assertEquals("1 not recognised UCD word: \"my@ucd\"!", ucd.errors[1]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(null, "meta id", null, true)});
 		ucd.listErrors();
 		assertEquals(2, ucd.errors.length);
-		assertEquals("Wrong syntax for 1 UCD1+ word: \"meta id\"!", ucd.errors[0]);
-		assertEquals("1 not recognised UCD1+ word: \"meta id\"!", ucd.errors[1]);
+		assertEquals("Wrong syntax for 1 UCD word: \"meta id\"!", ucd.errors[0]);
+		assertEquals("1 not recognised UCD word: \"meta id\"!", ucd.errors[1]);
 
 		/* CASE: PRIMARY at wrong position */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PHOT_QUANTITY, "phot.flux", null, true),new UCDWord(UCDSyntax.PRIMARY, "arith.factor", null, false)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("1 PRIMARY UCD1+ word not in first position: \"arith.factor\"! Such words MUST be in first position.", ucd.errors[0]);
+		assertEquals("1 PRIMARY UCD word not in first position: \"arith.factor\"! Such words MUST be in first position.", ucd.errors[0]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PHOT_QUANTITY, "phot.flux", null, true),new UCDWord(UCDSyntax.PRIMARY, "arith.factor", null, false),new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, false)});
 		ucd.listErrors();
 		assertEquals(2, ucd.errors.length);
-		assertEquals("Too many (2) PRIMARY UCD1+ words: \"arith.factor\", \"meta.id\"! Only one is allowed in a UCD.", ucd.errors[0]);
-		assertEquals("2 PRIMARY UCD1+ words not in first position: \"arith.factor\", \"meta.id\"! Such words MUST be in first position.", ucd.errors[1]);
+		assertEquals("Too many (2) PRIMARY UCD words: \"arith.factor\", \"meta.id\"! Only one is allowed in a UCD.", ucd.errors[0]);
+		assertEquals("2 PRIMARY UCD words not in first position: \"arith.factor\", \"meta.id\"! Such words MUST be in first position.", ucd.errors[1]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "arith.factor", null, false),new UCDWord(UCDSyntax.PHOT_QUANTITY, "phot.flux", null, true),new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, false)});
 		ucd.listErrors();
 		assertEquals(2, ucd.errors.length);
-		assertEquals("Too many (2) PRIMARY UCD1+ words: \"arith.factor\", \"meta.id\"! Only one is allowed in a UCD.", ucd.errors[0]);
-		assertEquals("1 PRIMARY UCD1+ word not in first position: \"meta.id\"! Such words MUST be in first position.", ucd.errors[1]);
+		assertEquals("Too many (2) PRIMARY UCD words: \"arith.factor\", \"meta.id\"! Only one is allowed in a UCD.", ucd.errors[0]);
+		assertEquals("1 PRIMARY UCD word not in first position: \"meta.id\"! Such words MUST be in first position.", ucd.errors[1]);
 
 		/* CASE: SECONDARY at first position */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.SECONDARY, "em.radio", null, true)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("UCD starting with a SECONDARY UCD1+ word: \"em.radio\"! Such words can NOT be in first position.", ucd.errors[0]);
+		assertEquals("UCD starting with a SECONDARY UCD word: \"em.radio\"! Such words can NOT be in first position.", ucd.errors[0]);
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.SECONDARY, "em.radio", null, true),new UCDWord(UCDSyntax.SECONDARY, "instr.filter", null, true)});
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
-		assertEquals("UCD starting with a SECONDARY UCD1+ word: \"em.radio\"! Such words can NOT be in first position.", ucd.errors[0]);
+		assertEquals("UCD starting with a SECONDARY UCD word: \"em.radio\"! Such words can NOT be in first position.", ucd.errors[0]);
 
 	}
 
@@ -331,7 +331,7 @@ public class TestUCD {
 
 		/* 	SUBCASE: Wrong words */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord("foo")});
+		ucd = new UCD(new UCDWord[]{new UCDWord("_foo")});
 		assertFalse(ucd.isAllValid());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(" meta.id")});
@@ -389,13 +389,13 @@ public class TestUCD {
 
 		/* 	SUBCASE: At least one not valid word */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord("myposition"),new UCDWord("meta.main")});
+		ucd = new UCD(new UCDWord[]{new UCDWord("my!position"),new UCDWord("meta.main")});
 		assertFalse(ucd.isAllValid());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(" pos.eq.ra"),new UCDWord("meta.main")});
 		assertFalse(ucd.isAllValid());
 
-		ucd = new UCD(new UCDWord[]{new UCDWord("meta.info.main"),new UCDWord("photometry"),new UCDWord("optic")});
+		ucd = new UCD(new UCDWord[]{new UCDWord("meta.info.main"),new UCDWord("photo!metry"),new UCDWord("#optic")});
 		assertFalse(ucd.isAllValid());
 	}
 
@@ -416,7 +416,7 @@ public class TestUCD {
 
 		/* 	SUBCASE: Wrong words */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "foo", null, false)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "_foo", null, false)});
 		assertFalse(ucd.isAllRecognised());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.SECONDARY, " meta.main", null, false)});
@@ -457,13 +457,13 @@ public class TestUCD {
 
 		/* 	SUBCASE: At least one not valid word => NOT RECOGNISED */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "foo", null, false),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, false)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "_foo", null, false),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, false)});
 		assertFalse(ucd.isAllRecognised());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, " pos.eq.ra", null, false),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, false)});
 		assertFalse(ucd.isAllRecognised());
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.info.main", null, false),new UCDWord(UCDSyntax.PHOT_QUANTITY, "photometry", null, false),new UCDWord(UCDSyntax.SECONDARY, "optic", null, false)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.main@info", null, false),new UCDWord(UCDSyntax.PHOT_QUANTITY, "photometry", null, false),new UCDWord(UCDSyntax.SECONDARY, "optic", null, false)});
 		assertFalse(ucd.isAllRecognised());
 	}
 
@@ -484,7 +484,7 @@ public class TestUCD {
 
 		/* 	SUBCASE: Wrong words */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "foo", null, true)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "_foo", null, true)});
 		assertFalse(ucd.isAllRecommended());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, " meta.id", null, true)});
@@ -539,13 +539,13 @@ public class TestUCD {
 
 		/* 	SUBCASE: At least one not valid word => NOT RECOGNISED */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "foo", null, true),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "_foo", null, true),new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true)});
 		assertFalse(ucd.isAllRecommended());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, " pos.eq.ra", null, true),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true)});
 		assertFalse(ucd.isAllRecommended());
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.info.main", null, true),new UCDWord(UCDSyntax.PHOT_QUANTITY, "photometry", null, true),new UCDWord(UCDSyntax.SECONDARY, "optic", null, true)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.main@info", null, true),new UCDWord(UCDSyntax.PHOT_QUANTITY, "photometry", null, true),new UCDWord(UCDSyntax.SECONDARY, "optic", null, true)});
 		assertFalse(ucd.isAllRecommended());
 	}
 

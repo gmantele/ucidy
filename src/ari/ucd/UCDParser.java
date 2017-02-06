@@ -8,12 +8,12 @@ import java.text.ParseException;
 import java.util.Iterator;
 
 /**
- * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD1+ word ({@link #parseWordList(Reader, boolean)}).
+ * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD word ({@link #parseWordList(Reader, boolean)}).
  *
  * <p>
  * 	Though the static function {@link #parseUCD(String)} is using a {@link UCDParser} already initialized with the
- * 	list of all official IVOA UCD1+ words, it is possible to create an instance of {@link UCDParser} with a custom
- * 	list of UCD1+ words.
+ * 	list of all official IVOA UCD words, it is possible to create an instance of {@link UCDParser} with a custom
+ * 	list of UCD words.
  * </p>
  *
  * <p>
@@ -22,7 +22,7 @@ import java.util.Iterator;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (06/2016)
+ * @version 1.0 (02/2017)
  */
 public class UCDParser {
 
@@ -76,17 +76,17 @@ public class UCDParser {
 	}
 	/* #################################################################################################################### */
 
-	/** Default UCD parser which is initialized with a list of only the official IVOA UCD1+ words.
+	/** Default UCD parser which is initialized with a list of only the official IVOA UCD words.
 	 * <p><i>This parser can be used with {@link #parseUCD(String)}.</i></p> */
 	protected final static UCDParser defaultParser = new UCDParser();
 	static{
-		// Import all the official IVOA's UCD1+ words:
+		// Import all the official IVOA's UCD words:
 		try{
 			defaultParser.knownWords.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
 		}catch(NullPointerException npe){
-			System.err.println("Impossible to import the official IVOA UCD1+ inside the default UCD parser! Cause: the UCD1+ words list can not be found.");
+			System.err.println("Impossible to import the official IVOA UCD inside the default UCD parser! Cause: the UCD words list can not be found.");
 		}catch(IOException ioe){
-			System.err.println("Impossible to import the official IVOA UCD1+ inside the default UCD parser! Cause: " + ioe.getMessage());
+			System.err.println("Impossible to import the official IVOA UCD inside the default UCD parser! Cause: " + ioe.getMessage());
 		}
 	}
 
@@ -94,7 +94,7 @@ public class UCDParser {
 	 *
 	 * <p><b>Important:
 	 * 	"Known" means here that the all words of this list will be used by reference when building
-	 * 	a {@link UCD} object when the corresponding UCD1+ word match the listed {@link UCDWord}. So it means
+	 * 	a {@link UCD} object when the corresponding UCD word match the listed {@link UCDWord}. So it means
 	 * 	there is no guarantee that ALL {@link UCDWord} objects stored in this list are {@link UCDWord#valid valid},
 	 * 	{@link UCDWord#recognised recognised} and/or {@link UCDWord#recommended recommended}.
 	 * 	This special status of a {@link UCDWord} depends of its initialization.
@@ -135,7 +135,7 @@ public class UCDParser {
 	 * Parse the given string representing a UCD into an object representation: {@link UCD}.
 	 *
 	 * <p>
-	 * 	Each word of this UCD is searched in the list of <i>known</i> UCD1+ words.
+	 * 	Each word of this UCD is searched in the list of <i>known</i> UCD words.
 	 * 	If a match is found, the full definition of this UCD will be set in {@link UCD}.
 	 * 	If none can be found, a not {@link UCDWord#recognised recognised} {@link UCDWord} will be created instead.
 	 * </p>
@@ -167,7 +167,7 @@ public class UCDParser {
 	}
 
 	/**
-	 * Parse the given UCD and try to resolve each word as a known UCD1+ word among the IVOA official list.
+	 * Parse the given UCD and try to resolve each word as a known UCD word among the IVOA official list.
 	 *
 	 * <p>
 	 * 	Non resolved words, will still be in the returned {@link UCD} exactly as provided, but won't be flagged as
@@ -193,7 +193,7 @@ public class UCDParser {
 	protected final static int NB_MAX_ERRORS = 10;
 
 	/**
-	 * Create a {@link UCDWordList} with all UCD1+ words declared using the PSV (Pipe-Separated-Value) format inside the specified input.
+	 * Create a {@link UCDWordList} with all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified input.
 	 *
 	 * <p>
 	 * 	The expected PSV file MUST contain at least 3 columns, each separated by a pipe character (|):
@@ -201,8 +201,8 @@ public class UCDParser {
 	 * <ol>
 	 * 	<li><i>Syntax code:</i> a single character among P, S, Q, E, C and V.
 	 *  	<i>See {@link UCDSyntax} for more details.</i></li>
-	 * 	<li><i>Word:</i> the UCD1+ word itself.</li>
-	 * 	<li><i>Description:</i> optional description of the UCD1+ word.</li>
+	 * 	<li><i>Word:</i> the UCD word itself.</li>
+	 * 	<li><i>Description:</i> optional description of the UCD word.</li>
 	 * </ol>
 	 *
 	 * <p><i>Note:
@@ -226,7 +226,7 @@ public class UCDParser {
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
 	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>{@link #addAll(File)} will import all UCD1+ words as NOT <i>{@link UCDWord#recommended recommended}</i>.
+	 * 	<li>{@link #addAll(File)} will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
 	 * 		If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
 	 * 		instead with the second parameter set to <code>true</code>.</li>
 	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
@@ -236,10 +236,10 @@ public class UCDParser {
 	 * </ul>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD1+ words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the input.
+	 * @return	The number of successfully added UCD words extracted from the input.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified input.
@@ -251,7 +251,7 @@ public class UCDParser {
 	}
 
 	/**
-	 * Add inside the given {@link UCDWordList} all UCD1+ words declared using the PSV (Pipe-Separated-Value) format
+	 * Add inside the given {@link UCDWordList} all UCD words declared using the PSV (Pipe-Separated-Value) format
 	 * inside the specified input.
 	 *
 	 * <p>
@@ -260,8 +260,8 @@ public class UCDParser {
 	 * <ol>
 	 * 	<li><i>Syntax code:</i> a single character among P, S, Q, E, C and V.
 	 *  	<i>See {@link UCDSyntax} for more details.</i></li>
-	 * 	<li><i>Word:</i> the UCD1+ word itself.</li>
-	 * 	<li><i>Description:</i> optional description of the UCD1+ word.</li>
+	 * 	<li><i>Word:</i> the UCD word itself.</li>
+	 * 	<li><i>Description:</i> optional description of the UCD word.</li>
 	 * </ol>
 	 *
 	 * <p><i>Note:
@@ -285,7 +285,7 @@ public class UCDParser {
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
 	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>{@link #addAll(File)} will import all UCD1+ words as NOT <i>{@link UCDWord#recommended recommended}</i>.
+	 * 	<li>{@link #addAll(File)} will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
 	 * 		If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
 	 * 		instead with the second parameter set to <code>true</code>.</li>
 	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
@@ -295,11 +295,11 @@ public class UCDParser {
 	 * </ul>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD1+ words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
-	 * @param words			The {@link UCDWordList} to complete with the UCD1+ words extracted from the given input.
+	 * @param words			The {@link UCDWordList} to complete with the UCD words extracted from the given input.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the input.
+	 * @return	The number of successfully added UCD words extracted from the input.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified input.
@@ -321,7 +321,7 @@ public class UCDParser {
 			// For each line:
 			while((line = input.readLine()) != null){
 				try{
-					/* Parse the line as UCD1+ definition
+					/* Parse the line as UCD definition
 					 * and add the result to the list: */
 					if (words.add(parsePSVLine(line, recommended)))
 						nbAdded++;
@@ -362,11 +362,11 @@ public class UCDParser {
 	/**
 	 * Parse a line of a PSV (Pipe Separated Value) file as the definition of a UCD word.
 	 *
-	 * @param psvLine		A non empty line of a PSV file listing the allowed UCD1+ words.
+	 * @param psvLine		A non empty line of a PSV file listing the allowed UCD words.
 	 * @param recommended	<code>true</code> if the described UCD word is <i>{@link UCDWord#recommended}</i> by the IVOA standard,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The corresponding UCD1+ word.
+	 * @return	The corresponding UCD word.
 	 *
 	 * @throws NullPointerException	If the given PSV line is <code>null</code> or an empty string.
 	 * @throws ParseException		If the syntax of the given PSV line is incorrect (expected syntax: ()),

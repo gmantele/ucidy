@@ -13,29 +13,29 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * Object listing and ordering alphabetically a set of UCD1+ words.
+ * Object listing and ordering alphabetically a set of UCD words.
  *
- * <h3>Searching UCD1+ words</h3>
+ * <h3>Searching UCD words</h3>
  *
- * <p>This object behaves like a dictionary. It is possible to search UCD1+ words in different ways:</p>
+ * <p>This object behaves like a dictionary. It is possible to search UCD words in different ways:</p>
  * <ul>
- * 	<li><i>For a specific UCD1+ word:</i> {@link #get(String)}</li>
- * 	<li><i>For all UCD1+ words starting with a given string:</i> {@link #startingWith(String)}</li>
- * 	<li><i>For UCD1+ whose the description (and also the word's atoms) matches some keywords:</i> {@link #search(String)}</li>
+ * 	<li><i>For a specific UCD word:</i> {@link #get(String)}</li>
+ * 	<li><i>For all UCD words starting with a given string:</i> {@link #startingWith(String)}</li>
+ * 	<li><i>For UCD whose the description (and also the word's atoms) matches some keywords:</i> {@link #search(String)}</li>
  * </ul>
  *
  * <h3>Import from a file</h3>
  *
  * <p>
- * 	A list of UCD1+ word definitions can be imported from a PSV (Pipe-Separated-Value) file using
+ * 	A list of UCD word definitions can be imported from a PSV (Pipe-Separated-Value) file using
  * 	{@link #addAll(File)}, {@link #addAll(File, boolean)}, {@link #addAll(InputStream, boolean)} or
- * 	{@link #addAll(Reader, boolean)}. The first function will import all identified UCD1+ words as
+ * 	{@link #addAll(Reader, boolean)}. The first function will import all identified UCD words as
  * 	<b>NOT <i>{@link UCDWord#recommended recommended}</i></b>. If you want to change this behaviour,
  * 	use {@link #addAll(File, boolean)} instead.
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (06/2016)
+ * @version 1.0 (02/2017)
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
@@ -46,7 +46,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 
 		UCDWordList words = new UCDWordList();
 		int nbWords = words.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
-		System.out.println(nbWords + " UCD1+ words successfully read!");
+		System.out.println(nbWords + " UCD words successfully read!");
 
 		for(UCDWord w : words){
 			if (!w.recommended)
@@ -65,11 +65,11 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 	/* #################################################################################################################### */
 
-	/** List of all known UCD1+ words. */
+	/** List of all known UCD words. */
 	protected TreeSet<UCDWord> words = new TreeSet<UCDWord>();
 
 	/**
-	 * Create an empty list of UCD1+ words.
+	 * Create an empty list of UCD words.
 	 */
 	public UCDWordList(){}
 
@@ -78,11 +78,11 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/* ****************** */
 
 	/**
-	 * Add the given UCD1+ word.
+	 * Add the given UCD word.
 	 *
-	 * @param newWord	The UCD1+ word to add.
+	 * @param newWord	The UCD word to add.
 	 *
-	 * @return	<code>true</code> if the given UCD1+ word has been successfully added,
+	 * @return	<code>true</code> if the given UCD word has been successfully added,
 	 *        	<code>false</code> if the given word is <code>null</code> or already exists in the list.
 	 */
 	public boolean add(final UCDWord newWord){
@@ -90,15 +90,15 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all the UCD1+ words listed in the given collection.
+	 * Add all the UCD words listed in the given collection.
 	 *
 	 * <p><i>Note:
 	 * 	<code>null</code> items are ignored.
 	 * </i></p>
 	 *
-	 * @param newWords	A collection of new UCD1+ words to add.
+	 * @param newWords	A collection of new UCD words to add.
 	 *
-	 * @return	The number of successfully added UCD1+ words,
+	 * @return	The number of successfully added UCD words,
 	 *        	or <code>0</code> if the given collection is <code>null</code>.
 	 */
 	public int addAll(final Collection<UCDWord> newWords){
@@ -114,15 +114,15 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all the UCD1+ words listed in the given array.
+	 * Add all the UCD words listed in the given array.
 	 *
 	 * <p><i>Note:
 	 * 	<code>null</code> items are ignored.
 	 * </i></p>
 	 *
-	 * @param newWords	An array of new UCD1+ words to add.
+	 * @param newWords	An array of new UCD words to add.
 	 *
-	 * @return	The number of successfully added UCD1+ words,
+	 * @return	The number of successfully added UCD words,
 	 *        	or <code>0</code> if the given array is <code>null</code>.
 	 */
 	public int addAll(final UCDWord[] newWords){
@@ -138,7 +138,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD1+ words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
 	 *
 	 * <p><b>
 	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
@@ -148,7 +148,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 *
 	 * @param psvFile	PSV file to parse.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the file.
+	 * @return	The number of successfully added UCD words extracted from the file.
 	 *
 	 * @throws NullPointerException	If the given file is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified file.
@@ -160,7 +160,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD1+ words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
 	 *
 	 * <p><b>
 	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
@@ -169,10 +169,10 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * </b></p>
 	 *
 	 * @param psvFile		PSV file to parse.
-	 * @param recommended	<code>true</code> to flag all imported UCD1+ words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the file.
+	 * @return	The number of successfully added UCD words extracted from the file.
 	 *
 	 * @throws NullPointerException	If the given file is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified file.
@@ -186,7 +186,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD1+ words declared using the PSV (Pipe-Separated-Value) format inside the specified input stream.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified input stream.
 	 *
 	 * <p><b>
 	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
@@ -195,10 +195,10 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * </b></p>
 	 *
 	 * @param stream		Input stream to parse.
-	 * @param recommended	<code>true</code> to flag all imported UCD1+ words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the input stream.
+	 * @return	The number of successfully added UCD words extracted from the input stream.
 	 *
 	 * @throws NullPointerException	If the given stream is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified stream.
@@ -212,7 +212,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD1+ words declared using the PSV (Pipe-Separated-Value) format inside the specified reader.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified reader.
 	 *
 	 * <p><b>
 	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
@@ -221,10 +221,10 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * </b></p>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD1+ words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD1+ words extracted from the input.
+	 * @return	The number of successfully added UCD words extracted from the input.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the specified input.
@@ -240,7 +240,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/* ***************** */
 
 	/**
-	 * Let iterate (by alphabetic order) over the whole list of UCD1+ words.
+	 * Let iterate (by alphabetic order) over the whole list of UCD words.
 	 *
 	 * @see java.lang.Iterable#iterator()
 	 */
@@ -250,9 +250,9 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Total number of UCD1+ words stored in this list.
+	 * Total number of UCD words stored in this list.
 	 *
-	 * @return	Number of stored UCD1+ words.
+	 * @return	Number of stored UCD words.
 	 */
 	public int size(){
 		return words.size();
@@ -263,15 +263,15 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/* **************** */
 
 	/**
-	 * Tell whether the given UCD1+ word is part of this list.
+	 * Tell whether the given UCD word is part of this list.
 	 *
 	 * <p><i><b>Important note:</b>
 	 * 	Comparisons are case <b>in</b>sensitive.
 	 * </i></p>
 	 *
-	 * @param ucdWord	The UCD1+ word to test.
+	 * @param ucdWord	The UCD word to test.
 	 *
-	 * @return	<code>true</code> if the given UCD1+ word exists in this list,
+	 * @return	<code>true</code> if the given UCD word exists in this list,
 	 *        	<code>false</code> otherwise (and particularly if the given word is <code>null</code>).
 	 */
 	public boolean contains(final String ucdWord){
@@ -279,15 +279,15 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search for an exact match with the given supposed UCD1+ word.
+	 * Search for an exact match with the given supposed UCD word.
 	 *
 	 * <p><i><b>Important note:</b>
 	 * 	Comparisons are case <b>in</b>sensitive.
 	 * </i></p>
 	 *
-	 * @param ucdWord	The UCD1+ word to search.
+	 * @param ucdWord	The UCD word to search.
 	 *
-	 * @return	The corresponding {@link UCDWord} instance matching the given UCD1+ word,
+	 * @return	The corresponding {@link UCDWord} instance matching the given UCD word,
 	 *        	or <code>null</code> if the given word is <code>null</code>, an empty string or can not be found in this list.
 	 */
 	public UCDWord get(String ucdWord){
@@ -302,7 +302,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search for all UCD1+ words starting with the given string.
+	 * Search for all UCD words starting with the given string.
 	 *
 	 * <p><i><b>Important note:</b>
 	 * 	Comparisons are case <b>in</b>sensitive.
@@ -310,7 +310,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 *
 	 * @param startStr	The starting string.
 	 *
-	 * @return	A sorted set containing all UCD1+ words starting with the given string,
+	 * @return	A sorted set containing all UCD words starting with the given string,
 	 *        	or <code>null</code> if the given string is <code>null</code>, empty or can not be found in this list.
 	 */
 	public SortedSet<UCDWord> startingWith(String startStr){
@@ -321,7 +321,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search for all UCD1+ words whose the description matches the given keywords.
+	 * Search for all UCD words whose the description matches the given keywords.
 	 *
 	 * <p><i><b>Important note:</b>
 	 * 	Comparisons are case <b>in</b>sensitive.
@@ -329,7 +329,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 *
 	 * @param keywords	String concatenating (with space characters) some keywords.
 	 *
-	 * @return	A set of UCD1+ words whose the description matches the given keywords.
+	 * @return	A set of UCD words whose the description matches the given keywords.
 	 *        	This set is ordered by descending score.
 	 */
 	public Set<UCDWord> search(final String keywords){
@@ -344,16 +344,16 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/* **************** */
 
 	/**
-	 * Remove the UCD1+ word matching the given one.
+	 * Remove the UCD word matching the given one.
 	 *
 	 * <p><i><b>Important note:</b>
 	 * 	Comparisons are case <b>in</b>sensitive.
 	 * </i></p>
 	 *
-	 * @param ucdWord	The UCD1+ word to remove from this list.
+	 * @param ucdWord	The UCD word to remove from this list.
 	 *
-	 * @return	The removed UCD1+ word,
-	 *        	or <code>null</code> if no UCD1+ word matches.
+	 * @return	The removed UCD word,
+	 *        	or <code>null</code> if no UCD word matches.
 	 */
 	public UCDWord remove(final String ucdWord){
 		if (ucdWord == null || ucdWord.trim().length() == 0)
@@ -367,7 +367,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Remove ALL UCD1+ words listed in this object.
+	 * Remove ALL UCD words listed in this object.
 	 */
 	public void clear(){
 		words.clear();

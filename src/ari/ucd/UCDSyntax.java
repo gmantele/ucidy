@@ -1,11 +1,11 @@
 package ari.ucd;
 
 /**
- * All possible syntax rules as defined by the IVOA:
+ * All possible syntax rules as defined by the IVOA Recommendation 2007-04-02 for the UCD1+ controlled vocabulary v1.23:
  * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
  *
  * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (06/2016)
+ * @version 1.0 (02/2017)
  */
 public enum UCDSyntax{
 
@@ -20,19 +20,19 @@ public enum UCDSyntax{
 
 	/** A photometric quantity ; can be followed by a word describing a part of the electromagnetic spectrum.
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD1+ is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
 	 * </i></p> */
 	PHOT_QUANTITY('E'),
 
 	/** A colour index ; can be followed by two successive word describing a part of the electromagnetic spectrum.
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD1+ is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
 	 * </i></p> */
 	COLOUR('C'),
 
 	/** A vector. Such a word can be followed by another describing the axis or reference frame in which the measurement is done.
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD1+ is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
 	 * </i></p> */
 	VECTOR('V');
 
