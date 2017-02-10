@@ -9,7 +9,8 @@ Preambule
 This GitHub repository contains the sources of a library aiming to validate any UCD (Unified Content Descriptor). This current version aims to respect as much as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance") standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html). The parser is by default configured with the list of all validated UCD words listed in [The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html).
 
 ### Documentation
-_Coming soon!_
+* [Javadoc](https://gmantele.github.io/ucdvalidator/)
+* _GitHub Wiki coming soon!_
 
 ### Java version
 This library is developed using **Java 1.7**, but it should be compatible with no modification with _Java 1.6_, and with few modifications (just removing appropriate *@Override*) with _Java 1.5_.
