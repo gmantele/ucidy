@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/gmantele/ucdvalidator.svg?branch=master)](https://travis-ci.org/gmantele/ucdvalidator)
+
 README
 ======
 
