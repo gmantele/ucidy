@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
@@ -21,6 +22,7 @@ import java.util.TreeSet;
  * <ul>
  * 	<li><i>For a specific UCD word:</i> {@link #get(String)}</li>
  * 	<li><i>For all UCD words starting with a given string:</i> {@link #startingWith(String)}</li>
+ * 	<li><i>For a UCD word with some typographical errors:</i> {@link #getClosest(String)}</li>
  * 	<li><i>For UCD whose the description (and also the word's atoms) matches some keywords:</i> {@link #search(String)}</li>
  * </ul>
  *
@@ -60,6 +62,21 @@ public class UCDWordList implements Iterable<UCDWord> {
 
 		System.out.println("\nSTARTING WITH \"" + search + "\":");
 		for(UCDWord w : words.startingWith(search))
+			System.out.println("  - " + w);
+
+		search = "pos.eq.de";
+		System.out.println("\nCLOSEST TO \"" + search + "\":");
+		for(UCDWord w : words.getClosest(search))
+			System.out.println("  - " + w);
+
+		search = "elec.optical.u";
+		System.out.println("\nCLOSEST TO \"" + search + "\":");
+		for(UCDWord w : words.getClosest(search))
+			System.out.println("  - " + w);
+
+		search = "em.ot.x";
+		System.out.println("\nCLOSEST TO \"" + search + "\":");
+		for(UCDWord w : words.getClosest(search))
 			System.out.println("  - " + w);
 
 	}
@@ -321,6 +338,62 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
+	 * Search for a UCD word the closest as possible from the given one.
+	 *
+	 * <p>
+	 * 	This function aims to help fixing typo in a given UCD word.
+	 * 	It uses the Levenshtein algorithm to determine the UCD word of this list
+	 * 	which requires the fewest number of editions (i.e. add, replace and remove a character)
+	 * 	to match the given word.
+	 * </p>
+	 *
+	 * <p>
+	 * 	This function is designed to select UCD words with a number of required editions
+	 * 	less or equal to half the length of the given word. Consequently, smaller is the given word,
+	 * 	smaller are the probabilities to find a closest match in this list. In other words, this
+	 * 	function should not be used for small words (e.g. less than 3-4 characters).
+	 * </p>
+	 *
+	 * <p><i>Note 1:</i>
+	 * 	It is entirely possible that several words have the same distance from the given word.
+	 * 	In such case, this function will return all candidates in an array.
+	 * </p>
+	 *
+	 * <p><i><b>Note 2:</b>
+	 * 	Search is performed <b>case INsensitive</b>.
+	 * </i></p>
+	 *
+	 * @param wrongWord	The word to fix.
+	 *
+	 * @return	List of all the closest {@link UCDWord}s from the given UCD word.
+	 */
+	public UCDWord[] getClosest(String wrongWord){
+		if (wrongWord == null || wrongWord.trim().length() == 0)
+			return new UCDWord[0];
+
+		wrongWord = wrongWord.trim().toLowerCase();
+
+		ArrayList<UCDWord> match = new ArrayList<UCDWord>(10);
+		int threshold = Math.round(wrongWord.length() / 2f), dist,
+				bestDistance = Integer.MAX_VALUE;
+
+		for(UCDWord w : words){
+			dist = levenshtein(wrongWord, w.word.toLowerCase());
+			if (dist == 0)
+				return new UCDWord[]{w};
+			else if (dist == bestDistance)
+				match.add(w);
+			else if (dist < bestDistance && dist <= threshold){
+				match.clear();
+				match.add(w);
+				bestDistance = dist;
+			}
+		}
+
+		return (match.size() == 0) ? new UCDWord[0] : match.toArray(new UCDWord[match.size()]);
+	}
+
+	/**
 	 * Search for all UCD words whose the description matches the given keywords.
 	 *
 	 * <p><i><b>Important note:</b>
@@ -371,6 +444,66 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 */
 	public void clear(){
 		words.clear();
+	}
+
+	/* ***************** */
+	/* DISTANCE FUNCTION */
+	/* ***************** */
+
+	/**
+	 * Compute the Levenshtein distance between the two given strings.
+	 *
+	 * <p>Short definition of the Levenshtein algorithm by Wikipedia:</p>
+	 * <blockquote>
+	 * 	In information theory and computer science, the Levenshtein distance is a string metric for measuring the difference between two sequences.
+	 * 	Informally, the Levenshtein distance between two words is the minimum number of single-character edits (i.e. insertions, deletions or substitutions)
+	 * 	required to change one word into the other.
+	 * </blockquote>
+	 *
+	 * <p><i>
+	 * 	This function has been strongly inspired of the Java code source provided on
+	 * 	        http://rosettacode.org/wiki/Levenshtein_distance#Java
+	 * </i></p>
+	 *
+	 * @param left	A first string. <b>Must NOT be NULL</b>
+	 * @param right	A second string. <b>Must NOT be NULL</b>
+	 *
+	 * @return	The distance between the two given strings.
+	 *        	<i>0 is a perfect equality ; max(left.length, right.length) is a perfect difference.</i>
+	 *
+	 * @throws NullPointerException	If one of the given string is <code>null</code>.
+	 */
+	protected static int levenshtein(final String left, final String right) throws NullPointerException{
+		int alen = left.length(), blen = right.length();
+		int i, j, nw, cj;
+		int[] costs = new int[blen + 1];
+		for(j = 0; j < costs.length; j++)
+			costs[j] = j;
+		for(i = 1; i <= alen; i++){
+			costs[0] = i;
+			nw = i - 1;
+			for(j = 1; j <= blen; j++){
+				cj = lev_min(1 + costs[j], 1 + costs[j - 1], left.charAt(i - 1) == right.charAt(j - 1) ? nw : nw + 1);
+				nw = costs[j];
+				costs[j] = cj;
+			}
+		}
+		return costs[blen];
+	}
+
+	/**
+	 * Compute the minimum value among the three given one.
+	 *
+	 * <p><i>This function is used only by {@link #levenshtein(String, String)} ; hence its name.</i></p>
+	 *
+	 * @param a	A value.
+	 * @param b	Another value.
+	 * @param c	A last value.
+	 *
+	 * @return	The minimum of a, b and c.
+	 */
+	protected static int lev_min(final int a, final int b, final int c){
+		return (a < b) ? ((a < c) ? a : c) : ((b < c) ? b : c);
 	}
 
 }

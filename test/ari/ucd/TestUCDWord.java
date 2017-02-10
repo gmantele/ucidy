@@ -2,6 +2,7 @@ package ari.ucd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -33,6 +34,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord(null, " ", null, false);
 			assertNull(word.syntaxCode);
@@ -41,6 +43,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord(UCDSyntax.PRIMARY, "	", null, true);
 			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
@@ -49,6 +52,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
@@ -65,6 +69,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord(UCDSyntax.BOTH, "meta.foo", null, true);
 			assertEquals(UCDSyntax.BOTH, word.syntaxCode);
@@ -73,6 +78,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -88,6 +94,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -103,6 +110,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -118,6 +126,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -147,6 +156,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord(" ");
 			assertNull(word.syntaxCode);
@@ -155,6 +165,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -170,6 +181,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord("em.radio");
 			assertNull(word.syntaxCode);
@@ -178,6 +190,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord("em.IR.NIR");
 			assertNull(word.syntaxCode);
@@ -186,6 +199,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord("meta.myOwnAtom");
 			assertNull(word.syntaxCode);
@@ -194,6 +208,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord("myOwnSingleAtom");
 			assertNull(word.syntaxCode);
@@ -202,6 +217,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			word = new UCDWord("mixed_12-3_blabla");
 			assertNull(word.syntaxCode);
@@ -210,6 +226,7 @@ public class TestUCDWord {
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -226,6 +243,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// starting with a space
 			word = new UCDWord(" arith");
@@ -235,6 +253,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// starting with an underscore
 			word = new UCDWord("_atom");
@@ -244,6 +263,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// starting with an hyphen
 			word = new UCDWord("-atom");
@@ -253,6 +273,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// containing a forbidden character
 			word = new UCDWord("em@radio");
@@ -262,6 +283,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// containing a different forbidden character
 			word = new UCDWord("em.IR;NIR");
@@ -271,6 +293,7 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
 
 			// containing a space
 			word = new UCDWord("em.my atom");
@@ -280,6 +303,51 @@ public class TestUCDWord {
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+	}
+
+	@Test
+	public void testUCDWordStringUCDWord(){
+
+		/* Note:
+		 *   This test is just to ensure that the second parameter is correctly taken into account.
+		 *   If it is not about this second parameter, the rest of this constructor should be tested
+		 *   in the above test function: #testUCDWordString(). */
+
+		/* CASE: UCD with NULL as list of closest matches */
+
+		try{
+			UCDWord word = new UCDWord("meta.i", null);
+			assertEquals("meta.i", word.word);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: UCD with an empty list of closest matches */
+
+		try{
+			UCDWord word = new UCDWord("meta.i", new UCDWord[0]);
+			assertEquals("meta.i", word.word);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: UCD with a closest match */
+
+		try{
+			UCDWord word = new UCDWord("meta.i", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true)});
+			assertEquals("meta.i", word.word);
+			assertNotNull(word.closest);
+			assertEquals(1, word.closest.length);
+			assertEquals(new UCDWord("meta.id"), word.closest[0]);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");

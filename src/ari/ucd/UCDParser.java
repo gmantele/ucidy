@@ -137,7 +137,8 @@ public class UCDParser {
 	 * <p>
 	 * 	Each word of this UCD is searched in the list of <i>known</i> UCD words.
 	 * 	If a match is found, the full definition of this UCD will be set in {@link UCD}.
-	 * 	If none can be found, a not {@link UCDWord#recognised recognised} {@link UCDWord} will be created instead.
+	 * 	If none can be found, a not {@link UCDWord#recognised recognised} {@link UCDWord} will be created instead,
+	 * 	with a list of the closest recognised UCD words (if any).
 	 * </p>
 	 *
 	 * @param ucdStr	The string serializing a UCD.
@@ -157,7 +158,7 @@ public class UCDParser {
 			else{
 				words[i] = knownWords.get(wordsStr[i].trim());
 				if (words[i] == null)
-					words[i] = new UCDWord(wordsStr[i]);
+					words[i] = new UCDWord(wordsStr[i], knownWords.getClosest(wordsStr[i]));
 				else if (!wordsStr[i].equals(words[i].word))
 					words[i] = new UCDWord(words[i].syntaxCode, wordsStr[i], words[i].description, words[i].recommended);
 			}

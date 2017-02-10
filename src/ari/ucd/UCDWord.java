@@ -82,6 +82,20 @@ public class UCDWord implements Comparable<UCDWord> {
 	public final boolean recommended;
 
 	/**
+	 * This attribute is set by {@link UCDParser#parse(String)} when a UCD word can not be recognised.
+	 * Then the parse function tries to find the closest UCD words of its list of recognised words.
+	 * If it finds any, it set this attribute with them using {@link #UCDWord(String, UCDWord[])}.
+	 *
+	 * <p><i><b>Important note:</b>
+	 * 	If this {@link UCDWord} is recognised, this attribute is <code>null</code>.
+	 * 	If set, this array WILL always contain at least one item.
+	 * 	Besides, if it is set the closest words specified here SHOULD always be recognised ;
+	 * 	it is the responsibility of the provider of this array to ensure the "recognised" status
+	 * 	of all given words.
+	 * </i></p> */
+	public final UCDWord[] closest;
+
+	/**
 	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD word.
 	 *
 	 * <p><b>Conditions:</b></p>
@@ -106,12 +120,16 @@ public class UCDWord implements Comparable<UCDWord> {
 		if (word == null)
 			throw new NullPointerException("Missing UCD word!");
 
+		// set the UCD word definition:
 		this.syntaxCode = syntax;
 		this.word = word;
 		this.description = description;
+
+		// set the flags:
 		this.valid = this.word.matches(REGEXP_UCD_WORD);
 		this.recognised = (this.valid && syntaxCode != null);
 		this.recommended = (recommended && this.recognised);
+		this.closest = null;
 	}
 
 	/**
@@ -124,15 +142,40 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * @throws NullPointerException	If the given word is <code>null</code> or an empty string.
 	 */
 	public UCDWord(final String word) throws NullPointerException{
+		this(word, null);
+	}
+
+	/**
+	 * Create a NON <i>{@link #recommended}</i> and NON <i>{@link #recognised}</i> UCD word.
+	 *
+	 * <p>However, it may be flagged as <i>{@link #valid}</i> if its structure is correct.</p>
+	 *
+	 * <p><b>IMPORTANT:</b>
+	 * 	The {@link UCDWord} provided in the given array - closestMatches - SHOULD contain
+	 * 	ONLY recognised words. This fact won't be tested by this constructor.
+	 * </p>
+	 *
+	 * @param word				A UCD word.
+	 * @param closestMatches	Closest recognised matches found in the list of recognised words by the {@link UCDParser}.
+	 *
+	 * @throws NullPointerException	If the given word is <code>null</code> or an empty string.
+	 */
+	protected UCDWord(final String word, final UCDWord[] closestMatches) throws NullPointerException{
 		if (word == null)
 			throw new NullPointerException("Missing UCD word!");
 
+		// set the UCD word definition:
 		this.syntaxCode = null;
 		this.word = word;
 		this.description = null;
+
+		// set the flags:
 		this.valid = this.word.matches(REGEXP_UCD_WORD);
 		this.recognised = false;
 		this.recommended = false;
+
+		// set the given closest matches:
+		this.closest = (closestMatches != null && closestMatches.length == 0) ? null : closestMatches;
 	}
 
 	/* ******************** */

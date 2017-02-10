@@ -263,6 +263,7 @@ public class UCD implements Iterable<UCDWord> {
 		StringBuffer notValid = new StringBuffer();
 		StringBuffer notRecognised = new StringBuffer();
 		StringBuffer latePrimary = new StringBuffer();
+		StringBuffer lstClosest = new StringBuffer();
 
 		ArrayList<String> lstErrors = new ArrayList<String>();
 
@@ -281,13 +282,21 @@ public class UCD implements Iterable<UCDWord> {
 
 				// ...its syntax code is missing (meaning it is not recognised):
 				if (w.syntaxCode == null){
+					// ...immediately add an error for this word:
 					nbNotRecognised++;
 					append(notRecognised, w.word);
+					// ...and list all closest matches (if any):
+					if (w.closest != null){
+						lstClosest.delete(0, lstClosest.length());
+						for(UCDWord closeWord : w.closest)
+							append(lstClosest, closeWord.word);
+						notRecognised.append(" (closest: " + lstClosest.toString() + ")");
+					}
 				}else{
 
 					// ...a SECONDARY word starts the UCD:
 					if (first && w.syntaxCode == UCDSyntax.SECONDARY)
-						lstErrors.add("UCD starting with a SECONDARY UCD word: \"" + w.word + "\"! Such words can NOT be in first position.");
+						lstErrors.add("UCD starting with a SECONDARY UCD word: \"" + w + "\"! Such words can NOT be in first position.");
 
 					// ...more than one PRIMARY word are detected:
 					// ...PRIMARY words are not in first position:
@@ -632,11 +641,18 @@ public class UCD implements Iterable<UCDWord> {
 					if (w.recognised)
 						newWords.add(w);
 
-					/* If valid but not recognised, then the only blocking thing is a missing UCDSyntax
-					 * ...which can not be fixed => return NULL */
+					/* If valid but not recognised: */
 					else if (w.valid){
-						suggestion = null;
-						return;
+						// If any closest match has been found by the parse, keep the first one:
+						if (w.closest != null)
+							newWords.add(w.closest[0]);
+
+						/* Otherwise, there is no way to magically guess a matching UCD word
+						 * => return NULL immediately */
+						else{
+							suggestion = null;
+							return;
+						}
 
 					}/* If not valid (so it have a UCDSyntax): */
 					else{

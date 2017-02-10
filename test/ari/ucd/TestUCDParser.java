@@ -2,6 +2,7 @@ package ari.ucd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -20,8 +21,27 @@ public class TestUCDParser {
 
 	@Test
 	public void testParse(){
-		// TODO Test UCDParser.parse()
-		//fail("Not yet implemented");
+
+		/* CASE: Check the closest match attribute */
+
+		/*   SUB-CASE: Correct word */
+
+		UCD parsed = UCDParser.defaultParser.parse("meta.id");
+		assertEquals(1, parsed.size());
+		assertEquals(new UCDWord("meta.id"), parsed.getWord(0));
+		assertTrue(parsed.isFullyValid());
+		assertNull(parsed.getWord(0).closest);
+
+		/*   SUB-CASE: Word with a typo */
+
+		parsed = UCDParser.defaultParser.parse("meta.i");
+		assertEquals(1, parsed.size());
+		assertEquals(new UCDWord("meta.i"), parsed.getWord(0));
+		assertTrue(parsed.isAllValid());
+		assertFalse(parsed.isAllRecognised());
+		assertNotNull(parsed.getWord(0).closest);
+		assertEquals(1, parsed.getWord(0).closest.length);
+		assertEquals(new UCDWord("meta.id"), parsed.getWord(0).closest[0]);
 	}
 
 	@Test

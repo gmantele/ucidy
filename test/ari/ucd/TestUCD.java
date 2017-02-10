@@ -172,6 +172,13 @@ public class TestUCD {
 		assertEquals(1, ucd.errors.length);
 		assertEquals("2 not recognised UCD words: \"meta.id\", \"meta.main\"!", ucd.errors[0]);
 
+		/* CASE: Not recognised with closest match(es) */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("meta.i", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true)})});
+		ucd.listErrors();
+		assertEquals(1, ucd.errors.length);
+		assertEquals("1 not recognised UCD word: \"meta.i\" (closest: \"meta.id\")!", ucd.errors[0]);
+
 		/* CASE: Not valid AND not recognised */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("my@ucd")});
@@ -255,6 +262,12 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord(null, "pos.eq.ra", null, false)});
 		assertFalse(ucd.isFullyValid());
 		assertNull(ucd.getSuggestion());
+
+		/* CASE: No syntax code but with closest match(es) */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("meta.i", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true)})});
+		assertFalse(ucd.isFullyValid());
+		assertEquals(new UCD(new UCDWord[]{new UCDWord("meta.id")}), ucd.getSuggestion());
 
 		/* CASE: Word with spaces */
 
