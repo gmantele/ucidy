@@ -200,6 +200,12 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * 	errors that can occur.
 	 * </b></p>
 	 *
+	 * <p>Note:
+	 * 	This function will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
+	 * 	If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
+	 * 	instead with the second parameter set to <code>true</code>.
+	 * </p>
+	 *
 	 * @param psvFile	PSV file to parse.
 	 *
 	 * @return	The number of successfully added UCD words extracted from the file.

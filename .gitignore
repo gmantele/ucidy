@@ -1,0 +1,8 @@
+.project
+.settings
+build_*.xml
+./*.jar
+bin
+main-build
+test-build
+test-report

@@ -1,7 +1,6 @@
 package ari.ucd;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
@@ -227,9 +226,6 @@ public class UCDParser {
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
 	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>{@link #addAll(File)} will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
-	 * 		If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
-	 * 		instead with the second parameter set to <code>true</code>.</li>
 	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
 	 * 		as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
 	 * 	<li>An incorrect UCD word structure is permitted, but will flag the resulting {@link UCDWordList}
@@ -286,9 +282,6 @@ public class UCDParser {
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
 	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>{@link #addAll(File)} will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
-	 * 		If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
-	 * 		instead with the second parameter set to <code>true</code>.</li>
 	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
 	 * 		as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
 	 * 	<li>An incorrect UCD word structure is permitted, but will flag the resulting {@link UCDWordList}
