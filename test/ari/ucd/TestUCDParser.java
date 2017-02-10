@@ -42,6 +42,33 @@ public class TestUCDParser {
 		assertNotNull(parsed.getWord(0).closest);
 		assertEquals(1, parsed.getWord(0).closest.length);
 		assertEquals(new UCDWord("meta.id"), parsed.getWord(0).closest[0]);
+
+		/*   SUB-CASE: Word with the wrong or a missing namespace */
+
+		UCDWordList knownWords = new UCDWordList();
+		knownWords.add(new UCDWord(UCDSyntax.BOTH, "custom:my.ucd_word", null, false));
+		knownWords.add(new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true));
+		UCDParser customParser = new UCDParser(knownWords);
+
+		// missing namespace
+		parsed = customParser.parse("my.ucd_word");
+		assertEquals(1, parsed.size());
+		assertEquals(new UCDWord("my.ucd_word"), parsed.getWord(0));
+		assertTrue(parsed.isAllValid());
+		assertFalse(parsed.isAllRecognised());
+		assertNotNull(parsed.getWord(0).closest);
+		assertEquals(1, parsed.getWord(0).closest.length);
+		assertEquals(new UCDWord("custom:my.ucd_word"), parsed.getWord(0).closest[0]);
+
+		// wrong namespace
+		parsed = customParser.parse("wrong:my.ucd_word");
+		assertEquals(1, parsed.size());
+		assertEquals(new UCDWord("wrong:my.ucd_word"), parsed.getWord(0));
+		assertTrue(parsed.isAllValid());
+		assertFalse(parsed.isAllRecognised());
+		assertNotNull(parsed.getWord(0).closest);
+		assertEquals(1, parsed.getWord(0).closest.length);
+		assertEquals(new UCDWord("custom:my.ucd_word"), parsed.getWord(0).closest[0]);
 	}
 
 	@Test
@@ -195,6 +222,23 @@ public class TestUCDParser {
 			assertTrue(ucd.recognised);
 			assertTrue(ucd.valid);
 			assertTrue(ucd.recommended);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Valid, recognised but with a custom namespace */
+
+		try{
+			UCDWord ucd = UCDParser.parsePSVLine("P | custom:meta.main | Main value of something ", true);
+			assertEquals(UCDSyntax.PRIMARY, ucd.syntaxCode);
+			assertEquals("custom:meta.main", ucd.rawWord);
+			assertEquals("meta.main", ucd.word);
+			assertEquals("custom", ucd.namespace);
+			assertEquals("Main value of something", ucd.description);
+			assertTrue(ucd.recognised);
+			assertTrue(ucd.valid);
+			assertFalse(ucd.recommended);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");

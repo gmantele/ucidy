@@ -125,6 +125,24 @@ public class TestUCD {
 		assertEquals(1, ucd.advice.length);
 		assertEquals("At least two axis or reference frames have been specified successively after the vector \"phys.magField\". Only one is expected. For more clarity, you should probably consider to remove the excedent.", ucd.advice[0]);
 
+		/* CASE: Recommended word with explicit "ivoa" namespace prefix */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "ivoa:meta.id", null, true)});
+		ucd.listAdvice();
+		assertEquals(1, ucd.advice.length);
+		assertEquals("\"ivoa:meta.id\" is a UCD word recommended by the IVOA. The use of the explicit namespace \"ivoa\" should be avoided for more readability. So you should rather write: \"meta.id\".", ucd.advice[0]);
+
+		/* CASE: Recognised but not recommended word */
+
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "custom:foo", null, false)});
+		ucd.listAdvice();
+		assertEquals(1, ucd.advice.length);
+		assertEquals("\"custom:foo\" is a recognised but not recommended word. In order to ensure better detection by VO applications, you should use a UCD word recommended by the IVOA if any can already represent the same quantity.", ucd.advice[0]);
+
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "foo", null, false)});
+		ucd.listAdvice();
+		assertEquals(1, ucd.advice.length);
+		assertEquals("\"foo\" is a recognised but not recommended word. In order to ensure better detection by VO applications, you should use a UCD word recommended by the IVOA if any can already represent the same quantity.", ucd.advice[0]);
 	}
 
 	@Test
@@ -179,6 +197,11 @@ public class TestUCD {
 		assertEquals(1, ucd.errors.length);
 		assertEquals("1 not recognised UCD word: \"meta.i\" (closest: \"meta.id\")!", ucd.errors[0]);
 
+		ucd = new UCD(new UCDWord[]{new UCDWord("foo.bar", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "custom:foo.bar", null, true)})});
+		ucd.listErrors();
+		assertEquals(1, ucd.errors.length);
+		assertEquals("1 not recognised UCD word: \"foo.bar\" (closest: \"custom:foo.bar\")!", ucd.errors[0]);
+
 		/* CASE: Not valid AND not recognised */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("my@ucd")});
@@ -223,7 +246,6 @@ public class TestUCD {
 		ucd.listErrors();
 		assertEquals(1, ucd.errors.length);
 		assertEquals("UCD starting with a SECONDARY UCD word: \"em.radio\"! Such words can NOT be in first position.", ucd.errors[0]);
-
 	}
 
 	@Test
@@ -268,6 +290,10 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord("meta.i", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true)})});
 		assertFalse(ucd.isFullyValid());
 		assertEquals(new UCD(new UCDWord[]{new UCDWord("meta.id")}), ucd.getSuggestion());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("foo.bar", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "custom:foo.bar", null, true)})});
+		assertFalse(ucd.isFullyValid());
+		assertEquals(new UCD(new UCDWord[]{new UCDWord("custom:foo.bar")}), ucd.getSuggestion());
 
 		/* CASE: Word with spaces */
 
@@ -379,12 +405,18 @@ public class TestUCD {
 		ucd = new UCD(new UCDWord[]{new UCDWord("phot.flux"),new UCDWord("em.opt.U"),new UCDWord("meta.main")});
 		assertTrue(ucd.isAllValid());
 
+		ucd = new UCD(new UCDWord[]{new UCDWord("ivoa:phot.flux"),new UCDWord("em.opt.U"),new UCDWord("custom:my.ucd_word")});
+		assertTrue(ucd.isAllValid());
+
 		/*  SUBCASE: Ensure the parsing is case INsensitive */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("POS.eq.ra"),new UCDWord("meta.MAIN")});
 		assertTrue(ucd.isAllValid());
 
 		ucd = new UCD(new UCDWord[]{new UCDWord("Phot.Flux"),new UCDWord("em.OPT.u"),new UCDWord("Meta.MAIN")});
+		assertTrue(ucd.isAllValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord("IVOA:phot.flux"),new UCDWord("em.opt.U"),new UCDWord("Custom:My.UCD_Word")});
 		assertTrue(ucd.isAllValid());
 
 		/* 	SUBCASE: At least one missing word */
@@ -590,7 +622,7 @@ public class TestUCD {
 		/* CASE: Fully valid */
 		/* 	SUBCASE: fully valid but not all recommended */
 
-		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, false),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true)});
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "custom:my.ucd_word", null, false),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true)});
 		assertTrue(ucd.isAllValid());
 		assertTrue(ucd.isAllRecognised());
 		assertFalse(ucd.isAllRecommended());
@@ -599,6 +631,12 @@ public class TestUCD {
 		/* 	SUBCASE: fully valid and recommended */
 
 		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true)});
+		assertTrue(ucd.isAllValid());
+		assertTrue(ucd.isAllRecognised());
+		assertTrue(ucd.isAllRecommended());
+		assertTrue(ucd.isFullyValid());
+
+		ucd = new UCD(new UCDWord[]{new UCDWord(UCDSyntax.BOTH, "ivoa:pos.eq.ra", null, true),new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true)});
 		assertTrue(ucd.isAllValid());
 		assertTrue(ucd.isAllRecognised());
 		assertTrue(ucd.isAllRecommended());
@@ -616,6 +654,12 @@ public class TestUCD {
 
 		// Case INsensitive:
 		ucd2 = new UCD(new UCDWord[]{new UCDWord("META.Id")});
+		assertEquals(ucd1, ucd2);
+		assertEquals(ucd2, ucd1);
+		assertEquals(ucd1.hashCode(), ucd2.hashCode());
+
+		// With the optional "ivoa" namespace:
+		ucd2 = new UCD(new UCDWord[]{new UCDWord("ivoa:meta.id")});
 		assertEquals(ucd1, ucd2);
 		assertEquals(ucd2, ucd1);
 		assertEquals(ucd1.hashCode(), ucd2.hashCode());

@@ -156,10 +156,10 @@ public class UCDParser {
 			if (wordsStr[i] == null || wordsStr[i].length() == 0)
 				words[i] = null;
 			else{
-				words[i] = knownWords.get(wordsStr[i].trim());
+				words[i] = knownWords.get(wordsStr[i].trim(), true);
 				if (words[i] == null)
 					words[i] = new UCDWord(wordsStr[i], knownWords.getClosest(wordsStr[i]));
-				else if (!wordsStr[i].equals(words[i].word))
+				else if (!wordsStr[i].equals(words[i].rawWord))
 					words[i] = new UCDWord(words[i].syntaxCode, wordsStr[i], words[i].description, words[i].recommended);
 			}
 		}

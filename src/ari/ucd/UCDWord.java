@@ -1,19 +1,24 @@
 package ari.ucd;
 
+import java.util.Objects;
+
 /**
  * Definition of a UCD word, according to the IVOA (v1.1 - 12 August 2005).
  *
  * <p><i>See http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html for more details.</i></p>
  *
- * <p>
- * 	{@link UCDWord}s are comparable each other.
- * 	The comparison is done case insensitively on the {@link #word} value.
- * </p>
- *
  * @author Gr&eacute;gory Mantelet (ARI)
  * @version 1.0 (02/2017)
  */
-public class UCDWord implements Comparable<UCDWord> {
+public class UCDWord {
+
+	/** Character used to separate the namespace prefix from a UCD word. */
+	protected final static String NAMESPACE_SEP = ":";
+
+	/** Default namespace: <code>ivoa</code>.
+	 * When no namespace is specified, this is the one implied.
+	 * However, it MUST be used only for words recommended by the IVOA. */
+	protected final static String IVOA_NAMESPACE = "ivoa";
 
 	/**
 	 * Regular Expression for a valid UCD's atom, according to the BNF provided in the IVOA Recommendation 2005-08-12 for UCD v1.1:
@@ -30,17 +35,31 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html
 	 *
 	 * <p>
-	 * 	Textually, this regular expression says that a UCD is a composition of at least one atom.
-	 * 	All atoms MUST be separated by a period (.).
+	 * 	Textually, this regular expression says that a UCD is a composition of a possible namespace and of at least one atom.
+	 * 	All atoms MUST be separated by a period (.). The namespace syntax must be the same as an atom.
 	 * </p> */
-	public final static String REGEXP_UCD_WORD = REGEXP_UCD_ATOM + "(\\." + REGEXP_UCD_ATOM + ")*";
+	public final static String REGEXP_UCD_WORD = "(" + REGEXP_UCD_ATOM + ":)?" + REGEXP_UCD_ATOM + "(\\." + REGEXP_UCD_ATOM + ")*";
 
 	/** Rule about the syntax of the usage of this UCD word.
 	 * <i>(see {@link UCDSyntax} for more details)</i>
 	 * <p><i>May be <code>null</code>. If so, this UCD word can NOT be recommended.</i></p> */
 	public final UCDSyntax syntaxCode;
 
-	/** The UCD word.
+	/** The UCD word as provided (may have a namespace prefix).
+	 * <p><i>Can NOT be <code>null</code>.</i></p>
+	 * @see #namespace
+	 * @see #word */
+	public final String rawWord;
+
+	/** The namespace of this UCD, as extracted from {@link #rawWord}.
+	 * <p><i>This attribute is <code>null</code> if {@link #rawWord} is not valid or does not have any namespace prefix.</i></p> */
+	public final String namespace;
+
+	/** The UCD word (without namespace prefix), as extracted from {@link #rawWord}.
+	 * <p>
+	 * 	This attribute is the resulting part of {@link #rawWord} when its namespace prefix has been extracted ({@link #namespace}).
+	 * 	If {@link #rawWord} is not valid or if no namespace is specified, this attribute will have exactly the same value as {@link #rawWord}.
+	 * </p>
 	 * <p><i>Can NOT be <code>null</code>.</i></p> */
 	public final String word;
 
@@ -75,7 +94,8 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to IVOA Recommendation 2007-04-02 for the UCD1+ controlled vocabulary v1.23:
 	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
 	 *
-	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>.</p>
+	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>
+	 *                        AND MUST have either no namespace or have the namespace {@value #IVOA_NAMESPACE}.</p>
 	 *
 	 * <p><i><b>Important 2:</b> This test must have been performed case INsensitively.</i></p>
 	 */
@@ -104,7 +124,8 @@ public class UCDWord implements Comparable<UCDWord> {
 	 * 	<li><i>To be {@link #recognised}:</i>  it MUST be {@link #valid}
 	 * 	                                       AND the syntax code MUST be correct. See {@link UCDSyntax} for more details.</li>
 	 * 	<li><i>To be {@link #recommended}:</i> it MUST be {@link #recognised}
-	 * 	                                       AND the parameter <code>{@link #recommended}</code> MUST be set to <code>true</code>.</li>
+	 * 	                                       AND the parameter <code>{@link #recommended}</code> MUST be set to <code>true</code>
+	 * 	                                       AND the namespace MUST be <code>null</code> or {@value #IVOA_NAMESPACE}.</li>
 	 * </ul>
 	 *
 	 * @param syntax		Rule about the syntax when using this UCD word.
@@ -122,13 +143,23 @@ public class UCDWord implements Comparable<UCDWord> {
 
 		// set the UCD word definition:
 		this.syntaxCode = syntax;
-		this.word = word;
+		this.rawWord = word;
 		this.description = description;
 
+		// split the namespace and the word if necessary:
+		int indSep = this.rawWord.indexOf(NAMESPACE_SEP);
+		if (indSep > 0){
+			this.namespace = this.rawWord.substring(0, indSep);
+			this.word = this.rawWord.substring(indSep + 1);
+		}else{
+			this.namespace = null;
+			this.word = this.rawWord;
+		}
+
 		// set the flags:
-		this.valid = this.word.matches(REGEXP_UCD_WORD);
+		this.valid = this.rawWord.matches(REGEXP_UCD_WORD);
 		this.recognised = (this.valid && syntaxCode != null);
-		this.recommended = (recommended && this.recognised);
+		this.recommended = (recommended && this.recognised && (this.namespace == null || this.namespace.equalsIgnoreCase(IVOA_NAMESPACE)));
 		this.closest = null;
 	}
 
@@ -166,11 +197,21 @@ public class UCDWord implements Comparable<UCDWord> {
 
 		// set the UCD word definition:
 		this.syntaxCode = null;
-		this.word = word;
+		this.rawWord = word;
 		this.description = null;
 
+		// split the namespace and the word if necessary:
+		int indSep = this.rawWord.indexOf(NAMESPACE_SEP);
+		if (indSep > 0){
+			this.namespace = this.rawWord.substring(0, indSep);
+			this.word = this.rawWord.substring(indSep + 1);
+		}else{
+			this.namespace = null;
+			this.word = this.rawWord;
+		}
+
 		// set the flags:
-		this.valid = this.word.matches(REGEXP_UCD_WORD);
+		this.valid = this.rawWord.matches(REGEXP_UCD_WORD);
 		this.recognised = false;
 		this.recommended = false;
 
@@ -178,26 +219,23 @@ public class UCDWord implements Comparable<UCDWord> {
 		this.closest = (closestMatches != null && closestMatches.length == 0) ? null : closestMatches;
 	}
 
-	/* ******************** */
-	/* COMPARISON FUNCTIONS */
-	/* ******************** */
-
-	@Override
-	public int compareTo(final UCDWord anotherWord){
-		if (anotherWord == null)
-			return 1;
-		else
-			return word.compareToIgnoreCase(anotherWord.word);
-	}
+	/* ****************** */
+	/* EQUALITY FUNCTIONS */
+	/* ****************** */
 
 	@Override
 	public boolean equals(final Object obj){
-		return (obj != null && obj instanceof UCDWord && word.equalsIgnoreCase(((UCDWord)obj).word));
+		if (obj != null && obj instanceof UCDWord){
+			UCDWord anotherWord = (UCDWord)obj;
+			if (word.equalsIgnoreCase(anotherWord.word))
+				return ((namespace == null || namespace.equalsIgnoreCase(IVOA_NAMESPACE)) && (anotherWord.namespace == null || anotherWord.namespace.equalsIgnoreCase(IVOA_NAMESPACE))) || (namespace != null && anotherWord.namespace != null && namespace.equalsIgnoreCase(anotherWord.namespace));
+		}
+		return false;
 	}
 
 	@Override
 	public int hashCode(){
-		return word.toLowerCase().hashCode();
+		return (namespace == null) ? Objects.hash(IVOA_NAMESPACE, word.toLowerCase()) : Objects.hash(namespace.toLowerCase(), word.toLowerCase());
 	}
 
 	/* ******************** */
@@ -206,7 +244,7 @@ public class UCDWord implements Comparable<UCDWord> {
 
 	@Override
 	public String toString(){
-		return word;
+		return rawWord;
 	}
 
 }

@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
@@ -20,7 +21,7 @@ import java.util.TreeSet;
  *
  * <p>This object behaves like a dictionary. It is possible to search UCD words in different ways:</p>
  * <ul>
- * 	<li><i>For a specific UCD word:</i> {@link #get(String)}</li>
+ * 	<li><i>For a specific UCD word:</i> {@link #get(String)} <i>(namespaces ignored)</i>, {@link #get(String, boolean)}</li>
  * 	<li><i>For all UCD words starting with a given string:</i> {@link #startingWith(String)}</li>
  * 	<li><i>For a UCD word with some typographical errors:</i> {@link #getClosest(String)}</li>
  * 	<li><i>For UCD whose the description (and also the word's atoms) matches some keywords:</i> {@link #search(String)}</li>
@@ -82,8 +83,32 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 	/* #################################################################################################################### */
 
+	/**
+	 * Class used to sort the UCD words in this {@link UCDWordList}.
+	 *
+	 * <p>
+	 * 	Here, words are sorted case INsensitively without namespace.
+	 * 	Thus, two identical words with a different namespace can NOT be in the same {@link UCDWordList}.
+	 * 	The idea is to avoid any ambiguity for the users reading UCDs.
+	 * </p>
+	 *
+	 * @author Gr&eacute;gory Mantelet (ARI)
+	 * @version 1.0 (02/2017)
+	 */
+	protected class UCDWordComparator implements Comparator<UCDWord> {
+
+		@Override
+		public int compare(final UCDWord o1, final UCDWord o2){
+			if (o1 == null || o2 == null)
+				return -1;
+			else
+				return o1.word.compareToIgnoreCase(o2.word);
+		}
+
+	}
+
 	/** List of all known UCD words. */
-	protected TreeSet<UCDWord> words = new TreeSet<UCDWord>();
+	protected TreeSet<UCDWord> words = new TreeSet<UCDWord>(new UCDWordComparator());
 
 	/**
 	 * Create an empty list of UCD words.
@@ -283,7 +308,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * Tell whether the given UCD word is part of this list.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are case <b>in</b>sensitive.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
 	 * </i></p>
 	 *
 	 * @param ucdWord	The UCD word to test.
@@ -296,33 +321,62 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search for an exact match with the given supposed UCD word.
+	 * Search for an exact match with the given UCD word but <i>while <b>ignoring</b> their namespace</i>.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are case <b>in</b>sensitive.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
 	 * </i></p>
+	 *
+	 * <p><b>Warning:</b>
+	 * 	If this function returns a {@link UCDWord}, it may have a different namespace than the one of the given UCD word.
+	 * 	To search on the word AND on the namespace you should use {@link #get(String, boolean)} or apply a final test
+	 * 	on the namespace of the returned word.
+	 * </p>
 	 *
 	 * @param ucdWord	The UCD word to search.
 	 *
 	 * @return	The corresponding {@link UCDWord} instance matching the given UCD word,
 	 *        	or <code>null</code> if the given word is <code>null</code>, an empty string or can not be found in this list.
+	 *
+	 * @see #get(String, boolean)
 	 */
 	public UCDWord get(String ucdWord){
+		return get(ucdWord, false);
+	}
+
+	/**
+	 * Search for an exact match with the given supposed UCD word.
+	 *
+	 * <p><i><b>Important note:</b>
+	 * 	Comparisons are <b>case INsensitive</b>.
+	 * </i></p>
+	 *
+	 * @param ucdWord			The UCD word to search.
+	 * @param checkNamespace	<code>true</code> to ensure the namespace of the match is the same as the one of the given word,
+	 *                      	<code>false</code> to search only on the word and not check the namespace.
+	 *
+	 * @return	The corresponding {@link UCDWord} instance matching the given UCD word,
+	 *        	or <code>null</code> if the given word is <code>null</code>, an empty string or can not be found in this list.
+	 */
+	public UCDWord get(String ucdWord, final boolean checkNamespace){
 		if (ucdWord == null || ucdWord.trim().length() == 0)
 			return null;
 
-		SortedSet<UCDWord> result = words.subSet(new UCDWord(ucdWord), new UCDWord(ucdWord + Character.MIN_VALUE));
+		UCDWord word = new UCDWord(ucdWord);
+		SortedSet<UCDWord> result = words.subSet(word, new UCDWord(ucdWord + Character.MIN_VALUE));
 		if (result.size() == 0)
 			return null;
-		else
+		else if (!checkNamespace || result.first().equals(word))
 			return result.first();
+		else
+			return null;
 	}
 
 	/**
 	 * Search for all UCD words starting with the given string.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are case <b>in</b>sensitive.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
 	 * </i></p>
 	 *
 	 * @param startStr	The starting string.
@@ -360,7 +414,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * </p>
 	 *
 	 * <p><i><b>Note 2:</b>
-	 * 	Search is performed <b>case INsensitive</b>.
+	 * 	Search is performed <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
 	 * </i></p>
 	 *
 	 * @param wrongWord	The word to fix.
@@ -420,7 +474,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * Remove the UCD word matching the given one.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are case <b>in</b>sensitive.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
 	 * </i></p>
 	 *
 	 * @param ucdWord	The UCD word to remove from this list.

@@ -2,6 +2,7 @@ package ari.ucd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -30,7 +31,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord(null, "", null, false);
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("", word.word);
+			assertEquals("", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -39,7 +42,9 @@ public class TestUCDWord {
 			word = new UCDWord(null, " ", null, false);
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals(" ", word.word);
+			assertEquals(" ", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -48,7 +53,9 @@ public class TestUCDWord {
 			word = new UCDWord(UCDSyntax.PRIMARY, "	", null, true);
 			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("	", word.word);
+			assertEquals("	", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -65,7 +72,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord(UCDSyntax.PRIMARY, "meta.foo", "My foo primary atom", true);
 			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
 			assertEquals("My foo primary atom", word.description);
-			assertEquals("meta.foo", word.word);
+			assertEquals("meta.foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
@@ -74,7 +83,9 @@ public class TestUCDWord {
 			word = new UCDWord(UCDSyntax.BOTH, "meta.foo", null, true);
 			assertEquals(UCDSyntax.BOTH, word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("meta.foo", word.word);
+			assertEquals("meta.foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
@@ -90,7 +101,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord(UCDSyntax.SECONDARY, "meta.foo", "My foo primary atom", false);
 			assertEquals(UCDSyntax.SECONDARY, word.syntaxCode);
 			assertEquals("My foo primary atom", word.description);
-			assertEquals("meta.foo", word.word);
+			assertEquals("meta.foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertTrue(word.recognised);
 			assertFalse(word.recommended);
@@ -106,7 +119,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord(null, "meta.foo", null, true);
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("meta.foo", word.word);
+			assertEquals("meta.foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -122,10 +137,84 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord(UCDSyntax.COLOUR, "@foo", "My own not valid UCD.", true);
 			assertEquals(UCDSyntax.COLOUR, word.syntaxCode);
 			assertEquals("My own not valid UCD.", word.description);
-			assertEquals("@foo", word.word);
+			assertEquals("@foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: With namespace */
+
+		try{
+			UCDWord word = new UCDWord(null, "custom:foo", null, false);
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertEquals("custom:foo", word.rawWord);
+			assertEquals("custom", word.namespace);
+			assertEquals("foo", word.word);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Recognised with a namespace. */
+
+		try{
+			UCDWord word = new UCDWord(UCDSyntax.PRIMARY, "custom:foo", "My own valid UCD with namespace.", false);
+			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
+			assertEquals("My own valid UCD with namespace.", word.description);
+			assertEquals("custom:foo", word.rawWord);
+			assertEquals("custom", word.namespace);
+			assertEquals("foo", word.word);
+			assertTrue(word.valid);
+			assertTrue(word.recognised);
+			assertFalse(word.recommended);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Recognised with a namespace with a request for recommended but does not have the correct namespace (i.e. NULL or "ivoa"). */
+
+		try{
+			UCDWord word = new UCDWord(UCDSyntax.PRIMARY, "custom:foo", "My own valid UCD with namespace.", true);
+			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
+			assertEquals("My own valid UCD with namespace.", word.description);
+			assertEquals("custom:foo", word.rawWord);
+			assertEquals("custom", word.namespace);
+			assertEquals("foo", word.word);
+			assertTrue(word.valid);
+			assertTrue(word.recognised);
+			assertFalse(word.recommended);
+			assertNull(word.closest);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Recommended with the namespace "ivoa". */
+
+		try{
+			UCDWord word = new UCDWord(UCDSyntax.PRIMARY, "ivoa:foo", "My own valid UCD with namespace.", true);
+			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
+			assertEquals("My own valid UCD with namespace.", word.description);
+			assertEquals("ivoa:foo", word.rawWord);
+			assertEquals("ivoa", word.namespace);
+			assertEquals("foo", word.word);
+			assertTrue(word.valid);
+			assertTrue(word.recognised);
+			assertTrue(word.recommended);
 			assertNull(word.closest);
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
@@ -152,7 +241,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord("");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("", word.word);
+			assertEquals("", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -161,7 +252,9 @@ public class TestUCDWord {
 			word = new UCDWord(" ");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals(" ", word.word);
+			assertEquals(" ", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -177,7 +270,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord("arith");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("arith", word.word);
+			assertEquals("arith", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -186,7 +281,9 @@ public class TestUCDWord {
 			word = new UCDWord("em.radio");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em.radio", word.word);
+			assertEquals("em.radio", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -195,7 +292,9 @@ public class TestUCDWord {
 			word = new UCDWord("em.IR.NIR");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em.IR.NIR", word.word);
+			assertEquals("em.IR.NIR", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -204,7 +303,9 @@ public class TestUCDWord {
 			word = new UCDWord("meta.myOwnAtom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("meta.myOwnAtom", word.word);
+			assertEquals("meta.myOwnAtom", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -213,7 +314,9 @@ public class TestUCDWord {
 			word = new UCDWord("myOwnSingleAtom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("myOwnSingleAtom", word.word);
+			assertEquals("myOwnSingleAtom", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -222,7 +325,21 @@ public class TestUCDWord {
 			word = new UCDWord("mixed_12-3_blabla");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("mixed_12-3_blabla", word.word);
+			assertEquals("mixed_12-3_blabla", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+			assertNull(word.closest);
+
+			/* With namespace */
+			word = new UCDWord("custom:foo");
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertEquals("custom:foo", word.rawWord);
+			assertEquals("custom", word.namespace);
+			assertEquals("foo", word.word);
 			assertTrue(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -239,7 +356,9 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord("@foo");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("@foo", word.word);
+			assertEquals("@foo", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -249,7 +368,9 @@ public class TestUCDWord {
 			word = new UCDWord(" arith");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals(" arith", word.word);
+			assertEquals(" arith", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -259,7 +380,9 @@ public class TestUCDWord {
 			word = new UCDWord("_atom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("_atom", word.word);
+			assertEquals("_atom", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -269,7 +392,9 @@ public class TestUCDWord {
 			word = new UCDWord("-atom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("-atom", word.word);
+			assertEquals("-atom", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -279,7 +404,9 @@ public class TestUCDWord {
 			word = new UCDWord("em@radio");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em@radio", word.word);
+			assertEquals("em@radio", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -289,7 +416,9 @@ public class TestUCDWord {
 			word = new UCDWord("em.IR;NIR");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em.IR;NIR", word.word);
+			assertEquals("em.IR;NIR", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -299,7 +428,9 @@ public class TestUCDWord {
 			word = new UCDWord("em.my atom");
 			assertNull(word.syntaxCode);
 			assertNull(word.description);
-			assertEquals("em.my atom", word.word);
+			assertEquals("em.my atom", word.rawWord);
+			assertNull(word.namespace);
+			assertEquals(word.rawWord, word.word);
 			assertFalse(word.valid);
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
@@ -356,6 +487,9 @@ public class TestUCDWord {
 
 	@Test
 	public void testEqualsObject(){
+
+		/* CASE: Equality with no namespace */
+
 		try{
 			UCDWord word1 = new UCDWord("meta.id");
 			UCDWord word2 = new UCDWord("meta.id");
@@ -368,6 +502,62 @@ public class TestUCDWord {
 			assertTrue(word1.equals(word2));
 			assertTrue(word2.equals(word1));
 			assertEquals(word1.hashCode(), word2.hashCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Equality with namespace */
+
+		try{
+			UCDWord word1 = new UCDWord("custom:meta.id");
+			UCDWord word2 = new UCDWord("custom:meta.id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+
+			// Supposed to be case INsensitive:
+			word2 = new UCDWord("CUstom:META.Id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		try{
+			UCDWord word1 = new UCDWord("meta.id");
+			UCDWord word2 = new UCDWord("ivoa:meta.id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+
+			// Supposed to be case INsensitive:
+			word1 = new UCDWord("ivoa:meta.Id");
+			word2 = new UCDWord("IVOA:META.Id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Inequality on namespace */
+
+		try{
+			UCDWord word1 = new UCDWord("custom:meta.id");
+			UCDWord word2 = new UCDWord("ivoa:meta.id");
+			assertFalse(word1.equals(word2));
+			assertFalse(word2.equals(word1));
+			assertNotEquals(word1.hashCode(), word2.hashCode());
+
+			// Supposed to be case INsensitive:
+			word2 = new UCDWord("META.Id");
+			assertFalse(word1.equals(word2));
+			assertFalse(word2.equals(word1));
+			assertNotEquals(word1.hashCode(), word2.hashCode());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");

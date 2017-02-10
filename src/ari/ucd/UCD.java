@@ -277,19 +277,19 @@ public class UCD implements Iterable<UCDWord> {
 				// ...the word is not syntactically valid:
 				if (!w.valid){
 					nbNotValid++;
-					append(notValid, w.word);
+					append(notValid, w.rawWord);
 				}
 
 				// ...its syntax code is missing (meaning it is not recognised):
 				if (w.syntaxCode == null){
 					// ...immediately add an error for this word:
 					nbNotRecognised++;
-					append(notRecognised, w.word);
+					append(notRecognised, w.rawWord);
 					// ...and list all closest matches (if any):
 					if (w.closest != null){
 						lstClosest.delete(0, lstClosest.length());
 						for(UCDWord closeWord : w.closest)
-							append(lstClosest, closeWord.word);
+							append(lstClosest, closeWord.rawWord);
 						notRecognised.append(" (closest: " + lstClosest.toString() + ")");
 					}
 				}else{
@@ -302,10 +302,10 @@ public class UCD implements Iterable<UCDWord> {
 					// ...PRIMARY words are not in first position:
 					else if (w.syntaxCode == UCDSyntax.PRIMARY){
 						if (first)
-							firstPrimary = w.word;
+							firstPrimary = w.rawWord;
 						else{
 							nbLatePrimary++;
-							append(latePrimary, w.word);
+							append(latePrimary, w.rawWord);
 						}
 					}
 				}
@@ -414,6 +414,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * <p>Advice is given in the following cases:</p>
 	 * <ul>
 	 * 	<li>one or more UCD words are duplicated</li>
+	 * 	<li>a recommended word has an explicit <code>ivoa</code> namespace prefix</li>
+	 * 	<li>a recognised custom word with a namespace is used (it is preferred to use recommended UCD words representing the same quantity instead)</li>
 	 * 	<li>a photometric quantity is not followed directly by a part of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
 	 * 	<li>a color is not followed directly by 2 successive parts of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
 	 * 	<li>a vector is not followed directly by an axis or a reference frame</li>
@@ -454,6 +456,14 @@ public class UCD implements Iterable<UCDWord> {
 			// If a piece of advice for this UCD word has already been given, skip it and go to the next word:
 			if (!duplicated.add(curr))
 				continue;
+
+			// The explicit use of the "ivoa" namespace prefix is discouraged for recommended UCD words:
+			if (curr.namespace != null && curr.recommended && curr.namespace.equalsIgnoreCase(UCDWord.IVOA_NAMESPACE))
+				lstAdvice.add("\"" + curr + "\" is a UCD word recommended by the IVOA. The use of the explicit namespace \"ivoa\" should be avoided for more readability. So you should rather write: \"" + curr.word + "\".");
+
+			// The use of recognised but not recommended words should be avoided:
+			if (curr.recognised && !curr.recommended)
+				lstAdvice.add("\"" + curr + "\" is a recognised but not recommended word. In order to ensure better detection by VO applications, you should use a UCD word recommended by the IVOA if any can already represent the same quantity.");
 
 			switch(curr.syntaxCode){
 				// Detect photometry quantity without direct specification of the spectrum part:
@@ -505,7 +515,9 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Tell whether the specified UCD word exists and match the given regular expression.
+	 * Tell whether the specified UCD word exists and matches the given regular expression.
+	 *
+	 * <p><b>Warning:</b> The UCD word's namespace is ignored ; the regular expression must apply only on the word.</p>
 	 *
 	 * @param indexWord	The index of the UCD word to test.
 	 * @param pattern	A regular expression.
@@ -533,6 +545,8 @@ public class UCD implements Iterable<UCDWord> {
 
 	/**
 	 * Search all UCD words composing this UCD which match the given regular expression.
+	 *
+	 * <p><b>Warning:</b> The UCD word's namespace is ignored ; the regular expression must apply only on the word.</p>
 	 *
 	 * @param pattern	A regular expression.
 	 *
@@ -836,7 +850,7 @@ public class UCD implements Iterable<UCDWord> {
 					buf.append(';');
 
 				if (w != null)
-					buf.append(w.word);
+					buf.append(w.rawWord);
 			}
 			this.strRepresentation = buf.toString();
 		}

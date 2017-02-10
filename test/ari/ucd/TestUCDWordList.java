@@ -17,6 +17,7 @@ public class TestUCDWordList {
 
 	@Before
 	public void setUp() throws Exception{
+		// Let's add some recommended words:
 		words.add(new UCDWord(UCDSyntax.PRIMARY, "meta.main", null, true));
 		words.add(new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true));
 		words.add(new UCDWord(UCDSyntax.BOTH, "pos.eq.dec", null, true));
@@ -29,11 +30,32 @@ public class TestUCDWordList {
 		words.add(new UCDWord(UCDSyntax.SECONDARY, "em.opt.B", null, true));
 		words.add(new UCDWord(UCDSyntax.SECONDARY, "em.opt.R", null, true));
 		words.add(new UCDWord(UCDSyntax.SECONDARY, "em.opt.I", null, true));
+
+		// ...and a custom UCD word:
+		words.add(new UCDWord(UCDSyntax.BOTH, "custom:my.ucd_word", "Blabla", false));
+	}
+
+	@Test
+	public void testAddUCDWord(){
+		/* Impossible to add a NULL word: */
+		assertFalse(words.add(null));
+
+		/* Trying to add an already existing UCD word MUST fail: */
+		assertFalse(words.add(new UCDWord("pos.eq.ra")));
+		assertFalse(words.add(new UCDWord("custom:my.ucd_word")));
+
+		/* Ensure it is not possible to add an already existing UCD word with a different namespace: */
+		assertFalse(words.add(new UCDWord("custom:pos.eq.ra")));
+		assertFalse(words.add(new UCDWord("my.ucd_word")));
+
+		/* Having no namespace being the same as having the "ivoa" namespace,
+		 * adding a UCD word with an explicit "ivoa" namespace must fail as well: */
+		assertFalse(words.add(new UCDWord("ivoa:pos.eq.ra")));
 	}
 
 	@Test
 	public void testOrdering(){
-		assertEquals(12, words.size());
+		assertEquals(13, words.size());
 
 		Iterator<UCDWord> it = words.iterator();
 		assertEquals("em", it.next().word);
@@ -46,6 +68,7 @@ public class TestUCDWordList {
 		assertEquals("em.opt.V", it.next().word);
 		assertEquals("em.radio", it.next().word);
 		assertEquals("meta.main", it.next().word);
+		assertEquals("my.ucd_word", it.next().word);
 		assertEquals("pos.eq.dec", it.next().word);
 		assertEquals("pos.eq.ra", it.next().word);
 		assertFalse(it.hasNext());
@@ -59,33 +82,51 @@ public class TestUCDWordList {
 		assertFalse(words.contains(null));
 		assertFalse(words.contains(""));
 		assertFalse(words.contains(" "));
+		assertFalse(words.contains("custom:"));
+		assertFalse(words.contains("ivoa: "));
 
 		/* CASE: Not in the list */
 
 		assertFalse(words.contains("foo"));
+		assertFalse(words.contains("em.radi"));
 
 		/* CASE: First atom not in the list alone */
 
 		assertFalse(words.contains("meta"));
 		assertFalse(words.contains("pos.eq"));
+		assertFalse(words.contains("custom:my"));
 
 		/* CASE: In the list */
 
 		assertTrue(words.contains("meta.main"));
+		assertTrue(words.contains("my.ucd_word"));
 
 		/* CASE: Case INsensitive */
 
-		assertEquals(new UCDWord("meta.main"), words.get("META.Main"));
+		assertTrue(words.contains("META.Main"));
+		assertTrue(words.contains("MY.UCD_Word"));
+
+		/* CASE: UCD word with an explicit "ivoa" namespace */
+
+		assertTrue(words.contains("ivoa:pos.eq.ra"));
+		assertTrue(words.contains("custom:my.ucd_word"));
+
+		/* CASE: Same word but with a different namespace */
+
+		assertTrue(words.contains("CUSTOM:pos.eq.ra"));
+		assertTrue(words.contains("IVOA:my.ucd_word"));
 	}
 
 	@Test
-	public void testGet(){
+	public void testGetString(){
 
 		/* CASE: Null or empty search string */
 
 		assertNull(words.get(null));
 		assertNull(words.get(""));
 		assertNull(words.get(" "));
+		assertNull(words.get("custom:"));
+		assertNull(words.get("ivoa: "));
 
 		/* CASE: Not in the list */
 
@@ -103,6 +144,45 @@ public class TestUCDWordList {
 		/* CASE: Case INsensitive */
 
 		assertEquals(new UCDWord("em.radio"), words.get("EM.RaDiO"));
+
+		/* CASE: the beginning of the UCD word is correct, but it is only the beginning ;
+		 *       this word does not really exist in the list and none should be found */
+
+		assertNull(words.get("em.radi"));
+
+		/* CASE: UCD word with an explicit "ivoa" namespace */
+
+		assertEquals(new UCDWord("pos.eq.ra"), words.get("ivoa:pos.eq.ra"));
+
+		/* CASE: Same word but with a different namespace */
+
+		assertEquals(new UCDWord("pos.eq.ra"), words.get("CUSTOM:pos.eq.ra"));
+	}
+
+	@Test
+	public void testGetStringBoolean(){
+
+		/* Note: Tests with the second parameter set to FALSE are already performed by #testGetString().
+		 *       ALL the below tests aim to test the namespace check. */
+
+		/* CASE: UCD word with the correct namespace */
+
+		assertEquals(new UCDWord("custom:my.ucd_word"), words.get("Custom:My.UCD_Word", true));
+
+		/* CASE: UCD word with no namespace */
+
+		assertEquals(new UCDWord("pos.eq.ra"), words.get("pos.eq.ra", true));
+
+		/* CASE: UCD word with an explicit "ivoa" namespace */
+
+		assertEquals(new UCDWord("pos.eq.ra"), words.get("ivoa:pos.eq.ra", true));
+
+		/* CASE: Same word but with a different namespace */
+
+		assertNull(words.get("CUSTOM:pos.eq.ra", true));
+
+		/* CASE: UCD word with no namespace while this word is known with a namespace */
+		assertNull(words.get("my.ucd_word", true));
 	}
 
 	@Test
@@ -121,6 +201,12 @@ public class TestUCDWordList {
 		/* CASE: In the list - ONLY 1 match */
 
 		SortedSet<UCDWord> matches = words.startingWith("pos.eq.ra");
+		assertEquals(1, matches.size());
+		assertEquals(new UCDWord("pos.eq.ra"), matches.first());
+
+		/*   SUB-CASE: A different namespace ; the namespace must be ignored for that kind of research: */
+
+		matches = words.startingWith("custom:pos.eq.ra");
 		assertEquals(1, matches.size());
 		assertEquals(new UCDWord("pos.eq.ra"), matches.first());
 
@@ -147,6 +233,13 @@ public class TestUCDWordList {
 		assertFalse(it.hasNext());
 
 		matches = words.startingWith("pos.eq");
+		assertEquals(2, matches.size());
+		it = matches.iterator();
+		assertEquals("pos.eq.dec", it.next().word);
+		assertEquals("pos.eq.ra", it.next().word);
+		assertFalse(it.hasNext());
+
+		matches = words.startingWith("custom:pos.eq");
 		assertEquals(2, matches.size());
 		it = matches.iterator();
 		assertEquals("pos.eq.dec", it.next().word);
