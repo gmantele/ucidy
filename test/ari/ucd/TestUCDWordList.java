@@ -2,6 +2,7 @@ package ari.ucd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
@@ -37,20 +38,66 @@ public class TestUCDWordList {
 
 	@Test
 	public void testAddUCDWord(){
-		/* Impossible to add a NULL word: */
+
+		/* CASE: Possible additions (and there respective deletion) */
+
+		/*   SUB-CASE: Valid, recognised but not recommended word */
+
+		// with custom namespace
+		assertTrue(words.add(new UCDWord(UCDSyntax.BOTH, "custom:foo.bar", "A correct custom UCD word.", false)));
+		assertNotNull(words.remove("foo.bar"));
+
+		// with no namespace
+		/* NOTE: this test should theoretically fail because "no namespace" is similar to have the "ivoa" namespace.
+		 *       Since a custom word can not be recommended, it should not be allowed to have this reserved namespace.
+		 *       However, this is permitted by this library, though it is discouraged (a warning should be displayed in the terminal). */
+		assertTrue(words.add(new UCDWord(UCDSyntax.BOTH, "foo.bar", "A correct custom UCD word ; BUT WITH NO NAMESPACE...it is permitted but strongly discouraged.", false)));
+		assertNotNull(words.remove("foo.bar"));
+
+		/*   SUB-CASE: Recommended with an explicit "ivoa" namespace */
+		assertTrue(words.add(new UCDWord(UCDSyntax.PRIMARY, "ivoa:meta.code", "Code or flag", true)));
+		assertNotNull(words.remove("meta.code"));
+
+		/*   SUB-CASE: Recommended with no namespace */
+		assertTrue(words.add(new UCDWord(UCDSyntax.PRIMARY, "meta.code", "Code or flag", true)));
+		assertNotNull(words.remove("meta.code"));
+
+		/* CASE: Impossible additions */
+
+		/*   SUB-CASE: NULL word: */
+
 		assertFalse(words.add(null));
 
-		/* Trying to add an already existing UCD word MUST fail: */
-		assertFalse(words.add(new UCDWord("pos.eq.ra")));
-		assertFalse(words.add(new UCDWord("custom:my.ucd_word")));
+		/*   SUB-CASE: Valid but non-recognised word */
 
-		/* Ensure it is not possible to add an already existing UCD word with a different namespace: */
-		assertFalse(words.add(new UCDWord("custom:pos.eq.ra")));
-		assertFalse(words.add(new UCDWord("my.ucd_word")));
+		assertFalse(words.add(new UCDWord("foo.bar")));
 
-		/* Having no namespace being the same as having the "ivoa" namespace,
-		 * adding a UCD word with an explicit "ivoa" namespace must fail as well: */
-		assertFalse(words.add(new UCDWord("ivoa:pos.eq.ra")));
+		/*   SUB-CASE: Non-valid word even though it is said as recognised */
+
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "foo@bar", "Really wrong UCD word.", false)));
+
+		/*   SUB-CASE: Non-recommended word having "ivoa" as namespace ; this namespace is reserved to ONLY recommended words */
+
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "ivoa:foo.bar", "UCD word using a reserved namespace.", false)));
+		//assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "foo.bar", "UCD word using a reserved namespace.", false)));
+		/* NOTE: test skipped because for the moment, it is permitted, but strongly discouraged,
+		 *       to have a custom (i.e. non-recommended) UCD word in the list with no namespace,
+		 *       although usually "no namespace" = 'ivoa' namespace. */
+
+		/*   SUB-CASE: An already existing UCD word: */
+
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true)));
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "custom:my.ucd_word", "Blabla", false)));
+
+		/* Considering that having no namespace is the same as having the "ivoa" namespace,
+		 * adding a UCD word with an explicit "ivoa" namespace must fail as well
+		 * if the word already exists with no namespace: */
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "ivoa:pos.eq.ra", null, true)));
+
+		/*   SUB-CASE: An already existing UCD word with a different namespace: */
+
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "custom:pos.eq.ra", "Bloblo", false)));
+		assertFalse(words.add(new UCDWord(UCDSyntax.BOTH, "my.ucd_word", "Blabla", false)));
 	}
 
 	@Test

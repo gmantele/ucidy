@@ -125,10 +125,22 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * @param newWord	The UCD word to add.
 	 *
 	 * @return	<code>true</code> if the given UCD word has been successfully added,
-	 *        	<code>false</code> if the given word is <code>null</code> or already exists in the list.
+	 *        	<code>false</code> if the given word
+	 *        	                      is <code>null</code>,
+	 *        	                      is not valid,
+	 *        	                      is not recognised,
+	 *        	                      is not recommended and uses the <code>ivoa</code> namespace,
+	 *        	                      or already exists in the list.
 	 */
 	public boolean add(final UCDWord newWord){
-		return (newWord == null) ? false : words.add(newWord);
+		if (newWord == null || !newWord.valid || !newWord.recognised || (!newWord.recommended && newWord.namespace != null && newWord.namespace.equalsIgnoreCase(UCDWord.IVOA_NAMESPACE)))
+			return false;
+		else{
+			boolean added = words.add(newWord);
+			if (added && !newWord.recommended && newWord.namespace == null)
+				System.err.println("WARNING: \"" + newWord + "\" is not validated by the IVOA and does not have any namespace (which by default is reserved for validated words). It is strongly encouraged to set one (different from \"ivoa\") before using this item.");
+			return added;
+		}
 	}
 
 	/**
