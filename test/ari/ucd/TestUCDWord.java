@@ -286,4 +286,24 @@ public class TestUCDWord {
 		}
 	}
 
+	@Test
+	public void testEqualsObject(){
+		try{
+			UCDWord word1 = new UCDWord("meta.id");
+			UCDWord word2 = new UCDWord("meta.id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+
+			// Supposed to be case INsensitive:
+			word2 = new UCDWord("META.Id");
+			assertTrue(word1.equals(word2));
+			assertTrue(word2.equals(word1));
+			assertEquals(word1.hashCode(), word2.hashCode());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+	}
+
 }

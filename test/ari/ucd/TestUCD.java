@@ -2,6 +2,7 @@ package ari.ucd;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -589,6 +590,31 @@ public class TestUCD {
 		assertTrue(ucd.isAllRecognised());
 		assertTrue(ucd.isAllRecommended());
 		assertTrue(ucd.isFullyValid());
+	}
+
+	@Test
+	public void testEquals(){
+		// Equality:
+		UCD ucd1 = new UCD(new UCDWord[]{new UCDWord("meta.id")});
+		UCD ucd2 = new UCD(new UCDWord[]{new UCDWord("meta.id")});
+		assertEquals(ucd1, ucd2);
+		assertEquals(ucd2, ucd1);
+		assertEquals(ucd1.hashCode(), ucd2.hashCode());
+
+		// Case INsensitive:
+		ucd2 = new UCD(new UCDWord[]{new UCDWord("META.Id")});
+		assertEquals(ucd1, ucd2);
+		assertEquals(ucd2, ucd1);
+		assertEquals(ucd1.hashCode(), ucd2.hashCode());
+
+		// Not equality:
+		ucd2 = new UCD(new UCDWord[]{new UCDWord("pos.eq.ra")});
+		assertNotEquals(ucd1, ucd2);
+		assertNotEquals(ucd2, ucd1);
+		assertNotEquals(ucd1.hashCode(), ucd2.hashCode());
+
+		// Test with NULL:
+		assertFalse(ucd1.equals(null));
 	}
 
 }

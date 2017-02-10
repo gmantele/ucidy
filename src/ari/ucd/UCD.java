@@ -1,6 +1,7 @@
 package ari.ucd;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -833,12 +834,12 @@ public class UCD implements Iterable<UCDWord> {
 
 	@Override
 	public boolean equals(final Object obj){
-		return (obj != null && obj instanceof UCD && words.equals(((UCD)obj).words));
+		return (obj != null && obj instanceof UCD && Arrays.equals(words, ((UCD)obj).words));
 	}
 
 	@Override
 	public int hashCode(){
-		return words.hashCode();
+		return Arrays.hashCode(words);
 	}
 
 }
