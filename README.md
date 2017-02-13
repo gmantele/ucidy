@@ -8,6 +8,22 @@ Preambule
 
 This GitHub repository contains the sources of a library aiming to validate any UCD (Unified Content Descriptor). This current version aims to respect as much as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance") standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html). The parser is by default configured with the list of all validated UCD words listed in [The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html).
 
+### Functionalities
+* Check whether each UCD word is:
+  - syntactically valid
+  - recognised (i.e. the word is among a list of well known UCD words)
+  - recommended by the IVOA ([The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html))
+* Possibility to customise the list of known UCD words _(by default all validated UCD1+ are automatically loaded)_
+* Validate a full UCD with
+  - a list of human readable errors
+  - an automatic correction suggestion (particularly for typo)
+  - a list of advice to improve the readability of the UCD
+* Different ways to search UCD words
+  - exact match
+  - starting with
+  - closest match _(take into account possible typo)_
+* Support namespace prefix
+
 ### Documentation
 * [Javadoc](https://gmantele.github.io/ucidy/)
 * [UML](https://github.com/gmantele/ucidy/blob/master/uml/ari_ucidy.jpg)
