@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE project>
-<project name="ucdvalidator" basedir="." default="test">
+<project name="ucidy" basedir="." default="test">
   
   <!-- ##################################################################### -->
   <!-- # PROPERTIES                                                          -->
@@ -12,7 +12,7 @@
   <property name="main.lib.dir"        value="lib" />               <!-- OPTIONAL -->
   <property name="main.res.dir"        value="resources" />         <!-- OPTIONAL -->
   <property name="main.build.dir"      value="main-build" />
-  <property name="main.runnable.class" value="ari.ucd.UCDParser" /> <!-- OPTIONAL -->
+  <property name="main.runnable.class" value="ari.ucidy.UCDParser" /> <!-- OPTIONAL -->
   
   <available file="test"     property="test.src.dir" value="test" />        <!-- OPTIONAL -->
   <available file="test-lib" property="test.lib.dir" value="test-lib" />    <!-- OPTIONAL -->
@@ -159,7 +159,7 @@
   <target name="publish-lib" depends="build,run-test"
           description="Generate the compiled library.">
     <echo>Generate the library:</echo>
-    <jar destfile="uv_${version}.jar"
+    <jar destfile="${ant.project.name}_${version}.jar"
          basedir="${main.build.dir}"
          compress="true">
       <zipfileset dir="${main.res.dir}" />
@@ -169,7 +169,7 @@
   <target name="publish-runlib" depends="build,run-test" if="main.runnable.class"
           description="Generate the runnable library (ONLY IF a main class is indicated in this build file).">
     <echo>Generate the runnable JAR:</echo>
-    <jar destfile="uv_${version}_run.jar"
+    <jar destfile="${ant.project.name}_${version}_run.jar"
          basedir="${main.build.dir}"
          compress="true"
          filesetmanifest="mergewithoutmain">
@@ -184,7 +184,7 @@
   <target name="publish-sources"
           description="Gather all sources of this project in a single JAR file.">
     <echo>Gather all sources in a single JAR file:</echo>
-    <jar destfile="uv_${version}_src.jar"
+    <jar destfile="${ant.project.name}_${version}_src.jar"
          compress="false">
 			<zipfileset dir="${main.src.dir}" prefix="${main.src.dir}" />
 			<zipfileset dir="${main.res.dir}" prefix="${main.res.dir}" />
@@ -194,7 +194,7 @@
   <target name="publish-docs" depends="docs" if="javadoc.dir"
           description="Create a JAR file containing all the Javadoc.">
     <echo>Generate the Javadoc JAR:</echo>
-		<jar destfile="uv_${version}_javadoc.jar"
+		<jar destfile="${ant.project.name}_${version}_javadoc.jar"
 		     basedir="${javadoc.dir}"
          compress="false" />
 	</target>

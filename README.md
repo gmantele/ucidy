@@ -9,18 +9,19 @@ Preambule
 This GitHub repository contains the sources of a library aiming to validate any UCD (Unified Content Descriptor). This current version aims to respect as much as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance") standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html). The parser is by default configured with the list of all validated UCD words listed in [The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html).
 
 ### Documentation
-* [Javadoc](https://gmantele.github.io/ucdvalidator/)
-* _GitHub Wiki coming soon!_
+* [Javadoc](https://gmantele.github.io/ucidy/)
+* [UML](https://github.com/gmantele/ucidy/blob/master/uml/ari_ucidy.jpg)
+* [Documentation/Wiki](https://gmantele.github.io/ucidy/wiki)
 
 ### Java version
-This library is developed using **Java 1.7**, but it should be compatible with no modification with _Java 1.6_, and with few modifications (just removing appropriate *@Override*) with _Java 1.5_.
+This library is developed using **Java 1.7** _(should be compatible with Java 1.7 or newer)_.
 
 Collaboration
 -------------
 
-I strongly encourage you **to declare any issue you encounter** [here](https://github.com/gmantele/ucdvalidator/issues). Thus anybody who has the same problem can see whether his/her problem is already known. If the problem is known the progress and/or comments about its resolution will be published.
+I strongly encourage you **to declare any issue you encounter** [here](https://github.com/gmantele/ucidy/issues). Thus anybody who has the same problem can see whether his/her problem is already known. If the problem is known the progress and/or comments about its resolution will be published.
 
-In addition, if you have forked this repository and made some corrections on your side which are likely to interest any other user of the libraries, please, **send a pull request** [here](https://github.com/gmantele/ucdvalidator/pulls). If these modifications are in adequation with the IVOA definition and are not too specific to your usecase, they will be integrated (maybe after some modifications) on this repository and thus made available to everybody.
+In addition, if you have forked this repository and made some corrections on your side which are likely to interest any other user of the libraries, please, **send a pull request** [here](https://github.com/gmantele/ucidy/pulls). If these modifications are in adequation with the IVOA definition and are not too specific to your usecase, they will be integrated (maybe after some modifications) on this repository and thus made available to everybody.
 
 Repository content
 ------------------
@@ -48,4 +49,4 @@ This ANT script have the following main targets:
 * `build`: Compile all classes of this project.
 * `test` *DEFAULT*: Compile all classes and run all the JUnit tests.
 * `javadoc`: Generate the Javadoc.
-* `publish`: Compile all classes and run all the JUnit tests. If these latter are passed, the library JAR and runnable JAR are generated, in addition of a JAR containing all the sources and of another with the complete Javadoc.
+* `publish`: Compile all classes and run all the JUnit tests. If these latter are passed, the library JAR (ucidy and runnable JAR are generated, in addition of a JAR containing all the sources and of another with the complete Javadoc.
