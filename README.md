@@ -11,7 +11,7 @@ This GitHub repository contains the sources of a library aiming to validate any 
 ### Documentation
 * [Javadoc](https://gmantele.github.io/ucidy/)
 * [UML](https://github.com/gmantele/ucidy/blob/master/uml/ari_ucidy.jpg)
-* [Documentation/Wiki](https://gmantele.github.io/ucidy/wiki)
+* [Documentation/Wiki](https://github.com/gmantele/ucidy/wiki)
 
 ### Java version
 This library is developed using **Java 1.7** _(should be compatible with Java 1.7 or newer)_.
