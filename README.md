@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/gmantele/ucdvalidator.svg?branch=master)](https://travis-ci.org/gmantele/ucdvalidator)
+[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
 README
 ======
@@ -31,6 +32,9 @@ This GitHub repository contains the sources of a library aiming to validate any 
 
 ### Java version
 This library is developed using **Java 1.7** _(should be compatible with Java 1.7 or newer)_.
+
+### License
+This library is under the conditions of the LPGL-v3. See [COPYING.LESSER](https://github.com/gmantele/ucidy/blob/master/COPYING.LESSER) and [COPYING](https://github.com/gmantele/ucidy/blob/master/COPYING) for more details. 
 
 Collaboration
 -------------

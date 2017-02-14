@@ -6,7 +6,7 @@
   <!-- # PROPERTIES                                                          -->
   <!-- ##################################################################### -->
   
-  <property name="version" value="1.0beta" />
+  <property name="version" value="1.0" />
 
   <property name="main.src.dir"        value="src" />
   <property name="main.lib.dir"        value="lib" />               <!-- OPTIONAL -->
@@ -68,8 +68,8 @@
   
     <mkdir dir="${main.build.dir}" />
     
-		<javac srcdir="${main.src.dir}" destdir="${main.build.dir}"
-		       includeantruntime="false" encoding="utf8" debug="true">
+    <javac srcdir="${main.src.dir}" destdir="${main.build.dir}"
+               includeantruntime="false" encoding="utf8" debug="true">
       <classpath refid="main.classpath"/>
     </javac>
     
@@ -99,21 +99,21 @@
   
     <mkdir dir="${test.report.dir}"/>
     
-		<junit printsummary="on" fork="on"
-		       errorproperty="testsFailure" failureproperty="testsFailure">
-			<classpath>
+    <junit printsummary="on" fork="on"
+           errorproperty="testsFailure" failureproperty="testsFailure">
+      <classpath>
         <path refid="test.classpath" />
         <pathelement location="${test.build.dir}" />
       </classpath>
-			<formatter type="brief" usefile="yes" />
-			<batchtest todir="${test.report.dir}">
-				<fileset dir="${test.src.dir}" includes="**/Test*.java" />
-			</batchtest>
-		</junit>
-		
-		<fail if="${testsFailure}"
-		      message="Failed JUnit validation! See ${test.report.dir} for individual class reports." />
-		
+      <formatter type="brief" usefile="yes" />
+      <batchtest todir="${test.report.dir}">
+        <fileset dir="${test.src.dir}" includes="**/Test*.java" />
+      </batchtest>
+    </junit>
+  
+    <fail if="${testsFailure}"
+          message="Failed JUnit validation! See ${test.report.dir} for individual class reports." />
+  
   </target>
   
   <!-- ##################################################################### -->
@@ -145,8 +145,8 @@
              splitindex="true"
              use="true"
              version="true">
-			<packageset dir="${main.src.dir}" />
-		</javadoc>
+      <packageset dir="${main.src.dir}" />
+    </javadoc>
   </target>
   
   <!-- ##################################################################### -->
@@ -154,22 +154,23 @@
   <!-- ##################################################################### -->
   
   <target name="publish" depends="publish-lib, publish-runlib, publish-sources, publish-docs, clean"
-		  description="Generate the compiled library, its runnable version (if possible), the JAR gathering all the sources and the one for the Javadoc."/>
+          description="Generate the compiled library, its runnable version (if possible), the JAR gathering all the sources and the one for the Javadoc."/>
   
   <target name="publish-lib" depends="build,run-test"
           description="Generate the compiled library.">
     <echo>Generate the library:</echo>
-    <jar destfile="${ant.project.name}_${version}.jar"
+    <jar destfile="${ant.project.name}-${version}.jar"
          basedir="${main.build.dir}"
          compress="true">
-      <zipfileset dir="${main.res.dir}" />
+      <fileset dir="${main.res.dir}" />
+      <fileset dir="." includes="LICENSE*,COPYING*" casesensitive="false" />
     </jar>
   </target>
   
   <target name="publish-runlib" depends="build,run-test" if="main.runnable.class"
           description="Generate the runnable library (ONLY IF a main class is indicated in this build file).">
     <echo>Generate the runnable JAR:</echo>
-    <jar destfile="${ant.project.name}_${version}_run.jar"
+    <jar destfile="${ant.project.name}-${version}_run.jar"
          basedir="${main.build.dir}"
          compress="true"
          filesetmanifest="mergewithoutmain">
@@ -177,26 +178,28 @@
         <attribute name="Main-Class" value="${main.runnable.class}"/>
         <attribute name="Class-Path" value="."/>
       </manifest>
-      <zipfileset dir="${main.res.dir}" />
+      <fileset dir="${main.res.dir}" />
+      <fileset dir="." includes="LICENSE*,COPYING*" casesensitive="false" />
     </jar>
   </target>
   
   <target name="publish-sources"
           description="Gather all sources of this project in a single JAR file.">
     <echo>Gather all sources in a single JAR file:</echo>
-    <jar destfile="${ant.project.name}_${version}_src.jar"
+    <jar destfile="${ant.project.name}-${version}_src.jar"
          compress="false">
-			<zipfileset dir="${main.src.dir}" prefix="${main.src.dir}" />
-			<zipfileset dir="${main.res.dir}" prefix="${main.res.dir}" />
-		</jar>
+      <zipfileset dir="${main.src.dir}" prefix="${main.src.dir}" />
+      <zipfileset dir="${main.res.dir}" prefix="${main.res.dir}" />
+      <fileset dir="." includes="LICENSE*,COPYING*" casesensitive="false" />
+    </jar>
   </target>
   
   <target name="publish-docs" depends="docs" if="javadoc.dir"
           description="Create a JAR file containing all the Javadoc.">
     <echo>Generate the Javadoc JAR:</echo>
-		<jar destfile="${ant.project.name}_${version}_javadoc.jar"
-		     basedir="${javadoc.dir}"
+    <jar destfile="${ant.project.name}-${version}_javadoc.jar"
+         basedir="${javadoc.dir}"
          compress="false" />
-	</target>
+  </target>
   
 </project>

@@ -1,7 +1,7 @@
 .project
 .settings
 build_*.xml
-./*.jar
+*.jar
 bin
 main-build
 test-build
