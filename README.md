@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gmantele/ucdvalidator.svg?branch=master)](https://travis-ci.org/gmantele/ucdvalidator)
+[![Build Status](https://travis-ci.org/gmantele/ucidy.svg?branch=master)](https://travis-ci.org/gmantele/ucidy)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
 README
@@ -25,13 +25,16 @@ This GitHub repository contains the sources of a library aiming to validate any 
   - closest match _(take into account possible typo)_
 * Support namespace prefix
 
+### Java version
+This library is developed using **Java 1.7** _(should be compatible with Java 1.7 or newer)_.
+
+### Download
+The compiled JAR, the runnable JAR, the sources and the Javadoc API are available on GitHub for [all releases](https://github.com/gmantele/ucidy/releases) and especially for the [latest one](https://github.com/gmantele/ucidy/releases/latest).
+
 ### Documentation
 * [Javadoc](https://gmantele.github.io/ucidy/)
 * [UML](https://github.com/gmantele/ucidy/blob/master/uml/ari_ucidy.jpg)
 * [Documentation/Wiki](https://github.com/gmantele/ucidy/wiki)
-
-### Java version
-This library is developed using **Java 1.7** _(should be compatible with Java 1.7 or newer)_.
 
 ### License
 This library is under the conditions of the LPGL-v3. See [COPYING.LESSER](https://github.com/gmantele/ucidy/blob/master/COPYING.LESSER) and [COPYING](https://github.com/gmantele/ucidy/blob/master/COPYING) for more details. 
