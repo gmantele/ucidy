@@ -7,13 +7,13 @@ README
 Preambule
 ---------
 
-This GitHub repository contains the sources of a library aiming to validate any UCD (Unified Content Descriptor). This current version aims to respect as much as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance") standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html). The parser is by default configured with the list of all validated UCD words listed in [The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html).
+This GitHub repository contains the sources of a library aiming to validate any UCD (Unified Content Descriptor). This current version aims to respect as much as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance") standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html). The parser is by default configured with the list of all validated UCD words listed in [The UCD1+ controlled vocabulary 1.3](http://www.ivoa.net/documents/UCD1+/20180527/index.html).
 
 ### Functionalities
 * Check whether each UCD word is:
   - syntactically valid
   - recognised (i.e. the word is among a list of well known UCD words)
-  - recommended by the IVOA ([The UCD1+ controlled vocabulary](http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html))
+  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.3](http://www.ivoa.net/documents/UCD1+/20180527/index.html))
 * Possibility to customise the list of known UCD words _(by default all validated UCD1+ are automatically loaded)_
 * Validate a full UCD with
   - a list of human readable errors
@@ -72,4 +72,4 @@ This ANT script have the following main targets:
 * `build`: Compile all classes of this project.
 * `test` *DEFAULT*: Compile all classes and run all the JUnit tests.
 * `javadoc`: Generate the Javadoc.
-* `publish`: Compile all classes and run all the JUnit tests. If these latter are passed, the library JAR (ucidy and runnable JAR are generated, in addition of a JAR containing all the sources and of another with the complete Javadoc.
+* `publish`: Compile all classes and run all the JUnit tests. If these latter are passed, the library JAR (also runnable) is generated, in addition of a JAR containing all the sources and of another with the complete Javadoc.

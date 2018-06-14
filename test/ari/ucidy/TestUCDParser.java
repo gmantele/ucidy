@@ -83,7 +83,7 @@ public class TestUCDParser {
 		try{
 			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"));
 			UCDWordList words = UCDParser.parseWordList(reader, true);
-			assertEquals(473, words.size());
+			assertEquals(524, words.size());
 			for(UCDWord w : words){
 				if (!w.recommended)
 					System.out.println("NOT RECOMMENDED: " + w);
