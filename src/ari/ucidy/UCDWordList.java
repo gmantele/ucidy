@@ -56,8 +56,8 @@ import java.util.TreeSet;
  * 	use {@link #addAll(File, boolean)} instead.
  * </p>
  *
- * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (02/2017)
+ * @author Gr&eacute;gory Mantelet (CDS)
+ * @version 1.1 (06/2018)
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
@@ -180,7 +180,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 
 		int nbAdded = 0;
 		for(UCDWord w : newWords){
-			if (w != null && this.words.add(w))
+			if (w != null && this.add(w))
 				nbAdded++;
 		}
 		return nbAdded;
@@ -204,7 +204,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 
 		int nbAdded = 0;
 		for(UCDWord w : newWords){
-			if (w != null && this.words.add(w))
+			if (w != null && this.add(w))
 				nbAdded++;
 		}
 		return nbAdded;
