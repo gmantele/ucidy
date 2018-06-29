@@ -146,7 +146,7 @@ public class UCDParser {
 	 * <p><i>This field is NEVER <code>null</code>.</i></p>
 	 *
 	 * @since 1.1 */
-	public final UCDWordList deprecatedWords;
+	public final DeprecatedUCDWordList deprecatedWords;
 
 	/**
 	 * Create a UCD parser with an empty list of known words.
@@ -526,6 +526,8 @@ public class UCDParser {
 	 * @throws IOException			If an error occurred while reading the
 	 *                    			specified input.
 	 *
+	 * @see #parseDeprecatedWordList(Reader, UCDWordList, DeprecatedUCDWordList)
+	 *
 	 * @since 1.1
 	 */
 	public static DeprecatedUCDWordList parseDeprecatedWordList(final Reader reader, final UCDWordList lstWords) throws NullPointerException, IOException{
@@ -593,6 +595,8 @@ public class UCDParser {
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
 	 * @throws IOException			If an error occurred while reading the
 	 *                    			specified input.
+	 *
+	 * @see #parseDeprecatedFileLine(String)
 	 *
 	 * @since 1.1
 	 */
