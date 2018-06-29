@@ -16,7 +16,7 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017 - Gregory Mantelet (ARI/ZAH)
+ * Copyright 2017-2018 - Gregory Mantelet (CDS)
  */
 
 import java.util.Objects;
@@ -26,8 +26,8 @@ import java.util.Objects;
  *
  * <p><i>See http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html for more details.</i></p>
  *
- * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (02/2017)
+ * @author Gr&eacute;gory Mantelet (CDS)
+ * @version 1.1 (06/2018)
  */
 public class UCDWord {
 
@@ -110,8 +110,8 @@ public class UCDWord {
 	public final boolean recognised;
 
 	/**
-	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to IVOA Recommendation 2007-04-02 for the UCD1+ controlled vocabulary v1.23:
-	 * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
+	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to IVOA Recommendation 2018-05-27 for the UCD1+ controlled vocabulary v1.3:
+	 * http://www.ivoa.net/documents/UCD1+/20180527/index.html
 	 *
 	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>
 	 *                        AND MUST have either no namespace or have the namespace {@value #IVOA_NAMESPACE}.</p>
@@ -133,6 +133,13 @@ public class UCDWord {
 	 * 	of all given words.
 	 * </i></p> */
 	public final UCDWord[] closest;
+
+	/** If this UCD word is deprecated, this property will be not <code>null</code>.
+	 * Then, it will contain the suggested UCD to replace this deprecated UCD word by.
+	 * <p><i>May be <code>null</code>.</i></p>
+	 * @see #isDeprecated()
+	 * @since 1.1 */
+	public final UCD suggestedReplacement;
 
 	/**
 	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD word.
@@ -164,6 +171,7 @@ public class UCDWord {
 		this.syntaxCode = syntax;
 		this.rawWord = word;
 		this.description = description;
+		this.suggestedReplacement = null;
 
 		// split the namespace and the word if necessary:
 		int indSep = this.rawWord.indexOf(NAMESPACE_SEP);
@@ -218,6 +226,7 @@ public class UCDWord {
 		this.syntaxCode = null;
 		this.rawWord = word;
 		this.description = null;
+		this.suggestedReplacement = null;
 
 		// split the namespace and the word if necessary:
 		int indSep = this.rawWord.indexOf(NAMESPACE_SEP);
@@ -236,6 +245,92 @@ public class UCDWord {
 
 		// set the given closest matches:
 		this.closest = (closestMatches != null && closestMatches.length == 0) ? null : closestMatches;
+	}
+
+	/**
+	 * Create a deprecated UCD word.
+	 *
+	 * <p>
+	 * 	It may be flagged as <i>{@link #valid}</i> if its structure is correct
+	 * 	but never as <i>{@link #recognised}</i> or <i>{@link #recommended}</i>.
+	 * </p>
+	 *
+	 * @param word					The deprecated UCD word, itself.
+	 *            					<i>MANDATORY</i>
+	 * @param suggestedReplacement	The suggested UCD to replace the deprecated
+	 *                            	UCD word by.
+	 *            					<i>MANDATORY</i>
+	 * @param syntax				Rule about the syntax when using this UCD
+	 *              				word. <i>(see {@link UCDSyntax} for more
+	 *              				details)</i>
+	 *              				<i>OPTIONAL</i>
+	 * @param description			Human description of this UCD word.
+	 *              				<i>OPTIONAL</i>
+	 *
+	 * @throws NullPointerException		If the given word is <code>null</code>
+	 *                             		or an empty string.
+	 * @throws IllegalArgumentException	If the given suggested UCD is not fully
+	 *                                 	<i>{@link #valid}</i> and
+	 *                                 	<i>{@link #recognised}</i>.
+	 *
+	 * @since 1.1
+	 */
+	protected UCDWord(final String word, final UCD suggestedReplacement, final UCDSyntax syntax, final String description) throws NullPointerException, IllegalArgumentException{
+		if (word == null)
+			throw new NullPointerException("Missing UCD word!");
+
+		// ensure a UCD replacement is provided:
+		if (suggestedReplacement == null)
+			throw new NullPointerException("Missing UCD replacement for the given deprecated UCD word (\"" + word + "\")!");
+
+		// ensure the suggested UCD is valid and recognised:
+		if (!suggestedReplacement.isAllRecognised())
+			throw new IllegalArgumentException("Incorrect UCD replacement for the given deprecated UCD word (\"" + word + "\"): \"" + suggestedReplacement + "\"! It must be fully valid and recognised.");
+
+		// set the UCD word definition:
+		this.syntaxCode = syntax;
+		this.rawWord = word;
+		this.description = (description == null || description.trim().length() <= 0) ? null : description.trim();
+		this.suggestedReplacement = suggestedReplacement;
+
+		// split the namespace and the word if necessary:
+		int indSep = this.rawWord.indexOf(NAMESPACE_SEP);
+		if (indSep > 0){
+			this.namespace = this.rawWord.substring(0, indSep);
+			this.word = this.rawWord.substring(indSep + 1);
+		}else{
+			this.namespace = null;
+			this.word = this.rawWord;
+		}
+
+		// set the flags:
+		this.valid = this.rawWord.matches(REGEXP_UCD_WORD);
+		this.recognised = false;
+		this.recommended = false;
+
+		// no closest match:
+		this.closest = null;
+	}
+
+	/* **************** */
+	/* DEPRECATION TEST */
+	/* **************** */
+
+	/**
+	 * Tell whether this UCD word is deprecated.
+	 *
+	 * <p>
+	 * 	If deprecated, the property {@link #suggestedReplacement} will provide the UCD suggested by the IVOA to replace
+	 * 	this deprecated UCD word by.
+	 * </p>
+	 *
+	 * @return	<code>true</code> if deprecated,
+	 *        	<code>false</code> otherwise.
+	 *
+	 * @since 1.1
+	 */
+	public final boolean isDeprecated(){
+		return (suggestedReplacement != null);
 	}
 
 	/* ****************** */

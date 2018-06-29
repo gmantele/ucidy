@@ -10,9 +10,6 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import ari.ucidy.UCDSyntax;
-import ari.ucidy.UCDWord;
-
 public class TestUCDWord {
 
 	@Test
@@ -41,6 +38,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord(null, " ", null, false);
 			assertNull(word.syntaxCode);
@@ -52,6 +50,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord(UCDSyntax.PRIMARY, "	", null, true);
 			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
@@ -63,6 +62,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
@@ -82,6 +82,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord(UCDSyntax.BOTH, "meta.foo", null, true);
 			assertEquals(UCDSyntax.BOTH, word.syntaxCode);
@@ -93,6 +94,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -111,6 +113,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -129,6 +132,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -147,6 +151,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -165,6 +170,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -183,6 +189,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -201,6 +208,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -219,6 +227,7 @@ public class TestUCDWord {
 			assertTrue(word.recognised);
 			assertTrue(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -251,6 +260,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord(" ");
 			assertNull(word.syntaxCode);
@@ -262,6 +272,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -280,6 +291,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord("em.radio");
 			assertNull(word.syntaxCode);
@@ -291,6 +303,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord("em.IR.NIR");
 			assertNull(word.syntaxCode);
@@ -302,6 +315,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord("meta.myOwnAtom");
 			assertNull(word.syntaxCode);
@@ -313,6 +327,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord("myOwnSingleAtom");
 			assertNull(word.syntaxCode);
@@ -324,6 +339,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			word = new UCDWord("mixed_12-3_blabla");
 			assertNull(word.syntaxCode);
@@ -335,6 +351,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			/* With namespace */
 			word = new UCDWord("custom:foo");
@@ -347,6 +364,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -366,6 +384,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// starting with a space
 			word = new UCDWord(" arith");
@@ -378,6 +397,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// starting with an underscore
 			word = new UCDWord("_atom");
@@ -390,6 +410,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// starting with an hyphen
 			word = new UCDWord("-atom");
@@ -402,6 +423,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// containing a forbidden character
 			word = new UCDWord("em@radio");
@@ -414,6 +436,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// containing a different forbidden character
 			word = new UCDWord("em.IR;NIR");
@@ -426,6 +449,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 
 			// containing a space
 			word = new UCDWord("em.my atom");
@@ -438,6 +462,7 @@ public class TestUCDWord {
 			assertFalse(word.recognised);
 			assertFalse(word.recommended);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -458,6 +483,7 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord("meta.i", null);
 			assertEquals("meta.i", word.word);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -469,6 +495,7 @@ public class TestUCDWord {
 			UCDWord word = new UCDWord("meta.i", new UCDWord[0]);
 			assertEquals("meta.i", word.word);
 			assertNull(word.closest);
+			assertFalse(word.isDeprecated());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
@@ -477,11 +504,143 @@ public class TestUCDWord {
 		/* CASE: UCD with a closest match */
 
 		try{
-			UCDWord word = new UCDWord("meta.i", new UCDWord[]{new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true)});
+			UCDWord word = new UCDWord("meta.i", new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "meta.id", null, true) });
 			assertEquals("meta.i", word.word);
 			assertNotNull(word.closest);
 			assertEquals(1, word.closest.length);
 			assertEquals(new UCDWord("meta.id"), word.closest[0]);
+			assertFalse(word.isDeprecated());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+	}
+
+	@Test
+	public void testUCDWordStringUCD(){
+
+		/* CASE: UCD word is NULL */
+
+		try{
+			new UCDWord(null, null, null, null);
+			fail("It should be impossible to create a deprecated UCD word with NULL!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("Missing UCD word!", ex.getMessage());
+		}
+
+		/* CASE: UCD replacement is NULL */
+
+		try{
+			new UCDWord("phot.color.B-R", null, null, null);
+			fail("It should be impossible to create a deprecated UCD word without a suggested UCD replacement!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("Missing UCD replacement for the given deprecated UCD word (\"phot.color.B-R\")!", ex.getMessage());
+		}
+
+		/* CASE: Unrecognised UCD replacement */
+
+		try{
+			new UCDWord("phot.color.B-R", UCDParser.parseUCD("phot.color;em.mine"), null, null);
+			fail("It should be impossible to create a deprecated UCD word with a non recognised UCD replacement!");
+		}catch(Exception ex){
+			assertEquals(IllegalArgumentException.class, ex.getClass());
+			assertEquals("Incorrect UCD replacement for the given deprecated UCD word (\"phot.color.B-R\"): \"phot.color;em.mine\"! It must be fully valid and recognised.", ex.getMessage());
+		}
+
+		/* CASE: Minimum valid constructor */
+
+		try{
+			UCDWord word = new UCDWord("phot.color.B-R", UCDParser.parseUCD("phot.color;em.opt.B;em.opt.R"), null, null);
+			assertEquals("phot.color.B-R", word.word);
+			assertTrue(word.isDeprecated());
+			assertNotNull(word.suggestedReplacement);
+			assertEquals("phot.color;em.opt.B;em.opt.R", word.suggestedReplacement.toString());
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertNull(word.closest);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+		/* VARIANT: incorrect UCD word syntax */
+		try{
+			UCDWord word = new UCDWord("phot color B-R", UCDParser.parseUCD("phot.color;em.opt.B;em.opt.R"), null, null);
+			assertEquals("phot color B-R", word.word);
+			assertTrue(word.isDeprecated());
+			assertNotNull(word.suggestedReplacement);
+			assertEquals("phot.color;em.opt.B;em.opt.R", word.suggestedReplacement.toString());
+			assertNull(word.syntaxCode);
+			assertNull(word.description);
+			assertNull(word.closest);
+			assertFalse(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Maximum valid constructor */
+
+		try{
+			UCDWord word = new UCDWord("phot.color.B-R", UCDParser.parseUCD("phot.color;em.opt.B;em.opt.R"), UCDSyntax.PRIMARY, "Difference between color B and R.");
+			assertEquals("phot.color.B-R", word.word);
+			assertTrue(word.isDeprecated());
+			assertNotNull(word.suggestedReplacement);
+			assertEquals("phot.color;em.opt.B;em.opt.R", word.suggestedReplacement.toString());
+			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
+			assertEquals("Difference between color B and R.", word.description);
+			assertNull(word.closest);
+			assertTrue(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+		/* VARIANT: incorrect UCD word syntax */
+		try{
+			UCDWord word = new UCDWord("phot color B-R", UCDParser.parseUCD("phot.color;em.opt.B;em.opt.R"), UCDSyntax.PRIMARY, "Difference between color B and R.");
+			assertEquals("phot color B-R", word.word);
+			assertTrue(word.isDeprecated());
+			assertNotNull(word.suggestedReplacement);
+			assertEquals("phot.color;em.opt.B;em.opt.R", word.suggestedReplacement.toString());
+			assertEquals(UCDSyntax.PRIMARY, word.syntaxCode);
+			assertEquals("Difference between color B and R.", word.description);
+			assertNull(word.closest);
+			assertFalse(word.valid);
+			assertFalse(word.recognised);
+			assertFalse(word.recommended);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+	}
+
+	@Test
+	public void testIsDeprecated(){
+
+		/* CASE: Still valid UCD word */
+
+		try{
+			UCDWord word = new UCDWord(UCDSyntax.COLOUR, "phot.color", "Color index or magnitude difference", true);
+			assertFalse(word.isDeprecated());
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Deprecated UCD Word */
+
+		try{
+			UCDWord word = new UCDWord("phot.color.B-R", UCDParser.parseUCD("phot.color;em.opt.B;em.opt.R"), null, null);
+			assertTrue(word.isDeprecated());
+			assertEquals("phot.color;em.opt.B;em.opt.R", word.suggestedReplacement.toString());
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");

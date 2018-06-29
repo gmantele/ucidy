@@ -14,25 +14,30 @@ import java.text.ParseException;
 import org.junit.Before;
 import org.junit.Test;
 
-import ari.ucidy.UCD;
-import ari.ucidy.UCDParser;
-import ari.ucidy.UCDSyntax;
-import ari.ucidy.UCDWord;
-import ari.ucidy.UCDWordList;
-
 public class TestUCDParser {
 
 	@Before
-	public void setUp() throws Exception{}
+	public void setUp() throws Exception{
+	}
 
 	@Test
 	public void testParse(){
+
+		/* CASE: Check a deprecated word */
+
+		UCD parsed = UCDParser.defaultParser.parse("pos.eop.nutation");
+		assertEquals(1, parsed.size());
+		assertFalse(parsed.isFullyValid());
+		assertFalse(parsed.isAllRecognised());
+		assertTrue(parsed.isAllValid());
+		assertTrue(parsed.getWord(0).isDeprecated());
+		assertEquals("pos.nutation", parsed.getSuggestion().toString());
 
 		/* CASE: Check the closest match attribute */
 
 		/*   SUB-CASE: Correct word */
 
-		UCD parsed = UCDParser.defaultParser.parse("meta.id");
+		parsed = UCDParser.defaultParser.parse("meta.id");
 		assertEquals(1, parsed.size());
 		assertEquals(new UCDWord("meta.id"), parsed.getWord(0));
 		assertTrue(parsed.isFullyValid());
@@ -83,7 +88,7 @@ public class TestUCDParser {
 		try{
 			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"));
 			UCDWordList words = UCDParser.parseWordList(reader, true);
-			assertEquals(524, words.size());
+			assertEquals(523, words.size());
 			for(UCDWord w : words){
 				if (!w.recommended)
 					System.out.println("NOT RECOMMENDED: " + w);
@@ -96,7 +101,40 @@ public class TestUCDParser {
 			if (reader != null){
 				try{
 					reader.close();
-				}catch(Exception ex){}
+				}catch(Exception ex){
+				}
+			}
+		}
+	}
+
+	@Test
+	public void testParseDeprecatedWordListReaderUCDWordList(){
+		Reader reader = null;
+		try{
+			// Create the list of all official IVOA UCD1+ words:
+			UCDWordList lstWords = new UCDWordList();
+			lstWords.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
+
+			// Read and add all deprecated words to this list:
+			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-deprecated.txt"));
+			DeprecatedUCDWordList lstDeprecatedWords = UCDParser.parseDeprecatedWordList(reader, lstWords);
+			assertEquals(211, lstDeprecatedWords.size());
+			for(UCDWord w : lstDeprecatedWords){
+				assertTrue(w.isDeprecated());
+				assertTrue(w.valid);
+				assertFalse(w.recognised);
+				assertFalse(w.recommended);
+				assertTrue(w.suggestedReplacement.isAllRecognised());
+			}
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}finally{
+			if (reader != null){
+				try{
+					reader.close();
+				}catch(Exception ex){
+				}
 			}
 		}
 	}
@@ -263,6 +301,100 @@ public class TestUCDParser {
 		}catch(Exception ex){
 			ex.printStackTrace(System.err);
 			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+	}
+
+	@Test
+	public void testParseDeprecatedFileLine(){
+
+		/* CASE: Missing line to parse */
+
+		try{
+			UCDParser.parseDeprecatedFileLine(null);
+			fail("It should be impossible to parse NULL!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("No line to parse!", ex.getMessage());
+		}
+		try{
+			UCDParser.parseDeprecatedFileLine("");
+			fail("It should be impossible to parse an empty string!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("No line to parse!", ex.getMessage());
+		}
+		try{
+			UCDParser.parseDeprecatedFileLine("  	  ");
+			fail("It should be impossible to parse an empty string (even with only space characters)!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("No line to parse!", ex.getMessage());
+		}
+
+		/* CASE: A comment line should throw an error */
+
+		try{
+			UCDParser.parseDeprecatedFileLine("# Comment blabla");
+			fail("It should be impossible to parse a comment!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("No UCD word or UCD can be fetched from a comment line!", ex.getMessage());
+		}
+		try{
+			UCDParser.parseDeprecatedFileLine(" 	# Comment blabla with leading spaces");
+			fail("It should be impossible to parse a comment (even with leading space characters)!");
+		}catch(Exception ex){
+			assertEquals(NullPointerException.class, ex.getClass());
+			assertEquals("No UCD word or UCD can be fetched from a comment line!", ex.getMessage());
+		}
+
+		/* CASE: Only one space separated value */
+
+		try{
+			UCDParser.parseDeprecatedFileLine("word");
+			fail("It should be impossible to parse a line with only column!");
+		}catch(Exception ex){
+			assertEquals(ParseException.class, ex.getClass());
+			assertEquals("Incorrect syntax for a deprecated entry line! It must be 2 values separated by a space, but no space character has been found.", ex.getMessage());
+		}
+
+		/* CASE: A normal line (i.e. exactly 2 space separated values) */
+
+		try{
+			String[] parseResult = UCDParser.parseDeprecatedFileLine("word suggestion");
+			assertNotNull(parseResult);
+			assertEquals(2, parseResult.length);
+			assertEquals("word", parseResult[0]);
+			assertEquals("suggestion", parseResult[1]);
+
+			// VARIANT: with leading and trailing space characters and multiple space characters as separator
+
+			parseResult = UCDParser.parseDeprecatedFileLine("  	 word 	  suggestion	 ");
+			assertNotNull(parseResult);
+			assertEquals(2, parseResult.length);
+			assertEquals("word", parseResult[0]);
+			assertEquals("suggestion", parseResult[1]);
+		}catch(Exception ex){
+			ex.printStackTrace(System.err);
+			fail("Unexpected exception! (see the error's stack trace in the error output for more details)");
+		}
+
+		/* CASE: Several space separated values */
+
+		try{
+			UCDParser.parseDeprecatedFileLine("too many word suggestions");
+			fail("It should be impossible to parse when more than 2 space separators are written.");
+		}catch(Exception ex){
+			assertEquals(ParseException.class, ex.getClass());
+			assertEquals("Incorrect syntax for a deprecated entry line! It must be 2 values separated by a space, but more space separated values have been found.", ex.getMessage());
+		}
+		// VARIANT: with leading and trailing space characters and multiple space characters as separator
+		try{
+			UCDParser.parseDeprecatedFileLine("  	 too    many		word 	 suggestions   ");
+			fail("It should be impossible to parse when more than 2 space separators are written.");
+		}catch(Exception ex){
+			assertEquals(ParseException.class, ex.getClass());
+			assertEquals("Incorrect syntax for a deprecated entry line! It must be 2 values separated by a space, but more space separated values have been found.", ex.getMessage());
 		}
 	}
 

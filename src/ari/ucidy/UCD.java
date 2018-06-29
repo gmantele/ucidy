@@ -16,13 +16,12 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017 - Gregory Mantelet (ARI/ZAH)
+ * Copyright 2017-2018 - Gregory Mantelet (CDS)
  */
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.NoSuchElementException;
@@ -48,8 +47,8 @@ import java.util.Set;
  * 	<li>{@link #getAdvice()} which gives some advice about the construction of this UCD (it does not take care about the validity of this UCD)</li>
  * </ul>
  *
- * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (02/2017)
+ * @author Gr&eacute;gory Mantelet (CDS)
+ * @version 1.1 (06/2018)
  */
 public class UCD implements Iterable<UCDWord> {
 
@@ -276,9 +275,10 @@ public class UCD implements Iterable<UCDWord> {
 	 */
 	protected void listErrors(){
 		boolean first = true;
-		short nbEmptyWords = 0, nbNotValid = 0, nbNotRecognised = 0,
-				nbLatePrimary = 0;
+		short nbEmptyWords = 0, nbDeprecated = 0, nbNotValid = 0,
+				nbNotRecognised = 0, nbLatePrimary = 0;
 		String firstPrimary = null;
+		StringBuffer deprecated = new StringBuffer();
 		StringBuffer notValid = new StringBuffer();
 		StringBuffer notRecognised = new StringBuffer();
 		StringBuffer latePrimary = new StringBuffer();
@@ -292,7 +292,11 @@ public class UCD implements Iterable<UCDWord> {
 			// ...the word is NULL or an empty string:
 			if (w == null || w.word.trim().length() == 0)
 				nbEmptyWords++;
-			else{
+			// ... the word is deprecated:
+			else if (w.isDeprecated()){
+				nbDeprecated++;
+				append(deprecated, w.rawWord + " (-> " + w.suggestedReplacement + ")");
+			}else{
 				// ...the word is not syntactically valid:
 				if (!w.valid){
 					nbNotValid++;
@@ -346,6 +350,10 @@ public class UCD implements Iterable<UCDWord> {
 		// Add the errors about the NOT VALID words:
 		if (nbNotValid > 0)
 			lstErrors.add(0, "Wrong syntax for " + nbNotValid + " UCD word" + (nbNotValid > 1 ? "s" : "") + ": " + notValid.toString() + "!");
+
+		// Add the errors about the DEPRECATED words:
+		if (nbDeprecated > 0)
+			lstErrors.add(0, nbDeprecated + " DEPRECATED UCD word" + (nbDeprecated > 1 ? "s" : "") + ": " + deprecated.toString() + "!");
 
 		// Add the errors about the NULL words:
 		if (nbEmptyWords > 0)
@@ -670,15 +678,27 @@ public class UCD implements Iterable<UCDWord> {
 				/* Remove all NULL words: */
 				if (w != null){
 
+					/* If deprecated, add all suggested words: */
+					if (w.isDeprecated()){
+						for(UCDWord w2 : w.suggestedReplacement){
+							if (!newWords.contains(w2))
+								newWords.add(w2);
+						}
+					}
+
 					/* If already recognised, nothing to do for this word: */
-					if (w.recognised)
-						newWords.add(w);
+					else if (w.recognised){
+						if (!newWords.contains(w))
+							newWords.add(w);
+					}
 
 					/* If valid but not recognised: */
 					else if (w.valid){
 						// If any closest match has been found by the parse, keep the first one:
-						if (w.closest != null)
-							newWords.add(w.closest[0]);
+						if (w.closest != null){
+							if (!newWords.contains(w))
+								newWords.add(w.closest[0]);
+						}
 
 						/* Otherwise, there is no way to magically guess a matching UCD word
 						 * => return NULL immediately */
@@ -695,9 +715,10 @@ public class UCD implements Iterable<UCDWord> {
 							/* Otherwise, try removing leading and trailing spaces, and replacing all internal space characters by a dot (.)
 							 * ; if still not valid, nothing can be done, so return NULL: */
 							UCDWord newWord = new UCDWord(w.syntaxCode, w.word.trim().replaceAll("\\s+", "."), w.description, w.recommended);
-							if (newWord.recognised)
-								newWords.add(newWord);
-							else{
+							if (newWord.recognised){
+								if (!newWords.contains(w))
+									newWords.add(newWord);
+							}else{
 								suggestion = null;
 								return;
 							}
@@ -720,8 +741,12 @@ public class UCD implements Iterable<UCDWord> {
 				return;
 			}else
 				tempSuggestion = null;
-		}else
-			Collections.addAll(newWords, words);
+		}else{
+			for(UCDWord w : words){
+				if (!newWords.contains(w))
+					newWords.add(w);
+			}
+		}
 
 		// 2nd: RE-ORDER THE UCD WORDS:
 
