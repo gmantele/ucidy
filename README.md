@@ -19,6 +19,7 @@ This GitHub repository contains the sources of a library aiming to validate any 
   - a list of human readable errors
   - an automatic correction suggestion (particularly for typo)
   - a list of advice to improve the readability of the UCD
+* Detection of deprecated UCD words _(when detected a clear error message is returned and a correction suggestion is proposed)_
 * Different ways to search UCD words
   - exact match
   - starting with
@@ -55,9 +56,18 @@ _No dependency._
 
 ### Resources
 
-The `resources` directory contains just one file for the moment: `ucd1p-words.txt`. It lists all official IVOA UCD1+ words as provided at http://cdsweb.u-strasbg.fr/UCD/ucd1p-words.txt.
+The `resources` directory contains two files for the moment:
+* `ucd1p-words.txt`. It lists all official IVOA UCD1+ words as provided
+  at http://cdsweb.u-strasbg.fr/UCD/ucd1p-words.txt.
+* `ucd1p-deprecated.txt`. This is a list of all _deprecated_ UCD1+ words as
+  provided at http://cdsweb.u-strasbg.fr/UCD/ucd1p-deprecated.txt.
 
-This file is loaded by the default parser initialised in the class UCDParser. If the name is changed or if the file is removed, the default parser will raise a warning on the standard error output and will be initialized with an empty list of known UCD1+ words. Consequently any UCD parsed using this parser will be systematically flagged as _not recognised_ and so _not recommended_.
+These files are loaded by the default parser initialised in the class UCDParser.
+
+If the file `ucd1p-words.txt` is renamed or removed, the default parser will
+raise a warning on the standard error output and will be initialized with an
+empty list of known UCD1+ words. Consequently any UCD parsed using this parser
+will be systematically flagged as _not recognised_ and so _not recommended_.
 
 ### JUnit
 
