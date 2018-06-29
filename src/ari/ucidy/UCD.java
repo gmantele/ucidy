@@ -32,7 +32,10 @@ import java.util.Set;
  *
  * <p>This is basically a list of {@link UCDWord UCD word}s.</p>
  *
- * <p>A lot of functions can provide information about different degrees of the validity of this UCD:</p>
+ * <p>
+ * 	A lot of functions can provide information about different degrees of the
+ * 	validity of this UCD:
+ * </p>
  * <ul>
  * 	<li>{@link #isAllValid()}</li>
  * 	<li>{@link #isAllRecognised()}</li>
@@ -42,9 +45,13 @@ import java.util.Set;
  *
  * <p>Three other functions may gives more information:</p>
  * <ul>
- * 	<li>{@link #getSuggestion()} which proposes a fully valid correction of this UCD (if not already valid ; otherwise the function will return this UCD)</li>
- * 	<li>{@link #getErrors()} which lists errors preventing this UCD to be fully valid</li>
- * 	<li>{@link #getAdvice()} which gives some advice about the construction of this UCD (it does not take care about the validity of this UCD)</li>
+ * 	<li>{@link #getSuggestion()} which proposes a fully valid correction of this
+ * 	    UCD (if not already valid ; otherwise the function will return this
+ * 	    UCD)</li>
+ * 	<li>{@link #getErrors()} which lists errors preventing this UCD to be fully
+ * 	    valid</li>
+ * 	<li>{@link #getAdvice()} which gives some advice about the construction of
+ * 	    this UCD (it does not take care about the validity of this UCD)</li>
  * </ul>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
@@ -53,61 +60,99 @@ import java.util.Set;
 public class UCD implements Iterable<UCDWord> {
 
 	/** UCD words composing this UCD.
+	 *
 	 * <p><i>This array may contain <code>null</code> items.</i></p> */
 	protected final UCDWord[] words;
 
 	/** String serialization of this UCD.
-	 * <p><i>This field is set ONLY when {@link #toString()} is called for the first time.</i></p> */
+	 *
+	 * <p><i>
+	 * 	This field is set ONLY when {@link #toString()} is called for the
+	 * 	first time.
+	 * </i></p> */
 	protected String strRepresentation = null;
 
-	/** Flag indicating that all words of this UCD are {@link UCDWord#valid valid}.
-	 * <p><i>Note that a <code>null</code> word will be considered as not {@link UCDWord#valid valid}.</i></p>
+	/** Flag indicating that all words of this UCD are
+	 * {@link UCDWord#valid valid}.
 	 *
-	 * <p><i>This flag is set ONLY when {@link #checkAllWords()} is called
-	 * or when {@link #isAllValid()}, {@link #isAllRecognised()} or {@link #isAllRecommended()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	Note that a <code>null</code> word will be considered as not
+	 * 	{@link UCDWord#valid valid}.
+	 * </i></p>
+	 *
+	 * <p><i>
+	 * 	This flag is set ONLY when {@link #checkAllWords()} is called
+	 * 	or when {@link #isAllValid()}, {@link #isAllRecognised()} or
+	 * 	{@link #isAllRecommended()} is called for the first time.
+	 * </i></p> */
 	protected Boolean allValid = null;
 
-	/** Flag indicating that all words of this UCD are {@link UCDWord#recognised recognised}.
-	 * <p><i>Note that a <code>null</code> word will be considered as not {@link UCDWord#recognised recognised}.</i></p>
+	/** Flag indicating that all words of this UCD are
+	 * {@link UCDWord#recognised recognised}.
 	 *
-	 * <p><i>This flag is set ONLY when {@link #checkAllWords()} is called
-	 * or when {@link #isAllValid()}, {@link #isAllRecognised()} or {@link #isAllRecommended()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	Note that a <code>null</code> word will be considered as not
+	 * 	{@link UCDWord#recognised recognised}.
+	 * </i></p>
+	 *
+	 * <p><i>
+	 * 	This flag is set ONLY when {@link #checkAllWords()} is called
+	 * 	or when {@link #isAllValid()}, {@link #isAllRecognised()} or
+	 * 	{@link #isAllRecommended()} is called for the first time.
+	 * </i></p> */
 	protected Boolean allRecognised = null;
 
 	/** Flag indicating that all words of this UCD are {@link UCDWord#recommended recommended}.
-	 * <p><i>Note that a <code>null</code> word will be considered as not {@link UCDWord#recommended recommended}.</i></p>
 	 *
-	 * <p><i>This flag is set ONLY when {@link #checkAllWords()} is called
-	 * or when {@link #isAllValid()}, {@link #isAllRecognised()} or {@link #isAllRecommended()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	Note that a <code>null</code> word will be considered as not
+	 * 	{@link UCDWord#recommended recommended}.
+	 * </i></p>
+	 *
+	 * <p><i>
+	 * 	This flag is set ONLY when {@link #checkAllWords()} is called
+	 * 	or when {@link #isAllValid()}, {@link #isAllRecognised()} or
+	 * 	{@link #isAllRecommended()} is called for the first time.
+	 * </i></p> */
 	protected Boolean allRecommended = null;
 
 	/** Flag indicating that the whole UCD is {@link #isFullyValid() valid}.
 	 *
-	 * <p><i>This flag is set ONLY when {@link #checkFullValidity()} is called
-	 * or when {@link #isFullyValid()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	This flag is set ONLY when {@link #checkFullValidity()} is called
+	 * 	or when {@link #isFullyValid()} is called for the first time.
+	 * </i></p> */
 	protected Boolean fullyValid = null;
 
-	/** Flag indicating that {@link #suggestion} has been initialized when {@link #getSuggestion()} is called. */
+	/** Flag indicating that {@link #suggestion} has been initialized when
+	 * {@link #getSuggestion()} is called. */
 	protected boolean alreadyHasSuggestion = false;
 
-	/** Suggestion of a {@link #isFullyValid() fully valid} UCD. This is a suggestion of correction of this UCD
-	 * when it is not already {@link #isFullyValid() fully valid}. Of course, if it already, {@link #suggestion}
-	 * will be set to <code>this</code>.
+	/** Suggestion of a {@link #isFullyValid() fully valid} UCD. This is a
+	 * suggestion of correction of this UCD when it is not already
+	 * {@link #isFullyValid() fully valid}. Of course, if it already,
+	 * {@link #suggestion} will be set to <code>this</code>.
 	 *
-	 * <p><i>This field is set ONLY when {@link #createSuggestion()} is called
-	 * or when {@link #getSuggestion()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	This field is set ONLY when {@link #createSuggestion()} is called
+	 * 	or when {@link #getSuggestion()} is called for the first time.
+	 * </i></p> */
 	protected UCD suggestion = null;
 
 	/** List of all errors preventing this UCD to be {@link #isFullyValid() fully valid}.
 	 *
-	 * <p><i>This list is set ONLY when {@link #listErrors()} is called
-	 * or when {@link #getErrors()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	This list is set ONLY when {@link #listErrors()} is called
+	 * 	or when {@link #getErrors()} is called for the first time.
+	 * </i></p> */
 	protected String[] errors = null;
 
 	/** List of advice concerning the construction of this UCD.
 	 *
-	 * <p><i>This list is set ONLY when {@link #listAdvice()} is called
-	 * or when {@link #getAdvice()} is called for the first time.</i></p> */
+	 * <p><i>
+	 * 	This list is set ONLY when {@link #listAdvice()} is called
+	 * 	or when {@link #getAdvice()} is called for the first time.
+	 * </i></p> */
 	protected String[] advice = null;
 
 	/**
@@ -149,7 +194,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * </p>
 	 *
 	 * <p><i>Note:
-	 * 	If a <code>null</code> word is detected, all flags are automatically set to <code>false</code>.
+	 * 	If a <code>null</code> word is detected, all flags are automatically set
+	 * 	to <code>false</code>.
 	 * </i></p>
 	 */
 	protected void checkAllWords(){
@@ -243,10 +289,14 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Tell whether all words composing this UCD are {@link UCDWord#recognised recognised} AND
-	 * that their order inside the UCD is correct according to their syntax code.
+	 * Tell whether all words composing this UCD are
+	 * {@link UCDWord#recognised recognised} AND that their order inside the UCD
+	 * is correct according to their syntax code.
 	 *
-	 * <p><i>Only {@link UCDSyntax#PRIMARY PRIMARY ('P')} and {@link UCDSyntax#SECONDARY SECONDARY ('S')} are considered here.</i></p>
+	 * <p><i>
+	 * 	Only {@link UCDSyntax#PRIMARY PRIMARY ('P')} and
+	 * 	{@link UCDSyntax#SECONDARY SECONDARY ('S')} are considered here.
+	 * </i></p>
 	 *
 	 * @return	<code>true</code> if the whole UCD is syntactically correct,
 	 *        	<code>false</code> otherwise.
@@ -268,9 +318,12 @@ public class UCD implements Iterable<UCDWord> {
 	 * <ul>
 	 * 	<li><i><code>null</code> or empty words</i></li>
 	 * 	<li><i>Not {@link UCDWord#valid valid} words</i></li>
-	 * 	<li><i>Words with no syntax code (that's to say: not {@link UCDWord#recognised recognised} words)</i></li>
-	 * 	<li><i>{@link UCDSyntax#PRIMARY PRIMARY} words NOT at the first position or more than one is detected</i></li>
-	 * 	<li><i>{@link UCDSyntax#SECONDARY SECONDARY} word at the first position</i></li>
+	 * 	<li><i>Words with no syntax code (that's to say: not
+	 * 	       {@link UCDWord#recognised recognised} words)</i></li>
+	 * 	<li><i>{@link UCDSyntax#PRIMARY PRIMARY} words NOT at the first position
+	 * 	       or more than one is detected</i></li>
+	 * 	<li><i>{@link UCDSyntax#SECONDARY SECONDARY} word at the first
+	 * 	       position</i></li>
 	 * </ul>
 	 */
 	protected void listErrors(){
@@ -369,7 +422,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * if not the first word of the StringBuffer.
 	 *
 	 * <p><i>Note:
-	 * 	If either the buffer or the word is <code>null</code> (or also empty string ONLY in the case of the word)
+	 * 	If either the buffer or the word is <code>null</code> (or also empty
+	 * 	string ONLY in the case of the word)
 	 * 	this function does nothing.
 	 * </i></p>
 	 *
@@ -429,10 +483,12 @@ public class UCD implements Iterable<UCDWord> {
 	/* ADVICE */
 	/* ****** */
 
-	/** Regular Expression for any UCD word describing a part of the electromagnetic spectrum. */
+	/** Regular Expression for any UCD word describing a part of the
+	 * electromagnetic spectrum. */
 	protected static String REGEXP_EM = "em\\..+";
 
-	/** Regular Expression for any UCD word describing an axis or a reference frame. */
+	/** Regular Expression for any UCD word describing an axis or a reference
+	 * frame. */
 	protected static String REGEXP_AXIS_FRAME = "(pos\\.az(\\.(alt|azi|zd))?|pos\\.bodyrc(\\.(alt|lat|long))?|pos\\.cartesian(\\.(x|y|z))?|pos\\.cmb|pos\\.earth(\\.(altitude|lat|lon))?|pos\\.ecliptic(\\.(alt|lon))?|pos\\.eq(\\.(dec|ha|ra|spd))?|pos\\.galactic(\\.(lat|lon))?|pos\\.lg|pos\\.lsr|pos\\.lunar|pos\\.supergalactic(\\.(lat|lon))?)";
 
 	/**
@@ -441,11 +497,17 @@ public class UCD implements Iterable<UCDWord> {
 	 * <p>Advice is given in the following cases:</p>
 	 * <ul>
 	 * 	<li>one or more UCD words are duplicated</li>
-	 * 	<li>a recommended word has an explicit <code>ivoa</code> namespace prefix</li>
-	 * 	<li>a recognised custom word with a namespace is used (it is preferred to use recommended UCD words representing the same quantity instead)</li>
-	 * 	<li>a photometric quantity is not followed directly by a part of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
-	 * 	<li>a color is not followed directly by 2 successive parts of the EM spectrum <i>(see {@link #REGEXP_EM})</i></li>
-	 * 	<li>a vector is not followed directly by an axis or a reference frame</li>
+	 * 	<li>a recommended word has an explicit <code>ivoa</code> namespace
+	 * 	    prefix</li>
+	 * 	<li>a recognised custom word with a namespace is used (it is preferred
+	 * 	    to use recommended UCD words representing the same quantity
+	 * 	    instead)</li>
+	 * 	<li>a photometric quantity is not followed directly by a part of the EM
+	 * 	    spectrum <i>(see {@link #REGEXP_EM})</i></li>
+	 * 	<li>a color is not followed directly by 2 successive parts of the EM
+	 * 	    spectrum <i>(see {@link #REGEXP_EM})</i></li>
+	 * 	<li>a vector is not followed directly by an axis or a reference
+	 * 	    frame</li>
 	 * </ul>
 	 */
 	protected void listAdvice(){
@@ -470,7 +532,8 @@ public class UCD implements Iterable<UCDWord> {
 		String candidatesEM_str = concat(candidatesEM);
 		String candidatesAxisFrame_str = concat(candidatesAxisFrame);
 
-		// Clear duplicated ; this set will be now used to avoid duplicated advice:
+		/* Clear duplicated ; this set will be now used to avoid duplicated
+		 * advice: */
 		duplicated.clear();
 
 		for(int i = 0; i < words.length; i++){
@@ -480,20 +543,24 @@ public class UCD implements Iterable<UCDWord> {
 			if (curr == null || curr.syntaxCode == null)
 				continue;
 
-			// If a piece of advice for this UCD word has already been given, skip it and go to the next word:
+			/* If a piece of advice for this UCD word has already been given,
+			 * skip it and go to the next word: */
 			if (!duplicated.add(curr))
 				continue;
 
-			// The explicit use of the "ivoa" namespace prefix is discouraged for recommended UCD words:
+			/* The explicit use of the "ivoa" namespace prefix is discouraged
+			 * for recommended UCD words: */
 			if (curr.namespace != null && curr.recommended && curr.namespace.equalsIgnoreCase(UCDWord.IVOA_NAMESPACE))
 				lstAdvice.add("\"" + curr + "\" is a UCD word recommended by the IVOA. The use of the explicit namespace \"ivoa\" should be avoided for more readability. So you should rather write: \"" + curr.word + "\".");
 
-			// The use of recognised but not recommended words should be avoided:
+			/* The use of recognised but not recommended words should be
+			 * avoided: */
 			if (curr.recognised && !curr.recommended)
 				lstAdvice.add("\"" + curr + "\" is a recognised but not recommended word. In order to ensure better detection by VO applications, you should use a UCD word recommended by the IVOA if any can already represent the same quantity.");
 
 			switch(curr.syntaxCode){
-				// Detect photometry quantity without direct specification of the spectrum part:
+				/* Detect photometry quantity without direct specification of
+				 * the spectrum part: */
 				case PHOT_QUANTITY:
 					if (!matches(i + 1, REGEXP_EM)){
 						if (candidatesEM.size() == 0)
@@ -504,7 +571,8 @@ public class UCD implements Iterable<UCDWord> {
 						lstAdvice.add("At least two parts of the electromagnetic spectrum have been specified successively after the photometric quantity \"" + curr + "\". Only one is expected, but maybe more parts of the electromagnetic spectrum are covered here.");
 					break;
 
-				// Detect colors without direct specification of the spectrum parts:
+				/* Detect colors without direct specification of the spectrum
+				 * parts: */
 				case COLOUR:
 					if (!matches(i + 1, REGEXP_EM)){
 						if (candidatesEM.size() == 0)
@@ -542,14 +610,19 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Tell whether the specified UCD word exists and matches the given regular expression.
+	 * Tell whether the specified UCD word exists and matches the given regular
+	 * expression.
 	 *
-	 * <p><b>Warning:</b> The UCD word's namespace is ignored ; the regular expression must apply only on the word.</p>
+	 * <p><b>Warning:</b>
+	 * 	The UCD word's namespace is ignored ; the regular expression must apply
+	 * 	only on the word.
+	 * </p>
 	 *
 	 * @param indexWord	The index of the UCD word to test.
 	 * @param pattern	A regular expression.
 	 *
-	 * @return	<code>true</code> if the specified word exists and matches the given regular expression,
+	 * @return	<code>true</code> if the specified word exists and matches the
+	 *        	given regular expression,
 	 *        	<code>false</code> otherwise.
 	 */
 	protected boolean matches(final int indexWord, final String pattern){
@@ -557,9 +630,11 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Concatenate each part of the given collection using {@link #append(StringBuffer, String)}.
+	 * Concatenate each part of the given collection using
+	 * {@link #append(StringBuffer, String)}.
 	 *
-	 * @param set	The collection of {@link UCDWord} to concatenate inside a {@link String}.
+	 * @param set	The collection of {@link UCDWord} to concatenate inside a
+	 *           	{@link String}.
 	 *
 	 * @return	The string serialization of the given collection.
 	 */
@@ -571,13 +646,18 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Search all UCD words composing this UCD which match the given regular expression.
+	 * Search all UCD words composing this UCD which match the given regular
+	 * expression.
 	 *
-	 * <p><b>Warning:</b> The UCD word's namespace is ignored ; the regular expression must apply only on the word.</p>
+	 * <p><b>Warning:</b>
+	 * 	The UCD word's namespace is ignored ; the regular expression must apply
+	 * 	only on the word.
+	 * </p>
 	 *
 	 * @param pattern	A regular expression.
 	 *
-	 * @return	A set containing (by order of apparition) all UCD words matching the given regular expression.
+	 * @return	A set containing (by order of apparition) all UCD words matching
+	 *        	the given regular expression.
 	 */
 	protected LinkedHashSet<UCDWord> searchByPattern(final String pattern){
 		LinkedHashSet<UCDWord> match = new LinkedHashSet<UCDWord>();
@@ -594,12 +674,19 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Get advice about UCD words which is possible to add in order to be more precise.
+	 * Get advice about UCD words which is possible to add in order to be more
+	 * precise.
 	 *
-	 * <p><i>Advice is generally about UCD words of type {@link UCDSyntax#PHOT_QUANTITY photometric quantity},
-	 * {@link UCDSyntax#COLOUR colour} and {@link UCDSyntax#VECTOR vector}.</i></p>
+	 * <p><i>
+	 * 	Advice is generally about UCD words of type
+	 * 	{@link UCDSyntax#PHOT_QUANTITY photometric quantity},
+	 * 	{@link UCDSyntax#COLOUR colour} and {@link UCDSyntax#VECTOR vector}.
+	 * </i></p>
 	 *
-	 * <p><i>This UCD does not need to be valid so that this function provides advice.</i></p>
+	 * <p><i>
+	 * 	This UCD does not need to be valid so that this function provides
+	 * 	advice.
+	 * </i></p>
 	 *
 	 * @return	The proposed advice.
 	 */
@@ -643,22 +730,30 @@ public class UCD implements Iterable<UCDWord> {
 	/* ********** */
 
 	/**
-	 * Try to create a {@link #isFullyValid() fully valid} UCD from this one if it is not already.
+	 * Try to create a {@link #isFullyValid() fully valid} UCD from this one if
+	 * it is not already.
 	 *
 	 * <p>The following operations may be performed to fix the UCD:</p>
 	 * <ul>
 	 * 	<li><i>In order to make all words {@link UCDWord#recognised recognised}:</i>
-	 * 		remove all <code>null</code> or empty strings words, and then, remove all leading and trailing spaces
-	 * 		and replace all internal space characters by a dot (.).</li>
-	 * 	<li><i>In order to fix the words order to match the individual syntax codes:</i>
-	 * 		move the first found PRIMARY word in first position and remove all other PRIMARY words.</li>
+	 * 	    remove all <code>null</code> or empty strings words, and then,
+	 * 	    remove all leading and trailing spaces and replace all internal
+	 * 	    space characters by a dot (.).</li>
+	 * 	<li><i>In order to fix the words order to match the individual syntax
+	 * 	    codes:</i> move the first found PRIMARY word in first position and
+	 * 	    remove all other PRIMARY words.</li>
 	 * </ul>
 	 *
-	 * <p>This function will return immediately <code>null</code> in the following cases:</p>
+	 * <p>
+	 * 	This function will return immediately <code>null</code> in the
+	 * 	following cases:
+	 * </p>
 	 * <ul>
 	 * 	<li>when a {@link UCDWord} has no {@link UCDWord#syntaxCode syntaxCode}</li>
-	 * 	<li>if after the fixing operations on a UCD word, it is still not {@link UCDWord#recognised recognised}</li>
-	 * 	<li>if after removing all <code>null</code> or empty string words, the list of remaining words is empty</li>
+	 * 	<li>if after the fixing operations on a UCD word, it is still not
+	 * 	    {@link UCDWord#recognised recognised}</li>
+	 * 	<li>if after removing all <code>null</code> or empty string words, the
+	 * 	    list of remaining words is empty</li>
 	 * 	<li>
 	 */
 	protected void createSuggestion(){
@@ -694,14 +789,15 @@ public class UCD implements Iterable<UCDWord> {
 
 					/* If valid but not recognised: */
 					else if (w.valid){
-						// If any closest match has been found by the parse, keep the first one:
+						/* If any closest match has been found by the parse,
+						 * keep the first one: */
 						if (w.closest != null){
 							if (!newWords.contains(w))
 								newWords.add(w.closest[0]);
 						}
 
-						/* Otherwise, there is no way to magically guess a matching UCD word
-						 * => return NULL immediately */
+						/* Otherwise, there is no way to magically guess a
+						 * matching UCD word => return NULL immediately */
 						else{
 							suggestion = null;
 							return;
@@ -712,8 +808,10 @@ public class UCD implements Iterable<UCDWord> {
 						/* Remove all empty string words: */
 						if (w.word.trim().length() > 0){
 
-							/* Otherwise, try removing leading and trailing spaces, and replacing all internal space characters by a dot (.)
-							 * ; if still not valid, nothing can be done, so return NULL: */
+							/* Otherwise, try removing leading and trailing
+							 * spaces, and replacing all internal space
+							 * characters by a dot (.) ; if still not valid,
+							 * nothing can be done, so return NULL: */
 							UCDWord newWord = new UCDWord(w.syntaxCode, w.word.trim().replaceAll("\\s+", "."), w.description, w.recommended);
 							if (newWord.recognised){
 								if (!newWords.contains(w))
@@ -734,7 +832,8 @@ public class UCD implements Iterable<UCDWord> {
 			}
 
 			/* If all words are now recognised, rebuild a new UCD
-			 * and then see if it is fully valid. If not, see the second step of this function. */
+			 * and then see if it is fully valid. If not, see the second step of
+			 * this function. */
 			tempSuggestion = new UCD(newWords);
 			if (tempSuggestion.isFullyValid()){
 				suggestion = tempSuggestion;
@@ -750,9 +849,10 @@ public class UCD implements Iterable<UCDWord> {
 
 		// 2nd: RE-ORDER THE UCD WORDS:
 
-		/* Either the first word is SECONDARY, or a PRIMARY word is not in first position.
-		 * In both case, it can be solve by moving the first PRIMARY word found to the first position.
-		 * All next PRIMARY words will be removed. */
+		/* Either the first word is SECONDARY, or a PRIMARY word is not in first
+		 * position. In both case, it can be solve by moving the first PRIMARY
+		 * word found to the first position. All next PRIMARY words will be
+		 * removed. */
 
 		// Search for PRIMARY words:
 		UCDWord w, firstPrimary = null;
@@ -771,8 +871,9 @@ public class UCD implements Iterable<UCDWord> {
 		if (firstPrimary != null)
 			newWords.add(0, firstPrimary);
 
-		/* If no PRIMARY word has been found, it is then possible that the first word is a SECONDARY.
-		 * So, the first non SECONDARY word, if any, should be moved in first position. */
+		/* If no PRIMARY word has been found, it is then possible that the first
+		 * word is a SECONDARY. So, the first non SECONDARY word, if any, should
+		 * be moved in first position. */
 		else if (newWords.size() > 0 && newWords.get(0).syntaxCode == UCDSyntax.SECONDARY){
 			it = newWords.iterator();
 			while(it.hasNext()){
@@ -802,7 +903,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * created from this one if it is not already {@link #isFullyValid() fully valid}.
 	 *
 	 * @return	This UCD if it is already {@link #isFullyValid() fully valid},
-	 *        	or a new UCD proposing a {@link #isFullyValid() fully valid} alternative to this UCD,
+	 *        	or a new UCD proposing a {@link #isFullyValid() fully valid}
+	 *        	alternative to this UCD,
 	 *        	or <code>null</code> if no suggestion of correction can be found.
 	 */
 	public final UCD getSuggestion(){
@@ -833,7 +935,9 @@ public class UCD implements Iterable<UCDWord> {
 	 *
 	 * @return	The corresponding UCD word.
 	 *
-	 * @throws ArrayIndexOutOfBoundsException	If the given index if negative, or equal or greater than the size of this UCD.
+	 * @throws ArrayIndexOutOfBoundsException	If the given index if negative,
+	 *                                       	or equal or greater than the
+	 *                                       	size of this UCD.
 	 */
 	public final UCDWord getWord(final int indWord) throws ArrayIndexOutOfBoundsException{
 		return words[indWord];
@@ -888,8 +992,8 @@ public class UCD implements Iterable<UCDWord> {
 			StringBuffer buf = new StringBuffer();
 			for(UCDWord w : words){
 				/* append a semicolon to the string representation
-				 * EVEN IF the word is NULL ; because this error should be reflected
-				 * here in order to be able to raise accurate errors: */
+				 * EVEN IF the word is NULL ; because this error should be
+				 * reflected here in order to be able to raise accurate errors: */
 				if (buf.length() > 0)
 					buf.append(';');
 

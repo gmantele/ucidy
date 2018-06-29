@@ -24,7 +24,10 @@ import java.util.Objects;
 /**
  * Definition of a UCD word, according to the IVOA (v1.1 - 12 August 2005).
  *
- * <p><i>See http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html for more details.</i></p>
+ * <p><i>
+ * 	See http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html for more
+ * 	details.
+ * </i></p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
  * @version 1.1 (06/2018)
@@ -40,44 +43,62 @@ public class UCDWord {
 	protected final static String IVOA_NAMESPACE = "ivoa";
 
 	/**
-	 * Regular Expression for a valid UCD's atom, according to the BNF provided in the IVOA Recommendation 2005-08-12 for UCD v1.1:
+	 * Regular Expression for a valid UCD's atom, according to the BNF provided
+	 * in the IVOA Recommendation 2005-08-12 for UCD v1.1:
 	 * http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html
 	 *
 	 * <p>
-	 * 	Textually, this regular expression says that a UCD atom can contain ONLY (lower or upper case) letters, digits, hyphens and
-	 *  underscores, AND must NOT start with an hyphen or an underscore.
+	 * 	Textually, this regular expression says that a UCD atom can contain ONLY
+	 * 	(lower or upper case) letters, digits, hyphens and underscores, AND
+	 * 	must NOT start with an hyphen or an underscore.
 	 * </p>
 	 */
 	public final static String REGEXP_UCD_ATOM = "[a-zA-Z0-9][a-zA-Z0-9\\-_]*";
 
-	/** Regular Expression for a valid UCD, according to the BNF provided in the IVOA Recommendation 2005-08-12 for UCD v1.1:
+	/** Regular Expression for a valid UCD, according to the BNF provided in the
+	 * IVOA Recommendation 2005-08-12 for UCD v1.1:
 	 * http://www.ivoa.net/documents/REC/UCD/UCD-20050812.html
 	 *
 	 * <p>
-	 * 	Textually, this regular expression says that a UCD is a composition of a possible namespace and of at least one atom.
-	 * 	All atoms MUST be separated by a period (.). The namespace syntax must be the same as an atom.
+	 * 	Textually, this regular expression says that a UCD is a composition of a
+	 * 	possible namespace and of at least one atom. All atoms MUST be separated
+	 * 	by a period (.). The namespace syntax must be the same as an atom.
 	 * </p> */
 	public final static String REGEXP_UCD_WORD = "(" + REGEXP_UCD_ATOM + ":)?" + REGEXP_UCD_ATOM + "(\\." + REGEXP_UCD_ATOM + ")*";
 
 	/** Rule about the syntax of the usage of this UCD word.
 	 * <i>(see {@link UCDSyntax} for more details)</i>
-	 * <p><i>May be <code>null</code>. If so, this UCD word can NOT be recommended.</i></p> */
+	 *
+	 * <p><i>
+	 * 	May be <code>null</code>. If so, this UCD word can NOT be
+	 * 	recommended.
+	 * </i></p> */
 	public final UCDSyntax syntaxCode;
 
 	/** The UCD word as provided (may have a namespace prefix).
+	 *
 	 * <p><i>Can NOT be <code>null</code>.</i></p>
+	 *
 	 * @see #namespace
 	 * @see #word */
 	public final String rawWord;
 
 	/** The namespace of this UCD, as extracted from {@link #rawWord}.
-	 * <p><i>This attribute is <code>null</code> if {@link #rawWord} is not valid or does not have any namespace prefix.</i></p> */
+	 *
+	 * <p><i>
+	 * 	This attribute is <code>null</code> if {@link #rawWord} is not valid or
+	 * 	does not have any namespace prefix.
+	 * </i></p> */
 	public final String namespace;
 
-	/** The UCD word (without namespace prefix), as extracted from {@link #rawWord}.
+	/** The UCD word (without namespace prefix), as extracted from
+	 * {@link #rawWord}.
+	 *
 	 * <p>
-	 * 	This attribute is the resulting part of {@link #rawWord} when its namespace prefix has been extracted ({@link #namespace}).
-	 * 	If {@link #rawWord} is not valid or if no namespace is specified, this attribute will have exactly the same value as {@link #rawWord}.
+	 * 	This attribute is the resulting part of {@link #rawWord} when its
+	 * 	namespace prefix has been extracted ({@link #namespace}). If
+	 * 	{@link #rawWord} is not valid or if no namespace is specified, this
+	 * 	attribute will have exactly the same value as {@link #rawWord}.
 	 * </p>
 	 * <p><i>Can NOT be <code>null</code>.</i></p> */
 	public final String word;
@@ -90,12 +111,14 @@ public class UCDWord {
 	 *
 	 * <p>In other words:</p>
 	 * <ul>
-	 * 	<li>if all atoms are composed of letters, digits, hyphens and/or underscores, BUT does not start with an hyphen or an underscore</li>
+	 * 	<li>if all atoms are composed of letters, digits, hyphens and/or
+	 * 	    underscores, BUT does not start with an hyphen or an underscore</li>
 	 * 	<li>atoms MUST be separated by '.'</li></li>
 	 * </ul>
 	 * <p>
-	 * 	All these rules are expressed by a regular expression: {@link #REGEXP_UCD_WORD}.
-	 * 	So, this attribute will be <code>true</code> if it matches this regular expression.
+	 * 	All these rules are expressed by a regular expression:
+	 * 	{@link #REGEXP_UCD_WORD}. So, this attribute will be <code>true</code>
+	 * 	if it matches this regular expression.
 	 * </p>
 	 *
 	 * <p><i><b>Note:</b> This test is performed case INsensitively.</i></p>
@@ -103,62 +126,84 @@ public class UCDWord {
 	public final boolean valid;
 
 	/**
-	 * A UCD word is <i>recognised</i> if among a list of well-known UCD words (not necessarily the ones provided by the IVOA).
+	 * A UCD word is <i>recognised</i> if among a list of well-known UCD words
+	 * (not necessarily the ones provided by the IVOA).
 	 *
-	 * <p><b>Important:</b> A <i>recognised</i> UCD word MUST be <i>{@link #valid}</i> AND its {@link #syntaxCode} MUST be set.</p>
+	 * <p><b>Important:</b>
+	 * 	A <i>recognised</i> UCD word MUST be <i>{@link #valid}</i> AND its
+	 * 	{@link #syntaxCode} MUST be set.
+	 * </p>
 	 */
 	public final boolean recognised;
 
 	/**
-	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to IVOA Recommendation 2018-05-27 for the UCD1+ controlled vocabulary v1.3:
+	 * A UCD word is <i>recommended</i> if allowed by the IVOA, according to
+	 * IVOA Recommendation 2018-05-27 for the UCD1+ controlled vocabulary v1.3:
 	 * http://www.ivoa.net/documents/UCD1+/20180527/index.html
 	 *
-	 * <p><b>Important 1:</b> A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i>
-	 *                        AND MUST have either no namespace or have the namespace {@value #IVOA_NAMESPACE}.</p>
+	 * <p><b>Important 1:</b>
+	 * 	A <i>recommended</i> UCD MUST be <i>{@link #recognised}</i> AND MUST
+	 * 	have either no namespace or have the namespace {@value #IVOA_NAMESPACE}.
+	 * </p>
 	 *
-	 * <p><i><b>Important 2:</b> This test must have been performed case INsensitively.</i></p>
+	 * <p><i><b>Important 2:</b>
+	 * 	This test must have been performed case INsensitively.
+	 * </i></p>
 	 */
 	public final boolean recommended;
 
 	/**
-	 * This attribute is set by {@link UCDParser#parse(String)} when a UCD word can not be recognised.
-	 * Then the parse function tries to find the closest UCD words of its list of recognised words.
-	 * If it finds any, it set this attribute with them using {@link #UCDWord(String, UCDWord[])}.
+	 * This attribute is set by {@link UCDParser#parse(String)} when a UCD word
+	 * can not be recognised. Then the parse function tries to find the closest
+	 * UCD words of its list of recognised words. If it finds any, it set this
+	 * attribute with them using {@link #UCDWord(String, UCDWord[])}.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	If this {@link UCDWord} is recognised, this attribute is <code>null</code>.
-	 * 	If set, this array WILL always contain at least one item.
-	 * 	Besides, if it is set the closest words specified here SHOULD always be recognised ;
-	 * 	it is the responsibility of the provider of this array to ensure the "recognised" status
-	 * 	of all given words.
+	 * 	If this {@link UCDWord} is recognised, this attribute is
+	 * 	<code>null</code>. If set, this array WILL always contain at least one
+	 * 	item. Besides, if it is set the closest words specified here SHOULD
+	 * 	always be recognised ; it is the responsibility of the provider of this
+	 * 	array to ensure the "recognised" status of all given words.
 	 * </i></p> */
 	public final UCDWord[] closest;
 
-	/** If this UCD word is deprecated, this property will be not <code>null</code>.
-	 * Then, it will contain the suggested UCD to replace this deprecated UCD word by.
+	/** If this UCD word is deprecated, this property will be not
+	 * <code>null</code>. Then, it will contain the suggested UCD to replace
+	 * this deprecated UCD word by.
+	 *
 	 * <p><i>May be <code>null</code>.</i></p>
+	 *
 	 * @see #isDeprecated()
 	 * @since 1.1 */
 	public final UCD suggestedReplacement;
 
 	/**
-	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD word.
+	 * Create a <i>{@link #recognised}</i> (under conditions, see below) UCD
+	 * word.
 	 *
 	 * <p><b>Conditions:</b></p>
 	 * <ul>
-	 * 	<li><i>To be {@link #valid}:</i> the syntax of this UCD word MUST be correct. See {@link #valid} for more details.</li>
+	 * 	<li><i>To be {@link #valid}:</i> the syntax of this UCD word MUST be
+	 * 	    correct. See {@link #valid} for more details.</li>
 	 * 	<li><i>To be {@link #recognised}:</i>  it MUST be {@link #valid}
-	 * 	                                       AND the syntax code MUST be correct. See {@link UCDSyntax} for more details.</li>
+	 * 	                                       AND the syntax code MUST be
+	 * 	                                       correct. See {@link UCDSyntax}
+	 * 	                                       for more details.</li>
 	 * 	<li><i>To be {@link #recommended}:</i> it MUST be {@link #recognised}
-	 * 	                                       AND the parameter <code>{@link #recommended}</code> MUST be set to <code>true</code>
-	 * 	                                       AND the namespace MUST be <code>null</code> or {@value #IVOA_NAMESPACE}.</li>
+	 * 	                                       AND the parameter
+	 * 	                                       <code>{@link #recommended}</code>
+	 * 	                                       MUST be set to <code>true</code>
+	 * 	                                       AND the namespace MUST be
+	 * 	                                       <code>null</code> or
+	 * 	                                       {@value #IVOA_NAMESPACE}.</li>
 	 * </ul>
 	 *
 	 * @param syntax		Rule about the syntax when using this UCD word.
 	 *              		<i>(see {@link UCDSyntax} for more details)</i>
 	 * @param word			The UCD word, itself.
 	 * @param description	Human description of this UCD word.
-	 * @param recommended	<code>true</code> to consider this UCD word as <i>{@link #recommended}</i> by the IVOA,
+	 * @param recommended	<code>true</code> to consider this UCD word as
+	 *                   	<i>{@link #recommended}</i> by the IVOA,
 	 *                   	<code>false</code> otherwise.
 	 *
 	 * @throws NullPointerException	If the given word is <code>null</code>.
@@ -191,32 +236,44 @@ public class UCDWord {
 	}
 
 	/**
-	 * Create a NON <i>{@link #recommended}</i> and NON <i>{@link #recognised}</i> UCD word.
+	 * Create a NON <i>{@link #recommended}</i> and NON
+	 * <i>{@link #recognised}</i> UCD word.
 	 *
-	 * <p>However, it may be flagged as <i>{@link #valid}</i> if its structure is correct.</p>
+	 * <p>
+	 * 	However, it may be flagged as <i>{@link #valid}</i> if its structure is
+	 * 	correct.
+	 * </p>
 	 *
 	 * @param word	A UCD word.
 	 *
-	 * @throws NullPointerException	If the given word is <code>null</code> or an empty string.
+	 * @throws NullPointerException	If the given word is <code>null</code> or an
+	 *                             	empty string.
 	 */
 	public UCDWord(final String word) throws NullPointerException{
 		this(word, null);
 	}
 
 	/**
-	 * Create a NON <i>{@link #recommended}</i> and NON <i>{@link #recognised}</i> UCD word.
+	 * Create a NON <i>{@link #recommended}</i> and NON
+	 * <i>{@link #recognised}</i> UCD word.
 	 *
-	 * <p>However, it may be flagged as <i>{@link #valid}</i> if its structure is correct.</p>
+	 * <p>
+	 * 	However, it may be flagged as <i>{@link #valid}</i> if its structure is
+	 * 	correct.
+	 * </p>
 	 *
 	 * <p><b>IMPORTANT:</b>
-	 * 	The {@link UCDWord} provided in the given array - closestMatches - SHOULD contain
-	 * 	ONLY recognised words. This fact won't be tested by this constructor.
+	 * 	The {@link UCDWord} provided in the given array - closestMatches -
+	 * 	SHOULD contain ONLY recognised words. This fact won't be tested by this
+	 * 	constructor.
 	 * </p>
 	 *
 	 * @param word				A UCD word.
-	 * @param closestMatches	Closest recognised matches found in the list of recognised words by the {@link UCDParser}.
+	 * @param closestMatches	Closest recognised matches found in the list of
+	 *                      	recognised words by the {@link UCDParser}.
 	 *
-	 * @throws NullPointerException	If the given word is <code>null</code> or an empty string.
+	 * @throws NullPointerException	If the given word is <code>null</code> or an
+	 *                             	empty string.
 	 */
 	protected UCDWord(final String word, final UCDWord[] closestMatches) throws NullPointerException{
 		if (word == null)
@@ -320,8 +377,8 @@ public class UCDWord {
 	 * Tell whether this UCD word is deprecated.
 	 *
 	 * <p>
-	 * 	If deprecated, the property {@link #suggestedReplacement} will provide the UCD suggested by the IVOA to replace
-	 * 	this deprecated UCD word by.
+	 * 	If deprecated, the property {@link #suggestedReplacement} will provide
+	 * 	the UCD suggested by the IVOA to replace this deprecated UCD word by.
 	 * </p>
 	 *
 	 * @return	<code>true</code> if deprecated,

@@ -38,22 +38,31 @@ import java.util.TreeSet;
  *
  * <h3>Searching UCD words</h3>
  *
- * <p>This object behaves like a dictionary. It is possible to search UCD words in different ways:</p>
+ * <p>
+ * 	This object behaves like a dictionary. It is possible to search UCD words
+ * 	in different ways:
+ * </p>
  * <ul>
- * 	<li><i>For a specific UCD word:</i> {@link #get(String)} <i>(namespaces ignored)</i>, {@link #get(String, boolean)}</li>
- * 	<li><i>For all UCD words starting with a given string:</i> {@link #startingWith(String)}</li>
- * 	<li><i>For a UCD word with some typographical errors:</i> {@link #getClosest(String)}</li>
- * 	<li><i>For UCD whose the description (and also the word's atoms) matches some keywords:</i> {@link #search(String)}</li>
+ * 	<li><i>For a specific UCD word:</i> {@link #get(String)} <i>(namespaces
+ * 	    ignored)</i>, {@link #get(String, boolean)}</li>
+ * 	<li><i>For all UCD words starting with a given string:</i>
+ * 	    {@link #startingWith(String)}</li>
+ * 	<li><i>For a UCD word with some typographical errors:</i>
+ * 	    {@link #getClosest(String)}</li>
+ * 	<li><i>For UCD whose the description (and also the word's atoms) matches
+ * 	    some keywords:</i> {@link #search(String)}</li>
  * </ul>
  *
  * <h3>Import from a file</h3>
  *
  * <p>
- * 	A list of UCD word definitions can be imported from a PSV (Pipe-Separated-Value) file using
- * 	{@link #addAll(File)}, {@link #addAll(File, boolean)}, {@link #addAll(InputStream, boolean)} or
- * 	{@link #addAll(Reader, boolean)}. The first function will import all identified UCD words as
- * 	<b>NOT <i>{@link UCDWord#recommended recommended}</i></b>. If you want to change this behaviour,
- * 	use {@link #addAll(File, boolean)} instead.
+ * 	A list of UCD word definitions can be imported from a PSV
+ * 	(Pipe-Separated-Value) file using {@link #addAll(File)},
+ * 	{@link #addAll(File, boolean)}, {@link #addAll(InputStream, boolean)} or
+ * 	{@link #addAll(Reader, boolean)}. The first function will import all
+ * 	identified UCD words as <b>NOT <i>{@link UCDWord#recommended recommended}</i></b>.
+ * 	If you want to change this behaviour, use {@link #addAll(File, boolean)}
+ * 	instead.
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
@@ -61,9 +70,9 @@ import java.util.TreeSet;
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
-	/* ####################################################################################################################
-	 * # MAIN FUNCTION ####################################################################################################
-	 * #################################################################################################################### */
+	/* ######################################################################
+	 * # MAIN FUNCTION ######################################################
+	 * ###################################################################### */
 	public static void main(final String[] args) throws Throwable{
 
 		UCDWordList words = new UCDWordList();
@@ -100,15 +109,16 @@ public class UCDWordList implements Iterable<UCDWord> {
 			System.out.println("  - " + w);
 
 	}
-	/* #################################################################################################################### */
+	/* ###################################################################### */
 
 	/**
 	 * Class used to sort the UCD words in this {@link UCDWordList}.
 	 *
 	 * <p>
 	 * 	Here, words are sorted case INsensitively without namespace.
-	 * 	Thus, two identical words with a different namespace can NOT be in the same {@link UCDWordList}.
-	 * 	The idea is to avoid any ambiguity for the users reading UCDs.
+	 * 	Thus, two identical words with a different namespace can NOT be in the
+	 * 	same {@link UCDWordList}. The idea is to avoid any ambiguity for the
+	 * 	users reading UCDs.
 	 * </p>
 	 *
 	 * @author Gr&eacute;gory Mantelet (ARI)
@@ -132,7 +142,8 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/**
 	 * Create an empty list of UCD words.
 	 */
-	public UCDWordList(){}
+	public UCDWordList(){
+	}
 
 	/* ****************** */
 	/* ADDITION FUNCTIONS */
@@ -143,12 +154,14 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 *
 	 * @param newWord	The UCD word to add.
 	 *
-	 * @return	<code>true</code> if the given UCD word has been successfully added,
+	 * @return	<code>true</code> if the given UCD word has been successfully
+	 *        	                  added,
 	 *        	<code>false</code> if the given word
 	 *        	                      is <code>null</code>,
 	 *        	                      is not valid,
 	 *        	                      is not recognised,
-	 *        	                      is not recommended and uses the <code>ivoa</code> namespace,
+	 *        	                      is not recommended and uses the
+	 *        	                      <code>ivoa</code> namespace,
 	 *        	                      or already exists in the list.
 	 */
 	public boolean add(final UCDWord newWord){
@@ -211,26 +224,32 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format
+	 * inside the specified file.
 	 *
 	 * <p><b>
-	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
-	 * 	Please take a look to its Javadoc for more details about the expected syntax and the possible
-	 * 	errors that can occur.
+	 * 	The real parsing is performed by
+	 * 	{@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
+	 * 	Please take a look to its Javadoc for more details about the expected
+	 * 	syntax and the possible errors that can occur.
 	 * </b></p>
 	 *
 	 * <p>Note:
-	 * 	This function will import all UCD words as NOT <i>{@link UCDWord#recommended recommended}</i>.
-	 * 	If you want to import them as <i>{@link UCDWord#recommended recommended}</i>, use {@link #addAll(File, boolean)}
-	 * 	instead with the second parameter set to <code>true</code>.
+	 * 	This function will import all UCD words as NOT
+	 * 	<i>{@link UCDWord#recommended recommended}</i>. If you want to import
+	 * 	them as <i>{@link UCDWord#recommended recommended}</i>, use
+	 * 	{@link #addAll(File, boolean)} instead with the second parameter set to
+	 * 	<code>true</code>.
 	 * </p>
 	 *
 	 * @param psvFile	PSV file to parse.
 	 *
-	 * @return	The number of successfully added UCD words extracted from the file.
+	 * @return	The number of successfully added UCD words extracted from the
+	 *        	file.
 	 *
 	 * @throws NullPointerException	If the given file is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified file.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified file.
 	 *
 	 * @see #addAll(File, boolean)
 	 */
@@ -239,22 +258,27 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified file.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format
+	 * inside the specified file.
 	 *
 	 * <p><b>
-	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
-	 * 	Please take a look to its Javadoc for more details about the expected syntax and the possible
-	 * 	errors that can occur.
+	 * 	The real parsing is performed by
+	 * 	{@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
+	 * 	Please take a look to its Javadoc for more details about the expected
+	 * 	syntax and the possible errors that can occur.
 	 * </b></p>
 	 *
 	 * @param psvFile		PSV file to parse.
-	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as
+	 *                   	<i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD words extracted from the file.
+	 * @return	The number of successfully added UCD words extracted from the
+	 *        	file.
 	 *
 	 * @throws NullPointerException	If the given file is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified file.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified file.
 	 *
 	 * @see #addAll(Reader, boolean)
 	 */
@@ -265,22 +289,27 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified input stream.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format
+	 * inside the specified input stream.
 	 *
 	 * <p><b>
-	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
-	 * 	Please take a look to its Javadoc for more details about the expected syntax and the possible
-	 * 	errors that can occur.
+	 * 	The real parsing is performed by
+	 * 	{@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}. Please
+	 * 	take a look to its Javadoc for more details about the expected syntax
+	 * 	and the possible errors that can occur.
 	 * </b></p>
 	 *
 	 * @param stream		Input stream to parse.
-	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as
+	 *                   	<i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD words extracted from the input stream.
+	 * @return	The number of successfully added UCD words extracted from the
+	 *        	input stream.
 	 *
 	 * @throws NullPointerException	If the given stream is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified stream.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified stream.
 	 *
 	 * @see #addAll(Reader, boolean)
 	 */
@@ -291,22 +320,27 @@ public class UCDWordList implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified reader.
+	 * Add all UCD words declared using the PSV (Pipe-Separated-Value) format
+	 * inside the specified reader.
 	 *
 	 * <p><b>
-	 * 	The real parsing is performed by {@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}.
-	 * 	Please take a look to its Javadoc for more details about the expected syntax and the possible
-	 * 	errors that can occur.
+	 * 	The real parsing is performed by
+	 * 	{@link UCDParser#parseWordList(Reader, boolean, UCDWordList)}. Please
+	 * 	take a look to its Javadoc for more details about the expected syntax
+	 * 	and the possible errors that can occur.
 	 * </b></p>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as
+	 *                   	<i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
-	 * @return	The number of successfully added UCD words extracted from the input.
+	 * @return	The number of successfully added UCD words extracted from the
+	 *        	input.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified input.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified input.
 	 *
 	 * @see UCDParser#parseWordList(Reader, boolean, UCDWordList)
 	 */
@@ -345,35 +379,42 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * Tell whether the given UCD word is part of this list.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are
+	 * 	ignored</b>.
 	 * </i></p>
 	 *
 	 * @param ucdWord	The UCD word to test.
 	 *
 	 * @return	<code>true</code> if the given UCD word exists in this list,
-	 *        	<code>false</code> otherwise (and particularly if the given word is <code>null</code>).
+	 *        	<code>false</code> otherwise (and particularly if the given word
+	 *        	                   is <code>null</code>).
 	 */
 	public boolean contains(final String ucdWord){
 		return (ucdWord == null || ucdWord.trim().length() == 0) ? false : words.contains(new UCDWord(ucdWord));
 	}
 
 	/**
-	 * Search for an exact match with the given UCD word but <i>while <b>ignoring</b> their namespace</i>.
+	 * Search for an exact match with the given UCD word but <i>while
+	 * <b>ignoring</b> their namespace</i>.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are
+	 * 	ignored</b>.
 	 * </i></p>
 	 *
 	 * <p><b>Warning:</b>
-	 * 	If this function returns a {@link UCDWord}, it may have a different namespace than the one of the given UCD word.
-	 * 	To search on the word AND on the namespace you should use {@link #get(String, boolean)} or apply a final test
-	 * 	on the namespace of the returned word.
+	 * 	If this function returns a {@link UCDWord}, it may have a different
+	 * 	namespace than the one of the given UCD word. To search on the word AND
+	 * 	on the namespace you should use {@link #get(String, boolean)} or apply
+	 * 	a final test on the namespace of the returned word.
 	 * </p>
 	 *
 	 * @param ucdWord	The UCD word to search.
 	 *
-	 * @return	The corresponding {@link UCDWord} instance matching the given UCD word,
-	 *        	or <code>null</code> if the given word is <code>null</code>, an empty string or can not be found in this list.
+	 * @return	The corresponding {@link UCDWord} instance matching the given
+	 *        	UCD word,
+	 *        	or <code>null</code> if the given word is <code>null</code>, an
+	 *        	empty string or can not be found in this list.
 	 *
 	 * @see #get(String, boolean)
 	 */
@@ -389,11 +430,15 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * </i></p>
 	 *
 	 * @param ucdWord			The UCD word to search.
-	 * @param checkNamespace	<code>true</code> to ensure the namespace of the match is the same as the one of the given word,
-	 *                      	<code>false</code> to search only on the word and not check the namespace.
+	 * @param checkNamespace	<code>true</code> to ensure the namespace of the
+	 *                      	match is the same as the one of the given word,
+	 *                      	<code>false</code> to search only on the word
+	 *                      	and not check the namespace.
 	 *
-	 * @return	The corresponding {@link UCDWord} instance matching the given UCD word,
-	 *        	or <code>null</code> if the given word is <code>null</code>, an empty string or can not be found in this list.
+	 * @return	The corresponding {@link UCDWord} instance matching the given
+	 *        	UCD word,
+	 *        	or <code>null</code> if the given word is <code>null</code>, an
+	 *        	empty string or can not be found in this list.
 	 */
 	public UCDWord get(String ucdWord, final boolean checkNamespace){
 		if (ucdWord == null || ucdWord.trim().length() == 0)
@@ -413,13 +458,16 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * Search for all UCD words starting with the given string.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are
+	 * 	ignored</b>.
 	 * </i></p>
 	 *
 	 * @param startStr	The starting string.
 	 *
-	 * @return	A sorted set containing all UCD words starting with the given string,
-	 *        	or <code>null</code> if the given string is <code>null</code>, empty or can not be found in this list.
+	 * @return	A sorted set containing all UCD words starting with the given
+	 *        	string,
+	 *        	or <code>null</code> if the given string is <code>null</code>,
+	 *        	empty or can not be found in this list.
 	 */
 	public SortedSet<UCDWord> startingWith(String startStr){
 		if (startStr == null || startStr.trim().length() == 0)
@@ -434,24 +482,27 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * <p>
 	 * 	This function aims to help fixing typo in a given UCD word.
 	 * 	It uses the Levenshtein algorithm to determine the UCD word of this list
-	 * 	which requires the fewest number of editions (i.e. add, replace and remove a character)
-	 * 	to match the given word.
+	 * 	which requires the fewest number of editions (i.e. add, replace and
+	 * 	remove a character) to match the given word.
 	 * </p>
 	 *
 	 * <p>
-	 * 	This function is designed to select UCD words with a number of required editions
-	 * 	less or equal to half the length of the given word. Consequently, smaller is the given word,
-	 * 	smaller are the probabilities to find a closest match in this list. In other words, this
-	 * 	function should not be used for small words (e.g. less than 3-4 characters).
+	 * 	This function is designed to select UCD words with a number of required
+	 * 	editions less or equal to half the length of the given word.
+	 * 	Consequently, smaller is the given word, smaller are the probabilities
+	 * 	to find a closest match in this list. In other words, this function
+	 * 	should not be used for small words (e.g. less than 3-4 characters).
 	 * </p>
 	 *
 	 * <p><i>Note 1:</i>
-	 * 	It is entirely possible that several words have the same distance from the given word.
-	 * 	In such case, this function will return all candidates in an array.
+	 * 	It is entirely possible that several words have the same distance from
+	 * 	the given word. In such case, this function will return all candidates
+	 * 	in an array.
 	 * </p>
 	 *
 	 * <p><i><b>Note 2:</b>
-	 * 	Search is performed <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
+	 * 	Search is performed <b>case INsensitive</b> and the <b>namespaces are
+	 * 	ignored</b>.
 	 * </i></p>
 	 *
 	 * @param wrongWord	The word to fix.
@@ -471,7 +522,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 		for(UCDWord w : words){
 			dist = levenshtein(wrongWord, w.word.toLowerCase());
 			if (dist == 0)
-				return new UCDWord[]{w};
+				return new UCDWord[]{ w };
 			else if (dist == bestDistance)
 				match.add(w);
 			else if (dist < bestDistance && dist <= threshold){
@@ -491,10 +542,11 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * 	Comparisons are case <b>in</b>sensitive.
 	 * </i></p>
 	 *
-	 * @param keywords	String concatenating (with space characters) some keywords.
+	 * @param keywords	String concatenating (with space characters) some
+	 *                	keywords.
 	 *
-	 * @return	A set of UCD words whose the description matches the given keywords.
-	 *        	This set is ordered by descending score.
+	 * @return	A set of UCD words whose the description matches the given
+	 *        	keywords. This set is ordered by descending score.
 	 */
 	public Set<UCDWord> search(final String keywords){
 
@@ -511,7 +563,8 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 * Remove the UCD word matching the given one.
 	 *
 	 * <p><i><b>Important note:</b>
-	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are ignored</b>.
+	 * 	Comparisons are <b>case INsensitive</b> and the <b>namespaces are
+	 * 	ignored</b>.
 	 * </i></p>
 	 *
 	 * @param ucdWord	The UCD word to remove from this list.
@@ -546,23 +599,27 @@ public class UCDWordList implements Iterable<UCDWord> {
 	 *
 	 * <p>Short definition of the Levenshtein algorithm by Wikipedia:</p>
 	 * <blockquote>
-	 * 	In information theory and computer science, the Levenshtein distance is a string metric for measuring the difference between two sequences.
-	 * 	Informally, the Levenshtein distance between two words is the minimum number of single-character edits (i.e. insertions, deletions or substitutions)
-	 * 	required to change one word into the other.
+	 * 	In information theory and computer science, the Levenshtein distance is
+	 * 	a string metric for measuring the difference between two sequences.
+	 * 	Informally, the Levenshtein distance between two words is the minimum
+	 * 	number of single-character edits (i.e. insertions, deletions or
+	 * 	substitutions) required to change one word into the other.
 	 * </blockquote>
 	 *
 	 * <p><i>
-	 * 	This function has been strongly inspired of the Java code source provided on
-	 * 	        http://rosettacode.org/wiki/Levenshtein_distance#Java
+	 * 	This function has been strongly inspired of the Java code source
+	 * 	provided on http://rosettacode.org/wiki/Levenshtein_distance#Java
 	 * </i></p>
 	 *
 	 * @param left	A first string. <b>Must NOT be NULL</b>
 	 * @param right	A second string. <b>Must NOT be NULL</b>
 	 *
 	 * @return	The distance between the two given strings.
-	 *        	<i>0 is a perfect equality ; max(left.length, right.length) is a perfect difference.</i>
+	 *        	<i>0 is a perfect equality ; max(left.length, right.length) is a
+	 *        	perfect difference.</i>
 	 *
-	 * @throws NullPointerException	If one of the given string is <code>null</code>.
+	 * @throws NullPointerException	If one of the given string is
+	 *                             	<code>null</code>.
 	 */
 	protected static int levenshtein(final String left, final String right) throws NullPointerException{
 		int alen = left.length(), blen = right.length();
@@ -585,7 +642,10 @@ public class UCDWordList implements Iterable<UCDWord> {
 	/**
 	 * Compute the minimum value among the three given one.
 	 *
-	 * <p><i>This function is used only by {@link #levenshtein(String, String)} ; hence its name.</i></p>
+	 * <p><i>
+	 * 	This function is used only by {@link #levenshtein(String, String)}
+	 * 	; hence its name.
+	 * </i></p>
 	 *
 	 * @param a	A value.
 	 * @param b	Another value.

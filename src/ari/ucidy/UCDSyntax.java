@@ -16,17 +16,18 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017 - Gregory Mantelet (ARI/ZAH)
+ * Copyright 2017-2018 - Gregory Mantelet (CDS)
  */
 
 /**
- * All possible syntax rules as defined by the IVOA Recommendation 2007-04-02 for the UCD1+ controlled vocabulary v1.23:
- * http://www.ivoa.net/documents/REC/UCD/UCDlist-20070402.html
+ * All possible syntax rules as defined by the IVOA Recommendation 2018-05-27
+ * for the UCD1+ controlled vocabulary v1.3:
+ * http://www.ivoa.net/documents/UCD1+/20180527/index.html
  *
- * @author Gr&eacute;gory Mantelet (ARI)
- * @version 1.0 (02/2017)
+ * @author Gr&eacute;gory Mantelet (CDS)
+ * @version 1.1 (06/2018)
  */
-public enum UCDSyntax{
+public enum UCDSyntax {
 
 	/** The word can only be used as “primary” or first word. */
 	PRIMARY('P'),
@@ -37,29 +38,43 @@ public enum UCDSyntax{
 	/** The word can be used indifferently as first or secondary word. */
 	BOTH('Q'),
 
-	/** A photometric quantity ; can be followed by a word describing a part of the electromagnetic spectrum.
+	/** A photometric quantity ; can be followed by a word describing a part of
+	 * the electromagnetic spectrum.
+	 *
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place
+	 * 	in the UCD is not important).
 	 * </i></p> */
 	PHOT_QUANTITY('E'),
 
-	/** A colour index ; can be followed by two successive word describing a part of the electromagnetic spectrum.
+	/** A colour index ; can be followed by two successive word describing a
+	 * part of the electromagnetic spectrum.
+	 *
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place
+	 * 	in the UCD is not important).
 	 * </i></p> */
 	COLOUR('C'),
 
-	/** A vector. Such a word can be followed by another describing the axis or reference frame in which the measurement is done.
+	/** A vector. Such a word can be followed by another describing the axis or
+	 * reference frame in which the measurement is done.
+	 *
 	 * <p><i><b>Implementation note:</b>
-	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place in the UCD is not important).
+	 * 	It will be considered as {@link #BOTH} in term of order (i.e. its place
+	 * 	in the UCD is not important).
 	 * </i></p> */
 	VECTOR('V');
 
 	/** Character associated with this UCD syntax.
-	 * <p><i>Note: the case of the character (i.e. lower or upper case) should not be important.</i></p> */
+	 *
+	 * <p><i>Note:
+	 * 	the case of the character (i.e. lower or upper case) should not be
+	 * 	important.
+	 * </i></p> */
 	protected final char syntaxCode;
 
-	/** Human readable list of all possible syntaxes (in their character form) listed in this Enum class. */
+	/** Human readable list of all possible syntaxes (in their character form)
+	 * listed in this Enum class. */
 	public final static String allowedSyntaxCodes;
 	static{
 		StringBuffer buf = new StringBuffer("");
@@ -75,7 +90,8 @@ public enum UCDSyntax{
 	 * Create a {@link UCDSyntax}.
 	 *
 	 * <p><b>IMPORTANT:</b>
-	 * 	The given character <b>MUST NOT</b> be already used by another {@link UCDSyntax} item.
+	 * 	The given character <b>MUST NOT</b> be already used by another
+	 * 	{@link UCDSyntax} item.
 	 * </p>
 	 *
 	 * @param syntaxCode	The character form of this {@link UCDSyntax}.
@@ -87,7 +103,8 @@ public enum UCDSyntax{
 	/**
 	 * Get the Enum item representing the given syntax code character.
 	 *
-	 * @param syntaxCode	The syntax code character for which the corresponding Enum item is asked.
+	 * @param syntaxCode	The syntax code character for which the
+	 *                  	corresponding Enum item is asked.
 	 *
 	 * @return	The corresponding Enum item,
 	 *        	or <code>null</code> if none matches.

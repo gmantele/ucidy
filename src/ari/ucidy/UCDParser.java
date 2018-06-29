@@ -26,17 +26,19 @@ import java.text.ParseException;
 import java.util.Iterator;
 
 /**
- * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD word ({@link #parseWordList(Reader, boolean)}).
+ * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD
+ * word ({@link #parseWordList(Reader, boolean)}).
  *
  * <p>
- * 	Though the static function {@link #parseUCD(String)} is using a {@link UCDParser} already initialized with the
- * 	list of all official IVOA UCD words, it is possible to create an instance of {@link UCDParser} with a custom
- * 	list of UCD words.
+ * 	Though the static function {@link #parseUCD(String)} is using a
+ * 	{@link UCDParser} already initialized with the list of all official IVOA UCD
+ * 	words, it is possible to create an instance of {@link UCDParser} with a
+ * 	custom list of UCD words.
  * </p>
  *
  * <p>
- * 	The main function of this parser prompts for a UCD, parses this UCD and finally returns some information
- * 	about it.
+ * 	The main function of this parser prompts for a UCD, parses this UCD and
+ * 	finally returns some information about it.
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
@@ -44,9 +46,9 @@ import java.util.Iterator;
  */
 public class UCDParser {
 
-	/* ####################################################################################################################
-	 * # MAIN FUNCTION ####################################################################################################
-	 * #################################################################################################################### */
+	/* ######################################################################
+	 * # MAIN FUNCTION ######################################################
+	 * ###################################################################### */
 	public static void main(final String[] args) throws Throwable{
 
 		int nbRead;
@@ -92,10 +94,12 @@ public class UCDParser {
 		System.out.println("----------------------------------------------\n");
 
 	}
-	/* #################################################################################################################### */
+	/* ###################################################################### */
 
-	/** Default UCD parser which is initialized with a list of only the official IVOA UCD words
-	 * and the deprecated ones (for better error messages and suggestions).
+	/** Default UCD parser which is initialized with a list of only the official
+	 * IVOA UCD words and the deprecated ones (for better error messages and
+	 * suggestions).
+	 *
 	 * <p><i>This parser can be used with {@link #parseUCD(String)}.</i></p> */
 	protected final static UCDParser defaultParser = new UCDParser();
 	static{
@@ -120,9 +124,10 @@ public class UCDParser {
 	/** List of all <i>known</i> words.
 	 *
 	 * <p><b>Important:
-	 * 	"Known" means here that all words of this list will be used as reference when building
-	 * 	a {@link UCD} object when the corresponding UCD word match the listed {@link UCDWord}. So it means
-	 * 	there is no guarantee that ALL {@link UCDWord} objects stored in this list are {@link UCDWord#valid valid},
+	 * 	"Known" means here that all words of this list will be used as reference
+	 * 	when building a {@link UCD} object when the corresponding UCD word match
+	 * 	the listed {@link UCDWord}. So it means there is no guarantee that ALL
+	 * 	{@link UCDWord} objects stored in this list are {@link UCDWord#valid valid},
 	 * 	{@link UCDWord#recognised recognised} and/or {@link UCDWord#recommended recommended}.
 	 * 	This special status of a {@link UCDWord} depends of its initialization.
 	 * </p>
@@ -251,17 +256,21 @@ public class UCDParser {
 	}
 
 	/**
-	 * Parse the given UCD and try to resolve each word as a known UCD word among the IVOA official list.
+	 * Parse the given UCD and try to resolve each word as a known UCD word
+	 * among the IVOA official list.
 	 *
 	 * <p>
-	 * 	Non resolved words, will still be in the returned {@link UCD} exactly as provided, but won't be flagged as
-	 * 	{@link UCDWord#recognised recognised}. The consequence is a final non {@link UCD#isFullyValid() fully valid} UCD.
+	 * 	Non resolved words, will still be in the returned {@link UCD} exactly as
+	 * 	provided, but won't be flagged as {@link UCDWord#recognised recognised}.
+	 * 	The consequence is a final non {@link UCD#isFullyValid() fully valid}
+	 * 	UCD.
 	 * </p>
 	 *
 	 * @param ucdStr	The string serializing a UCD.
 	 *
 	 * @return	The parsed UCD,
-	 *        	or <code>null</code> if the given string is <code>null</code> or empty.
+	 *        	or <code>null</code> if the given string is <code>null</code>
+	 *        	  or empty.
 	 *
 	 * @see #parse(String)
 	 */
@@ -273,14 +282,17 @@ public class UCDParser {
 	/* UCD WORD LIST PARSING */
 	/* ********************* */
 
-	/** Maximum number of consecutive errors while parsing a PSV file, before stopping the parsing. */
+	/** Maximum number of consecutive errors while parsing a PSV file, before
+	 * stopping the parsing. */
 	protected final static int NB_MAX_ERRORS = 10;
 
 	/**
-	 * Create a {@link UCDWordList} with all UCD words declared using the PSV (Pipe-Separated-Value) format inside the specified input.
+	 * Create a {@link UCDWordList} with all UCD words declared using the PSV
+	 * (Pipe-Separated-Value) format inside the specified input.
 	 *
 	 * <p>
-	 * 	The expected PSV file MUST contain at least 3 columns, each separated by a pipe character (|):
+	 * 	The expected PSV file MUST contain at least 3 columns, each separated by
+	 * 	a pipe character (|):
 	 * </p>
 	 * <ol>
 	 * 	<li><i>Syntax code:</i> a single character among P, S, Q, E, C and V.
@@ -290,18 +302,21 @@ public class UCDParser {
 	 * </ol>
 	 *
 	 * <p><i>Note:
-	 * 	If more columns are provided, they will be considered as part of the description.
+	 * 	If more columns are provided, they will be considered as part of the
+	 * 	description.
 	 * </i></p>
 	 *
 	 * <p>
-	 * 	If the syntax of a PSV line is incorrect, an error message will be displayed in the
-	 * 	standard error output. If more than {@value #NB_MAX_ERRORS} consecutive errors are raised, the parsing of the
-	 * 	file stops immediately with a new error message.
+	 * 	If the syntax of a PSV line is incorrect, an error message will be
+	 * 	displayed in the standard error output. If more than
+	 * 	{@value #NB_MAX_ERRORS} consecutive errors are raised, the parsing of
+	 * 	the file stops immediately with a new error message.
 	 * </p>
 	 *
 	 * <p>A PSV line is considered as incorrect in the following cases:</p>
 	 * <ul>
-	 * 	<li>there are less than 3 columns (which includes the case where no pipe separator can be detected)</li>
+	 * 	<li>there are less than 3 columns (which includes the case where no pipe
+	 * 	    separator can be detected)</li>
 	 * 	<li>there is no syntax code character (first column)</li>
 	 * 	<li>there is no UCD word (second column)</li>
 	 * </ul>
@@ -309,21 +324,27 @@ public class UCDParser {
 	 * <p>Few additional notes about the parsing:</p>
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
-	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
-	 * 		as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
-	 * 	<li>An incorrect UCD word structure is permitted, but will flag the resulting {@link UCDWordList}
-	 * 		as NOT <i>{@link UCDWord#valid valid}</i> and so automatically as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
+	 * 	<li>If no description is provided, {@link UCDWord#description} will be
+	 * 	    set to <code>null</code>.</li>
+	 * 	<li>An unknown syntax code character is permitted, but will flag the
+	 * 	    resulting {@link UCDWord} as NOT
+	 * 	    <i>{@link UCDWord#recommended recommended}</i>.</li>
+	 * 	<li>An incorrect UCD word structure is permitted, but will flag the
+	 * 	    resulting {@link UCDWordList} as NOT
+	 * 	    <i>{@link UCDWord#valid valid}</i> and so automatically as NOT
+	 * 	    <i>{@link UCDWord#recommended recommended}</i>.</li>
 	 * </ul>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as
+	 *                   	<i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
 	 *
 	 * @return	The list of all successfully parsed UCD words.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified input.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified input.
 	 */
 	public static UCDWordList parseWordList(final Reader reader, final boolean recommended) throws NullPointerException, IOException{
 		UCDWordList words = new UCDWordList();
@@ -332,11 +353,12 @@ public class UCDParser {
 	}
 
 	/**
-	 * Add inside the given {@link UCDWordList} all UCD words declared using the PSV (Pipe-Separated-Value) format
-	 * inside the specified input.
+	 * Add inside the given {@link UCDWordList} all UCD words declared using the
+	 * PSV (Pipe-Separated-Value) format inside the specified input.
 	 *
 	 * <p>
-	 * 	The expected PSV file MUST contain at least 3 columns, each separated by a pipe character (|):
+	 * 	The expected PSV file MUST contain at least 3 columns, each separated by
+	 * 	a pipe character (|):
 	 * </p>
 	 * <ol>
 	 * 	<li><i>Syntax code:</i> a single character among P, S, Q, E, C and V.
@@ -346,18 +368,21 @@ public class UCDParser {
 	 * </ol>
 	 *
 	 * <p><i>Note:
-	 * 	If more columns are provided, they will be considered as part of the description.
+	 * 	If more columns are provided, they will be considered as part of the
+	 * 	description.
 	 * </i></p>
 	 *
 	 * <p>
-	 * 	If the syntax of a PSV line is incorrect, an error message will be displayed in the
-	 * 	standard error output. If more than {@value #NB_MAX_ERRORS} consecutive errors are raised, the parsing of the
-	 * 	file stops immediately with a new error message.
+	 * 	If the syntax of a PSV line is incorrect, an error message will be
+	 * 	displayed in the standard error output. If more than
+	 * 	{@value #NB_MAX_ERRORS} consecutive errors are raised, the parsing of
+	 * 	the file stops immediately with a new error message.
 	 * </p>
 	 *
 	 * <p>A PSV line is considered as incorrect in the following cases:</p>
 	 * <ul>
-	 * 	<li>there are less than 3 columns (which includes the case where no pipe separator can be detected)</li>
+	 * 	<li>there are less than 3 columns (which includes the case where no pipe
+	 * 	    separator can be detected)</li>
 	 * 	<li>there is no syntax code character (first column)</li>
 	 * 	<li>there is no UCD word (second column)</li>
 	 * </ul>
@@ -365,22 +390,30 @@ public class UCDParser {
 	 * <p>Few additional notes about the parsing:</p>
 	 * <ul>
 	 * 	<li>All leading and trailing spaces of each column value are removed.</li>
-	 * 	<li>If no description is provided, {@link UCDWord#description} will be set to <code>null</code>.</li>
-	 * 	<li>An unknown syntax code character is permitted, but will flag the resulting {@link UCDWord}
-	 * 		as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
-	 * 	<li>An incorrect UCD word structure is permitted, but will flag the resulting {@link UCDWordList}
-	 * 		as NOT <i>{@link UCDWord#valid valid}</i> and so automatically as NOT <i>{@link UCDWord#recommended recommended}</i>.</li>
+	 * 	<li>If no description is provided, {@link UCDWord#description} will be
+	 * 	    set to <code>null</code>.</li>
+	 * 	<li>An unknown syntax code character is permitted, but will flag the
+	 * 	    resulting {@link UCDWord} as NOT
+	 * 		<i>{@link UCDWord#recommended recommended}</i>.</li>
+	 * 	<li>An incorrect UCD word structure is permitted, but will flag the
+	 * 	    resulting {@link UCDWordList} as NOT
+	 * 		<i>{@link UCDWord#valid valid}</i> and so automatically as NOT
+	 * 	    <i>{@link UCDWord#recommended recommended}</i>.</li>
 	 * </ul>
 	 *
 	 * @param reader		Reader whose the content must be parsed.
-	 * @param recommended	<code>true</code> to flag all imported UCD words as <i>{@link UCDWord#recommended recommended}</i>,
+	 * @param recommended	<code>true</code> to flag all imported UCD words as
+	 *                   	<i>{@link UCDWord#recommended recommended}</i>,
 	 *                   	<code>false</code> otherwise.
-	 * @param words			The {@link UCDWordList} to complete with the UCD words extracted from the given input.
+	 * @param words			The {@link UCDWordList} to complete with the UCD
+	 *             			words extracted from the given input.
 	 *
-	 * @return	The number of successfully added UCD words extracted from the input.
+	 * @return	The number of successfully added UCD words extracted from the
+	 *        	input.
 	 *
 	 * @throws NullPointerException	If the given reader is <code>null</code>.
-	 * @throws IOException			If an error occurred while reading the specified input.
+	 * @throws IOException			If an error occurred while reading the
+	 *                    			specified input.
 	 */
 	public static int parseWordList(final Reader reader, final boolean recommended, final UCDWordList words) throws NullPointerException, IOException{
 		if (reader == null)
@@ -658,16 +691,22 @@ public class UCDParser {
 	}
 
 	/**
-	 * Parse a line of a PSV (Pipe Separated Value) file as the definition of a UCD word.
+	 * Parse a line of a PSV (Pipe Separated Value) file as the definition of a
+	 * UCD word.
 	 *
-	 * @param psvLine		A non empty line of a PSV file listing the allowed UCD words.
-	 * @param recommended	<code>true</code> if the described UCD word is <i>{@link UCDWord#recommended}</i> by the IVOA standard,
+	 * @param psvLine		A non empty line of a PSV file listing the allowed
+	 *               		UCD words.
+	 * @param recommended	<code>true</code> if the described UCD word is
+	 *                   	<i>{@link UCDWord#recommended}</i> by the IVOA
+	 *                   	standard,
 	 *                   	<code>false</code> otherwise.
 	 *
 	 * @return	The corresponding UCD word.
 	 *
-	 * @throws NullPointerException	If the given PSV line is <code>null</code> or an empty string.
-	 * @throws ParseException		If the syntax of the given PSV line is incorrect (expected syntax: ()),
+	 * @throws NullPointerException	If the given PSV line is <code>null</code>
+	 *                             	or an empty string.
+	 * @throws ParseException		If the syntax of the given PSV line is
+	 *                       		incorrect (expected syntax: ()),
 	 *                       		or if the syntax code is too long or unknown.
 	 *
 	 * @see UCDSyntax#get(char)
