@@ -14,7 +14,7 @@ public class TestDeprecatedUCDWordList {
 	private final DeprecatedUCDWordList words;
 
 	public TestDeprecatedUCDWordList() throws NullPointerException, IOException {
-		UCDWordList knownWords = UCDParser.parseWordList(new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt")), true);
+		UCDWordList knownWords = UCDParser.parseWordList(new InputStreamReader(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_WORDS)), true);
 		words = new DeprecatedUCDWordList(knownWords);
 	}
 

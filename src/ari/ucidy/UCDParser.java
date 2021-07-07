@@ -16,7 +16,7 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017-2018 - Gregory Mantelet (CDS)
+ * Copyright 2017-2021 - Gregory Mantelet (CDS)
  */
 
 import java.io.BufferedReader;
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.1 (06/2018)
+ * @version 1.2 (06/2021)
  */
 public class UCDParser {
 
@@ -96,6 +96,25 @@ public class UCDParser {
 	}
 	/* ###################################################################### */
 
+	/** Default path to the PSV file listing all official IVOA UCDs.
+	 * <p>This path must be relative to the class path.</p>
+	 * <p><i>
+	 * 	See {@link #parseWordList(Reader, boolean)} for more details about the
+	 * 	expected file format.
+	 * </i></p>
+	 * @since 1.2 */
+	public static final String FILE_UCD_WORDS = "/ucd1p-words.txt";
+
+	/** Default path to the file listing all deprecated UCD words and their
+	 * replacement.
+	 * <p>This path must be relative to the class path.</p>
+	 * <p><i>
+	 * 	See {@link #parseDeprecatedWordList(Reader, UCDWordList)} for more
+	 * 	details about the expected file format.
+	 * </i></p>
+	 * @since 1.2 */
+	public static final String FILE_UCD_DEPRECATED = "/ucd1p-deprecated.txt";
+
 	/** Default UCD parser which is initialized with a list of only the official
 	 * IVOA UCD words and the deprecated ones (for better error messages and
 	 * suggestions).
@@ -105,7 +124,7 @@ public class UCDParser {
 	static{
 		// Import all the official IVOA's UCD words:
 		try{
-			defaultParser.knownWords.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
+			defaultParser.knownWords.addAll(UCDWordList.class.getResourceAsStream(FILE_UCD_WORDS), true);
 		}catch(NullPointerException npe){
 			System.err.println("Impossible to import the official IVOA UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
 		}catch(IOException ioe){
@@ -113,7 +132,7 @@ public class UCDParser {
 		}
 		// And all the deprecated UCD words:
 		try{
-			defaultParser.deprecatedWords.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-deprecated.txt"), true);
+			defaultParser.deprecatedWords.addAll(UCDWordList.class.getResourceAsStream(FILE_UCD_DEPRECATED), true);
 		}catch(NullPointerException npe){
 			System.err.println("Impossible to import the deprecated UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
 		}catch(IOException ioe){

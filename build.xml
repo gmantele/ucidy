@@ -6,7 +6,7 @@
   <!-- # PROPERTIES                                                          -->
   <!-- ##################################################################### -->
   
-  <property name="version" value="1.1" />
+  <property name="version" value="1.2" />
 
   <property name="main.src.dir"        value="src" />
   <property name="main.lib.dir"        value="lib" />       <!-- OPTIONAL -->
@@ -141,7 +141,7 @@
              author="true"
              nodeprecated="true" nodeprecatedlist="true"
              noindex="false" nonavbar="false" notree="false"
-             source="1.7"
+             source="1.8"
              splitindex="true"
              use="true"
              version="true">

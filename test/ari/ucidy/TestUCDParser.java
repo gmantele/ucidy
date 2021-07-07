@@ -86,7 +86,7 @@ public class TestUCDParser {
 	public void testParseWordListReaderBoolean(){
 		Reader reader = null;
 		try{
-			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"));
+			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_WORDS));
 			UCDWordList words = UCDParser.parseWordList(reader, true);
 			assertEquals(523, words.size());
 			for(UCDWord w : words){
@@ -113,10 +113,10 @@ public class TestUCDParser {
 		try{
 			// Create the list of all official IVOA UCD1+ words:
 			UCDWordList lstWords = new UCDWordList();
-			lstWords.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
+			lstWords.addAll(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_WORDS), true);
 
 			// Read and add all deprecated words to this list:
-			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream("/ucd1p-deprecated.txt"));
+			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_DEPRECATED));
 			DeprecatedUCDWordList lstDeprecatedWords = UCDParser.parseDeprecatedWordList(reader, lstWords);
 			assertEquals(211, lstDeprecatedWords.size());
 			for(UCDWord w : lstDeprecatedWords){

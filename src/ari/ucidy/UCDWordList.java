@@ -16,7 +16,7 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017 - Gregory Mantelet (ARI/ZAH)
+ * Copyright 2017-2021 - Gregory Mantelet (CDS)
  */
 
 import java.io.File;
@@ -66,7 +66,7 @@ import java.util.TreeSet;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.1 (06/2018)
+ * @version 1.2 (06/2021)
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
@@ -76,7 +76,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 	public static void main(final String[] args) throws Throwable{
 
 		UCDWordList words = new UCDWordList();
-		int nbWords = words.addAll(UCDWordList.class.getResourceAsStream("/ucd1p-words.txt"), true);
+		int nbWords = words.addAll(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_WORDS), true);
 		System.out.println(nbWords + " UCD words successfully read!");
 
 		for(UCDWord w : words){
