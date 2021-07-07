@@ -32,8 +32,8 @@ import java.util.Iterator;
  * <p>
  * 	Though the static function {@link #parseUCD(String)} is using a
  * 	{@link UCDParser} already initialized with the list of all official IVOA UCD
- * 	words, it is possible to create an instance of {@link UCDParser} with a
- * 	custom list of UCD words.
+ * 	words (see {@link #defaultParser}), it is possible to create an instance of
+ * 	{@link UCDParser} with a custom list of UCD words.
  * </p>
  *
  * <p>
@@ -42,7 +42,7 @@ import java.util.Iterator;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.2 (06/2021)
+ * @version 1.2 (07/2021)
  */
 public class UCDParser {
 
@@ -119,8 +119,8 @@ public class UCDParser {
 	 * IVOA UCD words and the deprecated ones (for better error messages and
 	 * suggestions).
 	 *
-	 * <p><i>This parser can be used with {@link #parseUCD(String)}.</i></p> */
-	protected final static UCDParser defaultParser = new UCDParser();
+	 * <p><i>This parser is generally used through {@link #parseUCD(String)} but could be used directly.</i></p> */
+	public final static UCDParser defaultParser = new UCDParser();
 	static{
 		// Import all the official IVOA's UCD words:
 		try{
