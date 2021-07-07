@@ -172,7 +172,6 @@ src.veloc.microTurb phys.veloc.microTurb
 src.veloc.pulsat phys.veloc.pulsat
 src.veloc.rotat phys.veloc.rotat 
 phys.mass.light phys.composition.massLightRatio
-pos.resolution pos.angResolution
 pos.satellite pos.bodyrc
 phot.fluxDens phot.flux.density
 phot.fluxDens.sb phot.flux.density.sb
