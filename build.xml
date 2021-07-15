@@ -165,7 +165,6 @@
         filesetmanifest="mergewithoutmain">
      <manifest>
        <attribute name="Main-Class" value="${main.runnable.class}"/>
-       <attribute name="Class-Path" value="."/>
      </manifest>
       <fileset dir="${main.res.dir}" />
       <fileset dir="." includes="LICENSE*,COPYING*" casesensitive="false" />
