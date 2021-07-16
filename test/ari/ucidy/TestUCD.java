@@ -10,6 +10,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Iterator;
+
 public class TestUCD {
 
 	@Before
@@ -670,6 +672,143 @@ public class TestUCD {
 		assertTrue(ucd.isAllRecognised());
 		assertTrue(ucd.isAllRecommended());
 		assertTrue(ucd.isFullyValid());
+	}
+
+	@Test
+	public void testContainsDeprecated(){
+
+		/* 	CASE: Null or empty */
+
+		UCD ucd = new UCD(new UCDWord[]{ null });
+		assertFalse(ucd.containsDeprecated());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "", null, true) });
+		assertFalse(ucd.containsDeprecated());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, " ", null, true) });
+		assertFalse(ucd.containsDeprecated());
+
+		/* CASE: only one non-deprecated word */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "foo", null, true) });
+		assertFalse(ucd.containsDeprecated());
+
+		/* CASE: only one deprecated word */
+
+		UCDWord deprecatedWord = new UCDWord("foo", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord });
+		assertTrue(ucd.containsDeprecated());
+
+		/* CASE: more than one word but no deprecated */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true), new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		assertFalse(ucd.containsDeprecated());
+
+		/* CASE: more than one word and one is deprecated */
+
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		assertTrue(ucd.containsDeprecated());
+
+		/* CASE: more than one word and all are deprecated */
+
+		UCDWord deprecatedWord2 = new UCDWord("foo2", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar2", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, deprecatedWord2 });
+		assertTrue(ucd.containsDeprecated());
+	}
+
+	@Test
+	public void testCountDeprecated(){
+
+		/* 	CASE: Null or empty */
+
+		UCD ucd = new UCD(new UCDWord[]{ null });
+		assertEquals(0, ucd.countDeprecated());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "", null, true) });
+		assertEquals(0, ucd.countDeprecated());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, " ", null, true) });
+		assertEquals(0, ucd.countDeprecated());
+
+		/* CASE: only one non-deprecated word */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "foo", null, true) });
+		assertEquals(0, ucd.countDeprecated());
+
+		/* CASE: only one deprecated word */
+
+		UCDWord deprecatedWord = new UCDWord("foo", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord });
+		assertEquals(1, ucd.countDeprecated());
+
+		/* CASE: more than one word but no deprecated */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true), new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		assertEquals(0, ucd.countDeprecated());
+
+		/* CASE: more than one word and one is deprecated */
+
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		assertEquals(1, ucd.countDeprecated());
+
+		/* CASE: more than one word and all are deprecated */
+
+		UCDWord deprecatedWord2 = new UCDWord("foo2", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar2", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, deprecatedWord2 });
+		assertEquals(2, ucd.countDeprecated());
+	}
+
+	@Test
+	public void testGetDeprecated(){
+
+		/* 	CASE: Null or empty */
+
+		UCD ucd = new UCD(new UCDWord[]{ null });
+		assertFalse(ucd.getDeprecated().hasNext());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "", null, true) });
+		assertFalse(ucd.getDeprecated().hasNext());
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, " ", null, true) });
+		assertFalse(ucd.getDeprecated().hasNext());
+
+		/* CASE: only one non-deprecated word */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "foo", null, true) });
+		assertFalse(ucd.getDeprecated().hasNext());
+
+		/* CASE: only one deprecated word */
+
+		UCDWord deprecatedWord = new UCDWord("foo", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord });
+		Iterator<UCDWord> itDeprecated = ucd.getDeprecated();
+		assertTrue(itDeprecated.hasNext());
+		assertEquals("foo", itDeprecated.next().word);
+		assertFalse(itDeprecated.hasNext());
+
+		/* CASE: more than one word but no deprecated */
+
+		ucd = new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.BOTH, "pos.eq.ra", null, true), new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		assertFalse(ucd.getDeprecated().hasNext());
+
+		/* CASE: more than one word and one is deprecated */
+
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, new UCDWord(UCDSyntax.SECONDARY, "meta.main", null, true) });
+		itDeprecated = ucd.getDeprecated();
+		assertTrue(itDeprecated.hasNext());
+		assertEquals("foo", itDeprecated.next().word);
+		assertFalse(itDeprecated.hasNext());
+
+		/* CASE: more than one word and all are deprecated */
+
+		UCDWord deprecatedWord2 = new UCDWord("foo2", new UCD(new UCDWord[]{ new UCDWord(UCDSyntax.PRIMARY, "bar2", null, true) }), UCDSyntax.PRIMARY, null);
+		ucd = new UCD(new UCDWord[]{ deprecatedWord, deprecatedWord2 });
+		itDeprecated = ucd.getDeprecated();
+		assertTrue(itDeprecated.hasNext());
+		assertEquals("foo", itDeprecated.next().word);
+		assertTrue(itDeprecated.hasNext());
+		assertEquals("foo2", itDeprecated.next().word);
+		assertFalse(itDeprecated.hasNext());
 	}
 
 	@Test

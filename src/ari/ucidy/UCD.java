@@ -16,7 +16,7 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2017-2018 - Gregory Mantelet (CDS)
+ * Copyright 2017-2021 - Gregory Mantelet (CDS)
  */
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.Set;
  * 	<li>{@link #isFullyValid()}</li>
  * </ul>
  *
- * <p>Three other functions may gives more information:</p>
+ * <p>Six other functions may gives more information:</p>
  * <ul>
  * 	<li>{@link #getSuggestion()} which proposes a fully valid correction of this
  * 	    UCD (if not already valid ; otherwise the function will return this
@@ -52,10 +52,16 @@ import java.util.Set;
  * 	    valid</li>
  * 	<li>{@link #getAdvice()} which gives some advice about the construction of
  * 	    this UCD (it does not take care about the validity of this UCD)</li>
+ * 	<li>{@link #containsDeprecated()} which tells whether at least one word of
+ * 	    this UCD has been deprecated by the IVOA.</li>
+ * 	<li>{@link #countDeprecated()} which counts how many UCD words are
+ * 	    deprecated by the IVOA in this UCD.</li>
+ * 	<li>{@link #getDeprecated()} which lists all words deprecated by the
+ * 	    IVOA in this UCD.</li>
  * </ul>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.1 (06/2018)
+ * @version 1.2 (07/2021)
  */
 public class UCD implements Iterable<UCDWord> {
 
@@ -102,7 +108,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * </i></p> */
 	protected Boolean allRecognised = null;
 
-	/** Flag indicating that all words of this UCD are {@link UCDWord#recommended recommended}.
+	/** Flag indicating that all words of this UCD are
+	 * {@link UCDWord#recommended recommended}.
 	 *
 	 * <p><i>
 	 * 	Note that a <code>null</code> word will be considered as not
@@ -139,7 +146,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * </i></p> */
 	protected UCD suggestion = null;
 
-	/** List of all errors preventing this UCD to be {@link #isFullyValid() fully valid}.
+	/** List of all errors preventing this UCD to be
+	 * {@link #isFullyValid() fully valid}.
 	 *
 	 * <p><i>
 	 * 	This list is set ONLY when {@link #listErrors()} is called
@@ -154,6 +162,17 @@ public class UCD implements Iterable<UCDWord> {
 	 * 	or when {@link #getAdvice()} is called for the first time.
 	 * </i></p> */
 	protected String[] advice = null;
+
+    /** List of all {@link UCDWord#isDeprecated()} deprecated} words in this UCD.
+     *
+     * <p><i>
+     * 	This list is set ONLY when {@link #listDeprecated()},
+     * 	{@link #getDeprecated()}}, {@link #countDeprecated()} or
+     * 	{@link #containsDeprecated()} is called for the first time.
+     * </i></p>
+     *
+     * @since 1.2 */
+    protected UCDWord[] deprecatedWords = null;
 
 	/**
 	 * Create a UCD with the given words.
@@ -189,8 +208,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * Check whether all words are valid, recognised and recommended.
 	 *
 	 * <p>
-	 * 	This function updates the flags {@link #allValid}, {@link #allRecognised}
-	 * 	and {@link #allRecommended} of this {@link UCD}.
+	 * 	This function updates the flags {@link #allValid},
+	 * 	{@link #allRecognised} and {@link #allRecommended} of this {@link UCD}.
 	 * </p>
 	 *
 	 * <p><i>Note:
@@ -221,7 +240,8 @@ public class UCD implements Iterable<UCDWord> {
 	 * Tell whether all words composing this UCD are {@link UCDWord#valid valid}.
 	 *
 	 * @return	<code>true</code> if all words are {@link UCDWord#valid valid},
-	 *        	<code>false</code> if at least one word is not {@link UCDWord#valid valid}.
+	 *        	<code>false</code> if at least one word is not
+	 *        	{@link UCDWord#valid valid}.
 	 */
 	public final boolean isAllValid(){
 		if (allValid == null)
@@ -230,10 +250,13 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Tell whether all words composing this UCD are {@link UCDWord#recognised recognised}.
+	 * Tell whether all words composing this UCD are
+	 * {@link UCDWord#recognised recognised}.
 	 *
-	 * @return	<code>true</code> if all words are {@link UCDWord#recognised recognised},
-	 *        	<code>false</code> if at least one word is not {@link UCDWord#recognised recognised}.
+	 * @return	<code>true</code> if all words are
+	 *        	{@link UCDWord#recognised recognised},
+	 *        	<code>false</code> if at least one word is not
+	 *        	{@link UCDWord#recognised recognised}.
 	 */
 	public final boolean isAllRecognised(){
 		if (allRecognised == null)
@@ -242,10 +265,13 @@ public class UCD implements Iterable<UCDWord> {
 	}
 
 	/**
-	 * Tell whether all words composing this UCD are {@link UCDWord#recommended recommended}.
+	 * Tell whether all words composing this UCD are
+	 * {@link UCDWord#recommended recommended}.
 	 *
-	 * @return	<code>true</code> if all words are {@link UCDWord#recommended recommended},
-	 *        	<code>false</code> if at least one word is not {@link UCDWord#recommended recommended}.
+	 * @return	<code>true</code> if all words are
+	 *        	{@link UCDWord#recommended recommended},
+	 *        	<code>false</code> if at least one word is not
+	 *        	{@link UCDWord#recommended recommended}.
 	 */
 	public final boolean isAllRecommended(){
 		if (allRecommended == null)
@@ -914,6 +940,104 @@ public class UCD implements Iterable<UCDWord> {
 		}
 		return suggestion;
 	}
+
+    /* **************** */
+    /* DEPRECATED WORDS */
+    /* **************** */
+
+    /**
+     * Tell whether at least one word composing this UCD is
+     * {@link UCDWord#isDeprecated()} deprecated}.
+     *
+     * @return	<code>true</code> if at least one word is
+     *        	{@link UCDWord#isDeprecated()} deprecated},
+     *        	<code>false</code> if not a single word is
+     *        	{@link UCDWord#isDeprecated()} deprecated}.
+     *
+     * @since 1.2
+     */
+    public final boolean containsDeprecated(){
+        if (deprecatedWords == null)
+            listDeprecated();
+        return deprecatedWords.length > 0;
+    }
+
+    /**
+     * Tell how many words composing this UCD are
+     * {@link UCDWord#isDeprecated()} deprecated}.
+     *
+     * @return	The number of {@link UCDWord#isDeprecated()} deprecated} words.
+     *
+     * @since 1.2
+     */
+    public final int countDeprecated(){
+        if (deprecatedWords == null)
+            listDeprecated();
+        return deprecatedWords.length;
+    }
+
+    /**
+     * Get all UCD words composing this UCD that are considered as
+     * {@link UCDWord#isDeprecated() deprecated}.
+     *
+     * @return	All the deprecated words.
+     *
+     * @since 1.2
+     */
+    public final Iterator<UCDWord> getDeprecated(){
+        if (deprecatedWords == null)
+            listDeprecated();
+        return new DeprecatedIterator();
+    }
+
+    /**
+     * Create a list of all {@link UCDWord#isDeprecated() deprecated} words
+     * found inside this UCD.
+     *
+     * <p><i>
+     *     Duplicated deprecated words are listed only once.
+     * </i></p>
+     *
+     * @since 1.2
+     */
+    protected void listDeprecated(){
+        final LinkedHashSet<UCDWord> deprecated = new LinkedHashSet<>(words.length);
+        for(UCDWord w : words){
+            if (w != null && w.isDeprecated())
+                deprecated.add(w);
+        }
+        deprecatedWords = deprecated.toArray(new UCDWord[deprecated.size()]);
+    }
+
+    /**
+     * Iterator over the list of deprecated words.
+     *
+     * @author Gr&eacute;gory Mantelet (CDS)
+     * @version 1.2 (07/2021)
+     * @since 1.2
+     */
+    protected class DeprecatedIterator implements Iterator<UCDWord> {
+
+        private int index = -1;
+
+        @Override
+        public boolean hasNext(){
+            return (index + 1) < deprecatedWords.length;
+        }
+
+        @Override
+        public UCDWord next(){
+            if (!hasNext())
+                throw new NoSuchElementException("Sorry, no more deprecated word!");
+            return deprecatedWords[++index];
+        }
+
+        @Override
+        public void remove(){
+            throw new UnsupportedOperationException("Impossible to get rid of a deprecated word like that :-P");
+        }
+
+    }
 
 	/* ***************** */
 	/* NAVIGATION & SIZE */
