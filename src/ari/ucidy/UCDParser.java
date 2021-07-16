@@ -111,7 +111,7 @@ public class UCDParser {
 	 * 	expected file format.
 	 * </i></p>
 	 * @since 1.2 */
-	public static final String FILE_UCD_WORDS = "/ucd1p-words.txt";
+	public static final String FILE_UCD_WORDS = "/ari/ucidy/ucd1p-words.txt";
 
 	/** Default path to the file listing all deprecated UCD words and their
 	 * replacement.
@@ -121,7 +121,7 @@ public class UCDParser {
 	 * 	details about the expected file format.
 	 * </i></p>
 	 * @since 1.2 */
-	public static final String FILE_UCD_DEPRECATED = "/ucd1p-deprecated.txt";
+	public static final String FILE_UCD_DEPRECATED = "/ari/ucidy/ucd1p-deprecated.txt";
 
 	/** Default UCD parser which is initialized with a list of only the official
 	 * IVOA UCD words and the deprecated ones (for better error messages and
