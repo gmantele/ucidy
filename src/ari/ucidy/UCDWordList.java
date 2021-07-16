@@ -32,6 +32,7 @@ import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 /**
  * Object listing and ordering alphabetically a set of UCD words.
@@ -66,7 +67,7 @@ import java.util.TreeSet;
  * </p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.2 (06/2021)
+ * @version 1.2 (07/2021)
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
@@ -136,6 +137,13 @@ public class UCDWordList implements Iterable<UCDWord> {
 
 	}
 
+	/**
+	 * Logger used to report errors during the initialization of the default
+	 * {@link UCDWordList}.
+	 * @since 1.2
+	 */
+	protected static final Logger LOGGER = Logger.getLogger(UCDWordList.class.getName());
+
 	/** List of all known UCD words. */
 	protected TreeSet<UCDWord> words = new TreeSet<UCDWord>(new UCDWordComparator());
 
@@ -170,7 +178,7 @@ public class UCDWordList implements Iterable<UCDWord> {
 		else{
 			boolean added = words.add(newWord);
 			if (added && !newWord.recommended && newWord.namespace == null)
-				System.out.println("WARNING: \"" + newWord + "\" is not validated by the IVOA and does not have any namespace (which by default is reserved for validated words). It is strongly encouraged to set one (different from \"ivoa\") before using this item.");
+				LOGGER.warning("\"" + newWord + "\" is not validated by the IVOA and does not have any namespace (which by default is reserved for validated words). It is strongly encouraged to set one (different from \"ivoa\") before using this item.");
 			return added;
 		}
 	}

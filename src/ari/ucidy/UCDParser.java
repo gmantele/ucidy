@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.text.ParseException;
 import java.util.Iterator;
+import java.util.logging.Logger;
 
 /**
  * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD
@@ -96,6 +97,13 @@ public class UCDParser {
 	}
 	/* ###################################################################### */
 
+	/**
+	 * Logger used to report errors during the initialization of the default
+	 * {@link UCDParser}.
+	 * @since 1.2
+	 */
+	protected static final Logger LOGGER = Logger.getLogger(UCDParser.class.getName());
+
 	/** Default path to the PSV file listing all official IVOA UCDs.
 	 * <p>This path must be relative to the class path.</p>
 	 * <p><i>
@@ -119,24 +127,32 @@ public class UCDParser {
 	 * IVOA UCD words and the deprecated ones (for better error messages and
 	 * suggestions).
 	 *
-	 * <p><i>This parser is generally used through {@link #parseUCD(String)} but could be used directly.</i></p> */
+	 * <p><i>
+	 *     This parser is generally used through {@link #parseUCD(String)} but
+	 *     could be used directly.
+	 * </i></p>
+	 *
+	 * <p><i><b>Note:</b>
+	 *     Initialization errors and warnings are reported using the Java Util
+     *     Logging API (JUL).
+	 * </i></p> */
 	public final static UCDParser defaultParser = new UCDParser();
 	static{
 		// Import all the official IVOA's UCD words:
 		try{
 			defaultParser.knownWords.addAll(UCDWordList.class.getResourceAsStream(FILE_UCD_WORDS), true);
 		}catch(NullPointerException npe){
-			System.err.println("Impossible to import the official IVOA UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
+			LOGGER.severe("Impossible to import the official IVOA UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
 		}catch(IOException ioe){
-			System.err.println("Impossible to import the official IVOA UCDs inside the default UCD parser! Cause: " + ioe.getMessage());
+			LOGGER.severe("Impossible to import the official IVOA UCDs inside the default UCD parser! Cause: " + ioe.getMessage());
 		}
 		// And all the deprecated UCD words:
 		try{
 			defaultParser.deprecatedWords.addAll(UCDWordList.class.getResourceAsStream(FILE_UCD_DEPRECATED), true);
 		}catch(NullPointerException npe){
-			System.err.println("Impossible to import the deprecated UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
+			LOGGER.severe("Impossible to import the deprecated UCDs inside the default UCD parser! Cause: the UCD words list can not be found.");
 		}catch(IOException ioe){
-			System.err.println("Impossible to import the deprecated UCDs inside the default UCD parser! Cause: " + ioe.getMessage());
+			LOGGER.severe("Impossible to import the deprecated UCDs inside the default UCD parser! Cause: " + ioe.getMessage());
 		}
 	}
 
@@ -456,14 +472,14 @@ public class UCDParser {
 					if (words.add(parsePSVLine(line, recommended)))
 						nbAdded++;
 					else
-						System.out.println("[l." + numLine + "] WARNING: Duplicated, not recognised or not syntactically correct UCD ignored.");
+						LOGGER.warning("[l." + numLine + "] Duplicated, not recognised or not syntactically correct UCD ignored.");
 
 					// Reset the counter of consecutive errors:
 					nbConsecutiveErrors = 0;
 
 				}catch(ParseException pe){
 					// Print the error:
-					System.err.println("[l." + numLine + "] ERROR: Skipped UCD definition! Cause: " + pe.getMessage());
+					LOGGER.severe("[l." + numLine + "] Skipped UCD definition! Cause: " + pe.getMessage());
 					// Increment the number of consecutive errors:
 					nbConsecutiveErrors++;
 					// Stop the parsing if too many errors in a row:
@@ -657,7 +673,7 @@ public class UCDParser {
 						 * suggested UCD replacement is different, otherwise
 						 * just display a warning about the duplicated line. */
 						if (duplicatedWord.suggestedReplacement.toString().equalsIgnoreCase(deprecatedEntry[1])){
-							System.err.println("[l." + numLine + "] WARNING: Duplicated declaration of the deprecated UCD word \"" + deprecatedEntry[0] + "\"! (note: duplicated declarations are ignored)");
+							LOGGER.warning("[l." + numLine + "] Duplicated declaration of the deprecated UCD word \"" + deprecatedEntry[0] + "\"! (note: duplicated declarations are ignored)");
 							continue;
 						}else
 							throw new ParseException("The UCD word \"" + deprecatedEntry[0] + "\" is already declared as deprecated, but with a different suggestion of UCD replacement: \"" + deprecatedEntry[1] + "\" (new suggestion) instead of \"" + duplicatedWord.suggestedReplacement + "\" (know suggestion).", 0);
@@ -680,13 +696,13 @@ public class UCDParser {
 					if (lstDeprecatedWords.add(deprecatedWord))
 						nbAdded++;
 					else
-						System.out.println("[l." + numLine + "] WARNING: Duplicated, not recognised or not syntactically correct UCD ignored.");
+						LOGGER.warning("[l." + numLine + "] Duplicated, not recognised or not syntactically correct UCD ignored.");
 
 					// Reset the counter of consecutive errors:
 					nbConsecutiveErrors = 0;
 				}catch(ParseException pe){
 					// Print the error:
-					System.err.println("[l." + numLine + "] ERROR: Skipped deprecated UCD declaration! Cause: " + pe.getMessage());
+					LOGGER.severe("[l." + numLine + "] Skipped deprecated UCD declaration! Cause: " + pe.getMessage());
 					// Increment the number of consecutive errors:
 					nbConsecutiveErrors++;
 					// Stop the parsing if too many errors in a row:
