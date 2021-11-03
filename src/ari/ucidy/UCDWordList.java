@@ -19,19 +19,8 @@ package ari.ucidy;
  * Copyright 2017-2021 - Gregory Mantelet (CDS)
  */
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.io.*;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -66,8 +55,17 @@ import java.util.logging.Logger;
  * 	instead.
  * </p>
  *
+ * <h3>Version</h3>
+ *
+ * <p>
+ *     A version can be associated with this UCD words list. This piece of
+ *     information has to be provided at initialization with
+ *     {@link #UCDWordList(String)}. Then it can be get at anytime thanks to
+ *     {@link #getVersion()}.
+ * </p>
+ *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.2 (07/2021)
+ * @version 1.2 (11/2021)
  */
 public class UCDWordList implements Iterable<UCDWord> {
 
@@ -148,9 +146,47 @@ public class UCDWordList implements Iterable<UCDWord> {
 	protected TreeSet<UCDWord> words = new TreeSet<UCDWord>(new UCDWordComparator());
 
 	/**
+	 * Version of this UCD words list.
+	 *
+	 * <p><i>
+	 *     This field can only be set at creation. It may be <code>null</code>.
+	 * </i></p>
+	 *
+	 * @since 1.2
+	 */
+	private final String version;
+
+	/**
 	 * Create an empty list of UCD words.
 	 */
 	public UCDWordList(){
+		this(null);
+	}
+
+	/**
+	 * Create an empty list of UCD words.
+	 *
+	 * @param version	Version of the words list. May be NULL.
+	 *
+	 * @since 1.2
+	 */
+	public UCDWordList(final String version){
+		this.version = (version == null || version.trim().isEmpty()) ? null : version;
+	}
+
+	/* **************** */
+	/* GETTER FUNCTIONS */
+	/* **************** */
+
+	/**
+	 * Get the version of this UCD words list.
+	 *
+	 * @return Words list version.
+	 *
+	 * @since 1.2
+	 */
+	public final String getVersion(){
+		return version;
 	}
 
 	/* ****************** */

@@ -30,6 +30,8 @@ import java.util.logging.Logger;
  * Object that lets parse a UCD ({@link #parseUCD(String)}) or a list of UCD
  * word ({@link #parseWordList(Reader, boolean)}).
  *
+ * <h3>Default parser</h3>
+ *
  * <p>
  * 	Though the static function {@link #parseUCD(String)} is using a
  * 	{@link UCDParser} already initialized with the list of all official IVOA UCD
@@ -37,15 +39,33 @@ import java.util.logging.Logger;
  * 	{@link UCDParser} with a custom list of UCD words.
  * </p>
  *
+ * <h3>Default main program</h3>
+ *
  * <p>
  * 	The main function of this parser prompts for a UCD, parses this UCD and
  * 	finally returns some information about it.
  * </p>
  *
+ * <h3>Versions</h3>
+ *
+ * <p>
+ *     To get more information about the version of the parser and/or the words
+ *     lists, use the following functions:
+ * </p>
+ * <ul>
+ *     <li>{@link #UCIDY_VERSION}</li>
+ *     <li>{@link #knownWords}.{@link UCDWordList#getVersion() getVersion()}</li>
+ *     <li>{@link #deprecatedWords}.{@link DeprecatedUCDWordList#getVersion() getVersion()}</li>
+ * </ul>
+ *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.2 (07/2021)
+ * @version 1.2 (11/2021)
  */
 public class UCDParser {
+
+	/** Current version of this Ucidy instance.
+	 * @since 1.2 */
+	public static final String UCIDY_VERSION = "1.2";
 
 	/* ######################################################################
 	 * # MAIN FUNCTION ######################################################
@@ -56,6 +76,11 @@ public class UCDParser {
 		byte[] buffer = new byte[128];
 		String read;
 		UCD ucd;
+
+		// Show all versions involved in this parser:
+		System.out.println("---");
+		System.out.println(UCDParser.defaultParser.getFullVersion());
+		System.out.println("---");
 
 		// Prompt:
 		System.out.print("UCD to parse? ");
@@ -120,8 +145,17 @@ public class UCDParser {
 	 * 	See {@link #parseDeprecatedWordList(Reader, UCDWordList)} for more
 	 * 	details about the expected file format.
 	 * </i></p>
+	 * <p><i><b>Important:</b>
+	 * 	This list of deprecated words should be for the same UCD standard
+	 * 	version than {@link #FILE_UCD_WORDS}.
+	 * </i></p>
 	 * @since 1.2 */
 	public static final String FILE_UCD_DEPRECATED = "/ari/ucidy/ucd1p-deprecated.txt";
+
+	/** Version of the UCD words listed in {@link #FILE_UCD_WORDS} and
+	 * {@link #FILE_UCD_DEPRECATED}.
+	 * @since 1.2 */
+	public static final String VERSION_UCD_WORDS = "EN-UCD1+-1.4";
 
 	/** Default UCD parser which is initialized with a list of only the official
 	 * IVOA UCD words and the deprecated ones (for better error messages and
@@ -136,7 +170,7 @@ public class UCDParser {
 	 *     Initialization errors and warnings are reported using the Java Util
      *     Logging API (JUL).
 	 * </i></p> */
-	public final static UCDParser defaultParser = new UCDParser();
+	public final static UCDParser defaultParser = new UCDParser(VERSION_UCD_WORDS);
 	static{
 		// Import all the official IVOA's UCD words:
 		try{
@@ -203,6 +237,31 @@ public class UCDParser {
 	}
 
 	/**
+	 * Create a UCD parser with an empty list of known words with a declared
+	 * version.
+	 *
+	 * <p>
+	 * 	You can however fill this list directly through the field
+	 * 	{@link #knownWords}.
+	 * </p>
+	 *
+	 * <p><i>Note:
+	 * 	The list of deprecated words is also empty by default. As for the known
+	 * 	words, this list can be updated directly through the field
+	 * 	{@link #deprecatedWords}.
+	 * </i></p>
+	 *
+	 * @param wordsListVersion	Version of the empty UCD words lists created by
+	 *                          default.
+	 *
+	 * @since 1.2
+	 */
+	public UCDParser(final String wordsListVersion){
+		knownWords = new UCDWordList(wordsListVersion);
+		deprecatedWords = new DeprecatedUCDWordList(knownWords);
+	}
+
+	/**
 	 * Build a UCD parser with the given list of known words.
 	 *
 	 * <p><i>Note:
@@ -237,6 +296,47 @@ public class UCDParser {
 	public UCDParser(final UCDWordList words, final DeprecatedUCDWordList deprecatedWords){
 		knownWords = (words == null) ? new UCDWordList() : words;
 		this.deprecatedWords = (deprecatedWords == null) ? new DeprecatedUCDWordList(knownWords) : deprecatedWords;
+	}
+
+	/* ******* */
+	/* VERSION */
+	/* ******* */
+
+	/**
+	 * Get the Ucidy/parser version.
+	 *
+	 * <p><i><b>Note:</b>
+	 * 	This function is equivalent to {@link #UCIDY_VERSION}.
+	 * </i></p>
+	 *
+	 * @return	Parser version.
+	 *
+	 * @since 1.2
+	 */
+	public static final String getVersion(){
+		return UCIDY_VERSION;
+	}
+
+	/**
+	 * Get a paragraph giving the version of this parser and the version of
+	 * all used lists.
+	 *
+	 * @return	String describing all versions involved in this parser.
+	 *
+	 * @see #getVersion()
+	 * @see UCDWordList#getVersion()
+	 * @see DeprecatedUCDWordList#getVersion()
+	 *
+	 * @since 1.2
+	 */
+	public final String getFullVersion(){
+		final StringBuilder buf = new StringBuilder();
+		buf.append("Ucidy version ").append(getVersion());
+		buf.append(System.lineSeparator()).append("UCD words version ");
+		buf.append((knownWords.getVersion() != null) ? knownWords.getVersion() : "?");
+		buf.append(System.lineSeparator()).append("UCD deprecated words version ");
+		buf.append((deprecatedWords.getVersion() != null) ? deprecatedWords.getVersion() : "?");
+		return buf.toString();
 	}
 
 	/* *********** */

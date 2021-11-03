@@ -16,29 +16,28 @@ package ari.ucidy;
  * You should have received a copy of the GNU Lesser General Public License
  * along with Ucidy.  If not, see <http://www.gnu.org/licenses/>.
  *
- * Copyright 2018 - Gregory Mantelet (CDS)
+ * Copyright 2018-2021 - Gregory Mantelet (CDS)
  */
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Objects;
 
 /**
  * Object listing and ordering alphabetically a set of deprecated UCD words.
  *
  * <p>
- * This class is an extension of {@link UCDWordList}. The only difference
- * lies in the fact that to be added in this list a word MUST be deprecated,
- * valid and recognised.
+ * 	This class is an extension of {@link UCDWordList}. The only difference
+ * 	lies in the fact that to be added in this list a word MUST be deprecated,
+ * 	valid and recognised.
  * </p>
  *
- * <p>
- * <i>Note:
- * Words of this list may not have a UCD syntax code or a description.
- * </i>
- * </p>
+ * <p><i>Note:
+ * 	Words of this list may not have a UCD syntax code or a description.
+ * </i></p>
  *
  * @author Gr&eacute;gory Mantelet (CDS)
- * @version 1.1 (06/2018)
+ * @version 1.2 (11/2021)
  * @since 1.1
  */
 public class DeprecatedUCDWordList extends UCDWordList {
@@ -58,9 +57,44 @@ public class DeprecatedUCDWordList extends UCDWordList {
 	 *                             	provided.
 	 */
 	public DeprecatedUCDWordList(final UCDWordList nonDeprecatedWords) throws NullPointerException{
+		this(nonDeprecatedWords, null);
+	}
+
+	/**
+	 * Create a list of all deprecated list compared to the given list of
+	 * "active" UCD words.
+	 *
+	 * @param nonDeprecatedWords	List of all "active" UCD words.
+	 * @param version				Version of the deprecated UCD words list, if
+	 *                              it should be different from the version of
+	 *                              the given list of non deprecated words.
+	 *
+	 * @throws NullPointerException	If no list of "active" UCD words is
+	 *                             	provided.
+	 *
+	 * @since 1.2
+	 */
+	public DeprecatedUCDWordList(final UCDWordList nonDeprecatedWords, final String version) throws NullPointerException{
+		// Set the list version:
+		super((version == null || version.trim().isEmpty()) ? nonDeprecatedWords.getVersion() : version);
+
+		// Check and set the list of non deprecated words:
 		if (nonDeprecatedWords == null)
 			throw new NullPointerException("Missing list of all non deprecated UCD words!");
 		this.nonDeprecatedWords = nonDeprecatedWords;
+	}
+
+	/**
+	 * Tell whether this list is at a same {@link #getVersion() version}
+	 * than its associated list of non-deprecated words.
+	 *
+	 * @return	<code>true</code> if the same version than the active words,
+	 *        	<code>false</code> otherwise.
+	 *
+	 * @since 1.2
+	 */
+	public final boolean isForSameVersion(){
+		return Objects.equals(getVersion(), nonDeprecatedWords.getVersion());
 	}
 
 	/**
