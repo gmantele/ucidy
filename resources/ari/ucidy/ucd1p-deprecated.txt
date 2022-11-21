@@ -1,4 +1,6 @@
+#PEN-UCDlist-v1.5-2022-09-20
 # This file contains lists suggested replacements for UCD1+ which are deprecated
+# deprecated_term  replacement_term
 em.IR.K.Brgamma em.line.Brgamma
 em.opt.B.Hbeta em.line.Hbeta
 em.opt.R.Halpha em.line.Halpha
@@ -170,7 +172,7 @@ src.veloc.lg phys.veloc;pos.lg
 src.veloc.lsr phys.veloc;pos.lsr
 src.veloc.microTurb phys.veloc.microTurb
 src.veloc.pulsat phys.veloc.pulsat
-src.veloc.rotat phys.veloc.rotat 
+src.veloc.rotat phys.veloc.rotat
 phys.mass.light phys.composition.massLightRatio
 pos.satellite pos.bodyrc
 phot.fluxDens phot.flux.density
@@ -210,6 +212,6 @@ time.obs.start time.start;obs
 #Changes from 1.23 to 1.3
 em.UV.FUV em.UV.100-200nm
 meta.ref.ivorn meta.ref.ivoid
-pos.bodyrc.long pos.bodyrc.lon 
+pos.bodyrc.long pos.bodyrc.lon
 pos.eop.nutation pos.nutation
-
+# This file distributed under CC-0 by the IVOA.

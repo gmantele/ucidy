@@ -88,7 +88,7 @@ public class TestUCDParser {
 		try{
 			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_WORDS));
 			UCDWordList words = UCDParser.parseWordList(reader, true);
-			assertEquals(547, words.size());
+			assertEquals(554, words.size());
 			for(UCDWord w : words){
 				if (!w.recommended)
 					System.out.println("NOT RECOMMENDED: " + w);
@@ -118,7 +118,7 @@ public class TestUCDParser {
 			// Read and add all deprecated words to this list:
 			reader = new InputStreamReader(UCDWordList.class.getResourceAsStream(UCDParser.FILE_UCD_DEPRECATED));
 			DeprecatedUCDWordList lstDeprecatedWords = UCDParser.parseDeprecatedWordList(reader, lstWords);
-			assertEquals(209, lstDeprecatedWords.size());
+			assertEquals(210, lstDeprecatedWords.size());
 			for(UCDWord w : lstDeprecatedWords){
 				assertTrue(w.isDeprecated());
 				assertTrue(w.valid);

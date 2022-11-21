@@ -12,14 +12,14 @@ UCD (Unified Content Descriptor). This current version aims to respect as much
 as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance")
 standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html).
 The parser is by default configured with the list of all validated UCD words
-listed in [The UCD1+ controlled vocabulary 1.4](https://www.ivoa.net/documents/UCD1+/20210616/index.html).
+listed in [The UCD1+ controlled vocabulary 1.5](https://www.ivoa.net/documents/UCD1+/20221005/).
 
 ### Functionalities
 
 * Check whether each UCD word is:
   - syntactically valid
   - recognised (i.e. the word is among a list of well known UCD words)
-  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.4](https://www.ivoa.net/documents/UCD1+/20210616/index.html))
+  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.5](https://www.ivoa.net/documents/UCD1+/20221005/))
 * Possibility to customise the list of known UCD words
   _(by default all validated UCD1+ are automatically loaded)_
 * Validate a full UCD with
@@ -84,9 +84,9 @@ _No dependency._
 
 The `resources` directory contains two files for the moment:
 * `ucd1p-words.txt`. It lists all official IVOA UCD1+ words as provided
-  at <https://github.com/ivoa-std/UCDList/blob/master/ucd-list.txt>.
+  at <https://www.ivoa.net/documents/UCD1+/20221005/ucd-list.txt>.
 * `ucd1p-deprecated.txt`. This is a list of all _deprecated_ UCD1+ words as
-  provided at <http://cdsweb.u-strasbg.fr/UCD/ucd1p-deprecated.txt>.
+  provided at <https://www.ivoa.net/documents/UCD1+/20221005/ucd-list-deprecated.txt>.
 
 These files are loaded by the default parser initialised in the class UCDParser.
 
