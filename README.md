@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/gmantele/ucidy.svg?branch=master)](https://travis-ci.org/gmantele/ucidy)
+[![Test Status](https://github.com/gmantele/ucidy/actions/workflows/test.yml/badge.svg)](https://github.com/gmantele/ucidy/actions/workflows/test.yml)
 [![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](http://www.gnu.org/licenses/lgpl-3.0)
 
 README
