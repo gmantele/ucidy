@@ -48,14 +48,14 @@ and especially for the [latest one](https://github.com/gmantele/ucidy/releases/l
 ### Documentation
 
 * [Javadoc](https://gmantele.github.io/ucidy/)
-* [UML](https://github.com/gmantele/ucidy/blob/master/uml/ari_ucidy.jpg)
+* [UML](https://github.com/gmantele/ucidy/blob/main/uml/ari_ucidy.jpg)
 * [Documentation/Wiki](https://github.com/gmantele/ucidy/wiki)
 
 ### License
 
 This library is under the conditions of the LPGL-v3. See
-[COPYING.LESSER](https://github.com/gmantele/ucidy/blob/master/COPYING.LESSER)
-and [COPYING](https://github.com/gmantele/ucidy/blob/master/COPYING) for more
+[COPYING.LESSER](https://github.com/gmantele/ucidy/blob/main/COPYING.LESSER)
+and [COPYING](https://github.com/gmantele/ucidy/blob/main/COPYING) for more
 details. 
 
 Collaboration
