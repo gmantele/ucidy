@@ -10,16 +10,16 @@ Preamble
 This GitHub repository contains the sources of a library aiming to validate any
 UCD (Unified Content Descriptor). This current version aims to respect as much
 as possible the definition provided by the [IVOA](http://www.ivoa.net/ "International Virtual Observatory Alliance")
-standard: [An IVOA Standard for Unified Content Descriptors - Version 1.1](http://www.ivoa.net/documents/cover/UCD-20050812.html).
+standard: [An IVOA Standard for Unified Content Descriptors - Version 1.10](https://ivoa.net/documents/cover/UCD-20050812.html).
 The parser is by default configured with the list of all validated UCD words
-listed in [The UCD1+ controlled vocabulary 1.5](https://ivoa.net/documents/UCD1+/20230125).
+listed in [The UCD1+ controlled vocabulary 1.6](https://ivoa.net/documents/UCD1+/20241218).
 
 ### Functionalities
 
 * Check whether each UCD word is:
   - syntactically valid
   - recognised (i.e. the word is among a list of well known UCD words)
-  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.6](https://www.ivoa.net/documents/UCD1+/20241116))
+  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.6](https://www.ivoa.net/documents/UCD1+/20241218))
 * Possibility to customise the list of known UCD words
   _(by default all validated UCD1+ are automatically loaded)_
 * Validate a full UCD with
@@ -107,9 +107,9 @@ _No dependency._
 
 The directory `lib/src/main/resources/` contains two files for the moment:
 * `ucd1p-words.txt`. It lists all official IVOA UCD1+ words as provided
-  at <https://www.ivoa.net/documents/UCDlist/20241116/ucd-list.txt>.
+  at <https://www.ivoa.net/documents/UCDlist/20241218/ucd-list.txt>.
 * `ucd1p-deprecated.txt`. This is a list of all _deprecated_ UCD1+ words as
-  provided at <https://www.ivoa.net/documents/UCDlist/20241116/ucd-list-deprecated.txt>.
+  provided at <https://www.ivoa.net/documents/UCDlist/20241218/ucd-list-deprecated.txt>.
 
 These files are loaded by the default parser initialised in the class UCDParser.
 
