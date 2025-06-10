@@ -17,6 +17,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 tasks.named<Javadoc>("javadoc") {
