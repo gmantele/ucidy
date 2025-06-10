@@ -4,7 +4,7 @@
 README
 ======
 
-Preambule
+Preamble
 ---------
 
 This GitHub repository contains the sources of a library aiming to validate any
@@ -19,11 +19,11 @@ listed in [The UCD1+ controlled vocabulary 1.5](https://ivoa.net/documents/UCD1+
 * Check whether each UCD word is:
   - syntactically valid
   - recognised (i.e. the word is among a list of well known UCD words)
-  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.5](https://ivoa.net/documents/UCD1+/20230125))
+  - recommended by the IVOA ([The UCD1+ controlled vocabulary 1.6](https://www.ivoa.net/documents/UCD1+/20241116))
 * Possibility to customise the list of known UCD words
   _(by default all validated UCD1+ are automatically loaded)_
 * Validate a full UCD with
-  - a list of human readable errors
+  - a list of human-readable errors
   - an automatic correction suggestion (particularly for typo)
   - a list of advice to improve the readability of the UCD
 * Detection of deprecated UCD words _(when detected a clear error message is
@@ -68,10 +68,33 @@ known the progress and/or comments about its resolution will be published.
 
 In addition, if you have forked this repository and made some corrections on
 your side which are likely to interest any other user of the libraries, please,
-**send a pull request** [here](https://github.com/gmantele/ucidy/pulls). If
-these modifications are in adequation with the IVOA definition and are not too
-specific to your use case, they will be integrated (maybe after some
-modifications) on this repository and thus made available to everybody.
+**send a pull request** [here](https://github.com/gmantele/ucidy/pulls). Provided these modifications are in
+accordance with the IVOA definition and do not relate specifically to your use
+case, they will be integrated (maybe after some modifications) in this
+repository and thus will be made available to everybody.
+
+Compilation
+-----------
+
+Both the management of dependencies and compilation are possible thanks to
+Gradle. However, to compile or to run tests, no need to install Gradle. Just
+use the `gradlew` (or `gradlew.bat` on Windows).
+
+To generate the JAR file:
+
+```bash
+./gradlew jar
+```
+
+The JAR file will be available in the directory `lib/build/libs/`.
+
+To run all tests:
+
+```bash
+./gradlew test
+```
+
+Tests results will be available in the directory `lib/build/test-results/`.
 
 Repository content
 ------------------
@@ -82,11 +105,11 @@ _No dependency._
 
 ### Resources
 
-The `resources` directory contains two files for the moment:
+The directory `lib/src/main/resources/` contains two files for the moment:
 * `ucd1p-words.txt`. It lists all official IVOA UCD1+ words as provided
-  at <https://www.ivoa.net/documents/UCD1+/20230125/ucd-list.txt>.
+  at <https://www.ivoa.net/documents/UCDlist/20241116/ucd-list.txt>.
 * `ucd1p-deprecated.txt`. This is a list of all _deprecated_ UCD1+ words as
-  provided at <https://www.ivoa.net/documents/UCD1+/20230125/ucd-list-deprecated.txt>.
+  provided at <https://www.ivoa.net/documents/UCDlist/20241116/ucd-list-deprecated.txt>.
 
 These files are loaded by the default parser initialised in the class UCDParser.
 
@@ -95,24 +118,7 @@ raise a warning on the standard error output and will be initialized with an
 empty list of known UCD1+ words. Consequently, any UCD parsed using this parser
 will be systematically flagged as _not recognised_ and so _not recommended_.
 
-### JUnit
+### Tests
 
 The sources of these three libraries come with some JUnit test files. You can
-find them in the `test` directory.
-
-In the `test-lib` directory, you will find all JAR files needed to compile and
-run these JUnit tests. You can use the task `test` of the ANT script as
-explained below.
-
-### ANT scripts
-
-At the root of the repository, there is an ANT script. It is able to generate
-JAR for sources, binaries and Javadoc.
-
-This ANT script have the following main targets:
-* `build`: Compile all classes of this project.
-* `test` *DEFAULT*: Compile all classes and run all the JUnit tests.
-* `javadoc`: Generate the Javadoc.
-* `publish`: Compile all classes and run all the JUnit tests. If these latter
-  are passed, the library JAR (also runnable) is generated, in addition of a JAR
-  containing all the sources and of another with the complete Javadoc.
+find them in the directory `lib/src/main/test/java/`.
